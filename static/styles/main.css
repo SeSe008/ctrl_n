@@ -1,0 +1,28 @@
+:root {
+  --c1: 255, 255, 255;
+  --c2: 0, 0, 0;
+  --c3: 150, 150, 150;
+  --c4: 100, 100, 100;
+  --c5: 50, 50, 50, 50;
+}
+
+html, body {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Quicksand", sans-serif;
+}
+
