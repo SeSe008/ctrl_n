@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="3.7014508mm"
+   height="3.7014508mm"
+   viewBox="0 0 3.7014509 3.7014508"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.1 (93de688d07, 2025-03-30)"
+   sodipodi:docname="favicon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="27.091951"
+     inkscape:cx="6.9946974"
+     inkscape:cy="8.3788724"
+     inkscape:window-width="1600"
+     inkscape:window-height="836"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-39.693914,-43.576212)">
+    <circle
+       style="fill:#e6e6e6;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:round"
+       id="path1"
+       cx="41.54464"
+       cy="45.426937"
+       r="1.8507254" />
+    <path
+       style="font-weight:800;font-size:2.82223px;line-height:0;font-family:Cantarell;-inkscape-font-specification:'Cantarell Ultra-Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#1a1a1a;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:round"
+       d="m 40.633059,46.40625 h 0.462846 v -1.35467 l -0.0254,0.02822 0.838202,1.326448 H 42.45622 V 44.44762 h -0.46849 l -0.0056,1.377249 0.04516,-0.02822 -0.83538,-1.349026 h -0.558802 z"
+       id="text1"
+       aria-label="N" />
+  </g>
+</svg>

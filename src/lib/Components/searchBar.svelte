@@ -27,10 +27,11 @@
   }
 
   const defaultSearchEngine: string = 'ecosia';
+  let searchEngineName: string = defaultSearchEngine;
   
   const searchEngines: SearchEngines = {
     'ecosia': {
-      name: 'ecosia',
+      name: 'Ecosia',
       url: 'https://ecosia.org/search',
       searchParam: 'q=',
       suggestions: {
@@ -39,11 +40,70 @@
 	extras: []
       },
       extras: ['addon=opensearch']
+    },
+    'ekuro': {
+      name: 'Ekuro',
+      url: 'https://www.ekoru.org/',
+      searchParam: 'q=',
+      suggestions: {
+	endpoint: 'https://api.oceanhero.today/suggestions',
+	searchParam: 'q=',
+	extras: []
+      },
+      extras: []
+    },
+    'duckduckgo': {
+      name: 'DuckDuckGo',
+      url: 'https://duckduckgo.com/',
+      searchParam: 'q=',
+      suggestions: {
+	endpoint: 'https://ac.duckduckgo.com/ac/',
+	searchParam: 'q=',
+	extras: ['type=list']
+      },
+      extras: []
+    },
+    'startpage': {
+      name: 'Startpage',
+      url: 'https://www.startpage.com/sp/search',
+      searchParam: 'query=',
+      suggestions: {
+	endpoint: 'https://ac.duckduckgo.com/ac/',
+	searchParam: 'q=',
+	extras: ['type=list']
+      },
+      extras: []
+    },
+    'google': {
+      name: 'Google',
+      url: 'https://www.google.com/search',
+      searchParam: 'q=',
+      suggestions: {
+	endpoint: 'https://suggestqueries.google.com/complete/search',
+	searchParam: 'q=',
+	extras: ['client=firefox']
+      },
+      extras: []
+    },
+    'microsoft-bing': {
+      name: 'Bing',
+      url: 'https://www.bing.com/search',
+      searchParam: 'q=',
+      suggestions: {
+	endpoint: 'https://api.bing.com/osjson.aspx',
+	searchParam: 'query=',
+	extras: []
+      },
+      extras: []
     }
   };
 
+  function storeEngine() {
+    localStorage.setItem('defaultSearchEngine', searchEngineName);
+  }
+
   function search(text: string) {
-    const searchEngine: SearchEngine = searchEngines[defaultSearchEngine];
+    const searchEngine: SearchEngine = searchEngines[searchEngineName];
 
     const query: string = `${searchEngine.searchParam}${encodeURIComponent(text)}`;
    
@@ -56,39 +116,33 @@
   let selectedSuggestion: number = -1;
   let originalText = '';
   
-  function fetchSuggestions() {
+  async function fetchSuggestions() {
     if (searchBar.value === '') {
       suggestions = [];
       return;
     }
     
     const searchEngine: SearchEngine = searchEngines[defaultSearchEngine];
-    const suggestionsEndpoint: SuggestionEndpoint = searchEngine.suggestions;
+    const suggestionEndpoint: SuggestionEndpoint = searchEngine.suggestions;
     
-    const query: string = `${suggestionsEndpoint.searchParam}${encodeURIComponent(searchBar.value)}`;
-   
-    const extras: string = suggestionsEndpoint.extras.join('&');
+    const response = await fetch('/api/suggestions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        suggestionEndpoint: suggestionEndpoint,
+        queryText: searchBar.value
+      })
+    });
 
-    const url: string = `${suggestionsEndpoint.endpoint}?${query}&${extras}`
+    const result: Suggestion = await response.json();
     
-    fetch(url)
-      .then(response => {
-	if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-	}
-	return response.json() as Promise<Suggestion>;
-      })
-      .then(data => {
-	suggestions = data.suggestions;
-      })
-      .catch(error => {
-	console.error('Error fetching suggestions:', error);
-      });
-  }
+    suggestions = result.suggestions;
+ }
 
   function selectSuggestion(e: KeyboardEvent) {
     const key = e.key;
     if (key === 'ArrowUp' && selectedSuggestion > -1) {
+      e.preventDefault();
       selectedSuggestion--;
 
       if (selectedSuggestion > -1) {
@@ -101,6 +155,7 @@
 	document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
       }
     } else if (key === 'ArrowDown' && selectedSuggestion < suggestions.length - 1) {
+      e.preventDefault();
       selectedSuggestion++;
       searchBar.value = suggestions[selectedSuggestion];
 
@@ -121,17 +176,26 @@
     originalText = searchBar.value;
     fetchSuggestions();
   }
-  
-  let searchBar: HTMLInputElement;
 
+  let searchBar: HTMLInputElement;
   
   onMount(() => {
     searchBar.focus();
+
+    searchEngineName = localStorage.getItem('defaultSearchEngine') || defaultSearchEngine;
   });
 </script>
 
 <div id="search">
   <div id="inputs">
+    <select bind:value={searchEngineName} on:change={storeEngine}>
+      {#each Object.entries(searchEngines) as [searchEngineKey, searchEngine] (searchEngineKey)}
+	<option value={searchEngineKey}>
+	  <Icon icon={"arcticons-" + searchEngineKey} />
+	  {searchEngine.name}
+	</option>
+      {/each}
+    </select>
     <input on:keydown={handleKeydown} on:input={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
     <button on:click={() => {search(searchBar.value)}}><Icon icon="line-md:search-twotone" /></button>
   </div>
@@ -154,6 +218,35 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr min-content;
+  }
+
+  #inputs > select {
+    grid-column: 1 / 3;
+    min-width: 30%;
+    outline: none;
+    color: rgb(var(--c1));
+    border: 1px solid rgb(var(--c2));
+    background-color: rgb(var(--c4));
+    border-radius: .5rem;
+    padding: .75rem 2rem;
+    margin: 1rem 0;
+    justify-self: center;
+    font-size: calc(10px + 1vmin);
+    font-weight: bold;
+  }
+
+  #inputs > select::picker(select) {
+    background-color: rgb(var(--c4));
+    color: rgb(var(--c1));
+  }
+
+  :global(#inputs > select .iconify--arcticons) {
+    font-size: calc(10px + 2vmin);
+    stroke-width: 2px;
+  }
+
+  #inputs > select, #inputs > select::picker(select) {
+    appearance: base-select;
   }
 
   #inputs > input {
