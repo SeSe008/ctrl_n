@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 
 /** @type {import('./$types').RequestHandler} */
-export async function POST({ request }) {
-  const { subdir } = await request.json();
+ export async function POST({ request }: { request: Request }) {
+   const { subdir } = await request.json();
   
   // Remove unsafe
   const safeSubdir = subdir.replace(/\.\./g, '');
@@ -18,14 +18,12 @@ export async function POST({ request }) {
 
   const files = fs.readdirSync(imagesPath);
 
-  console.log(files);
-  
-  const images = files.filter((file) =>
+  const images = files.filter((file: string) =>
     /\.(jpe?g|png|gif|webp|svg)$/i.test(file)
   );
 
   const urls = images.map(
-    (name) => `/images/${safeSubdir}/${name}`
+    (name: string) => `/images/${safeSubdir}/${name}`
   );
 
   return new Response(JSON.stringify(urls), {

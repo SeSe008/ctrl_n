@@ -3,6 +3,7 @@
   import ColorThief from 'colorthief';
 
   import Clock from '$lib/Components/clock.svelte';
+  import SearchBar from '$lib/Components/searchBar.svelte';
   
   import { onMount } from 'svelte';
   import { useImage } from '$lib/Utils/useImage';
@@ -37,3 +38,4 @@
 </script>
 
 <Clock />
+<SearchBar />

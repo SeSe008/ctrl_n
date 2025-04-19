@@ -8,6 +8,7 @@ export function getPaletteFromSrc(src: string, colors: number, colorThief: Color
     const img: Image = new Image();
     img.crossOrigin = 'Anonymous';
     img.src = src;
+    console.log(src);
     
     if (img.complete) {
       try {

@@ -14,7 +14,7 @@ function applyImage(images: string[], lastImage: string | undefined, colors: num
   
   document.body.style.backgroundImage = `url(${image})`;
   
-  getPaletteFromSrc(images[0], colors, colorThief)
+  getPaletteFromSrc(image, colors, colorThief)
     .then((palette) => {
       applyPalette(palette);
     });
