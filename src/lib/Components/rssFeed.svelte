@@ -1,5 +1,4 @@
 <script lang="ts">
-  import parse from "rss-to-json";
   import DOMPurify from "dompurify";
 
   import { onMount } from "svelte";
@@ -17,9 +16,14 @@
 
   async function parseRss() {
     const url = window.localStorage.getItem('rssURL') || 'https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml'; 
-    var rss = await parse(url);
     
-    articles = rss.items;
+    const resp = await fetch('/api/rss', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url })
+    });
+
+    articles = await resp.json();
   }
 
   let rssURL: HTMLInputElement;
@@ -112,7 +116,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(var(--c4));
+    background-color: rgba(var(--c5), .7);
     height: 100%;
     color: rgb(var(--c2));
     border-radius: .5rem;
