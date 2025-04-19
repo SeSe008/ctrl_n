@@ -141,7 +141,7 @@
 
   function selectSuggestion(e: KeyboardEvent) {
     const key = e.key;
-    if (key === 'ArrowUp' && selectedSuggestion > -1) {
+    if (key === 'ArrowUp' && selectedSuggestion > -2) {
       e.preventDefault();
       selectedSuggestion--;
 
@@ -150,9 +150,12 @@
 
 	document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
 	document.getElementsByClassName('suggestion')[selectedSuggestion]?.classList.add('selected_suggestion');
-      } else {
+      } else if (selectedSuggestion == -1) {
 	searchBar.value = originalText;
 	document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
+      } else if (selectedSuggestion < -1) {
+	suggestions = [];
+	selectedSuggestion = -1;
       }
     } else if (key === 'ArrowDown' && selectedSuggestion < suggestions.length - 1) {
       e.preventDefault();
@@ -208,6 +211,7 @@
 
 <style>
   #search {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -284,25 +288,27 @@
   }
 
   #search:has(#inputs > input:focus) #suggestions {
+    position: absolute;
+    top: 100%;
     width: calc(100% - .75rem);
     display: flex;
     flex-direction: column;
     text-align: left;
     color: rgb(var(--c2));
     border-radius: 0 0 .5rem .5rem;
+    background-color: rgb(var(--c3));
     overflow: hidden;
+    z-index: 10;
   }
 
   .suggestion {
     width: 100%;
     height: min-content;
-    opacity: .7;
     padding: .5rem;
-    background-color: rgb(var(--c3));
     box-sizing: border-box;
   }
 
   :global(.selected_suggestion) {
-    opacity: 1 !important;
+    background-color: rgba(var(--c1), .3);
   }
 </style>

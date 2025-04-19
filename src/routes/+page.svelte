@@ -4,6 +4,7 @@
 
   import Clock from '$lib/Components/clock.svelte';
   import SearchBar from '$lib/Components/searchBar.svelte';
+  import RssFeed from '$lib/Components/rssFeed.svelte';
   
   import { onMount } from 'svelte';
   import { useImage } from '$lib/Utils/useImage';
@@ -39,3 +40,4 @@
 
 <Clock />
 <SearchBar />
+<RssFeed />
