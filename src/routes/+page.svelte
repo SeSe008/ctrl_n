@@ -41,3 +41,18 @@
 <Clock />
 <SearchBar />
 <RssFeed />
+<div id='credit'>Search Suggestions provided by <a href='https://github.com/searxng/searxng'>SearXNG</a></div>
+
+<style>
+  #credit {
+    color: rgb(var(--c1));
+    padding: .25rem;
+    background-color: rgba(var(--c2), .7);
+    border-radius: .25rem;
+    font-size: .75rem;
+  }
+
+  #credit a {
+    color: inherit;
+  }
+</style>

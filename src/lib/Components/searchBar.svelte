@@ -8,10 +8,7 @@
     amount: number;
   }
 
-  interface Suggestion {
-    query: string;
-    suggestions: string[];
-  }
+  type Suggestion = [string, string[]];
   
   interface SuggestionEndpoint {
     endpoint: string;
@@ -40,18 +37,29 @@
       url: 'https://ecosia.org/search',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://ac.ecosia.org/autocomplete',
+	endpoint: 'https://searx.bndkt.io/autocompleter',
 	searchParam: 'q=',
 	extras: []
       },
       extras: ['addon=opensearch']
     },
-    'ekuro': {
-      name: 'Ekuro',
-      url: 'https://www.ekoru.org/',
+    'oceanhero': {
+      name: 'OceanHero',
+      url: 'https://oceanhero.today/',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://api.oceanhero.today/suggestions',
+	endpoint: 'https://searx.bndkt.io/autocompleter',
+	searchParam: 'q=',
+	extras: []
+      },
+      extras: []
+    },
+    'searxng': {
+      name: 'SearXNG',
+      url: 'https://searx.bndkt.io/search',
+      searchParam:'q=',
+      suggestions: {
+	endpoint: 'https://searx.bndkt.io/autocompleter',
 	searchParam: 'q=',
 	extras: []
       },
@@ -62,7 +70,7 @@
       url: 'https://duckduckgo.com/',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://ac.duckduckgo.com/ac/',
+	endpoint: 'https://searx.bndkt.io/autocompleter',
 	searchParam: 'q=',
 	extras: ['type=list']
       },
@@ -73,7 +81,7 @@
       url: 'https://www.startpage.com/sp/search',
       searchParam: 'query=',
       suggestions: {
-	endpoint: 'https://ac.duckduckgo.com/ac/',
+	endpoint: 'https://searx.bndkt.io/autocompleter',
 	searchParam: 'q=',
 	extras: ['type=list']
       },
@@ -84,7 +92,7 @@
       url: 'https://www.google.com/search',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://suggestqueries.google.com/complete/search',
+	endpoint: 'https://ac.duckduckgo.com/ac',
 	searchParam: 'q=',
 	extras: ['client=firefox']
       },
@@ -95,8 +103,8 @@
       url: 'https://www.bing.com/search',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://api.bing.com/osjson.aspx',
-	searchParam: 'query=',
+	endpoint: 'https://ac.duckduckgo.com/ac',
+	searchParam: 'q=',
 	extras: []
       },
       extras: []
@@ -120,6 +128,8 @@
   }
   
   function search(text: string) {
+    if (searchBar.value === '') return;
+    
     const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(text))
 
     if (recentSearch) {
@@ -152,7 +162,7 @@
   let suggestions: string[] = [];
   let selectedSuggestion: number = -1;
   let originalText = '';
-  
+
   async function fetchSuggestions() {
     if (searchBar.value === '') {
       suggestions = [];
@@ -171,9 +181,11 @@
       })
     });
 
-    const result: Suggestion = await response.json();
+    if (response.status === 500) return;
     
-    suggestions = result.suggestions;
+    const result: Suggestion = await response.json();
+
+    suggestions = result[1];
   }
 
   function getRecentSearches() {

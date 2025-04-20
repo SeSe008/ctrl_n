@@ -18,7 +18,7 @@ interface SuggestionEndpoint {
    const url: string = `${suggestionsEndpoint.endpoint}?${query}&${extras}`
 
    const res = await fetch(url);
-   
+
    if (!res.ok) {
      return new Response('Failed to fetch suggestions', { status: 500 });
    }
