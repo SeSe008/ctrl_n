@@ -1,6 +1,6 @@
-import RSSToJson from "rss-to-json";
+import RSS from 'rss-to-json';
 
-const { parse } = RSSToJson;
+const { parse } = RSS;
 
 interface Article {
   title: string;
@@ -15,8 +15,12 @@ interface Article {
 export async function POST({ request }: { request: Request }) {
   const url: string = (await request.json()).url;
 
-  const rss = await parse(url);
+  if (url === undefined || url === '') {
+    return new Response('URL is empty', { status: 500 });
+  }
 
+  const rss = await parse(url);
+  
   const articles: Article[] = rss.items;
   
   return new Response(JSON.stringify(articles), {

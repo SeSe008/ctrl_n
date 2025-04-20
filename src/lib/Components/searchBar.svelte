@@ -3,6 +3,11 @@
 
   import Icon from "@iconify/svelte";
 
+  interface RecentlySearched {
+    query: string;
+    amount: number;
+  }
+
   interface Suggestion {
     query: string;
     suggestions: string[];
@@ -115,6 +120,19 @@
   }
   
   function search(text: string) {
+    const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(text))
+
+    if (recentSearch) {
+      recentSearch.amount++;
+      window.localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    } else if (!recentSearch && recentSearches.length < 50) {
+      recentSearches.push({
+	query: text,
+	amount: 1
+      });
+      window.localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    }
+    
     if (isUrl(text)) {
       window.location.href = makeExternal(text);
       return;
@@ -129,6 +147,8 @@
     window.location.href = `${searchEngine.url}?${query}&${extras}`
   }
 
+  let recentSearches: RecentlySearched[];
+  
   let suggestions: string[] = [];
   let selectedSuggestion: number = -1;
   let originalText = '';
@@ -154,7 +174,33 @@
     const result: Suggestion = await response.json();
     
     suggestions = result.suggestions;
- }
+  }
+
+  function getRecentSearches() {
+    if (searchBar.value === '') return;
+    
+    const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(searchBar.value));
+    
+    if (recentSearch) {
+      suggestions.pop();
+      suggestions.unshift(recentSearch.query);
+
+      // Trigger svelte reactivity
+      suggestions = [...suggestions];
+
+      selectedSuggestion = 0;
+      searchBar.value = suggestions[selectedSuggestion];
+      searchBar.focus();
+      searchBar.setSelectionRange(originalText.length, searchBar.value.length);
+      
+      changeSuggestionStyle();
+    }
+  }
+
+  function changeSuggestionStyle() {
+    document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
+    document.getElementsByClassName('suggestion')[selectedSuggestion]?.classList.add('selected_suggestion');
+  }
 
   function selectSuggestion(e: KeyboardEvent) {
     const key = e.key;
@@ -165,11 +211,10 @@
       if (selectedSuggestion > -1) {
 	searchBar.value = suggestions[selectedSuggestion]
 
-	document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
-	document.getElementsByClassName('suggestion')[selectedSuggestion]?.classList.add('selected_suggestion');
+	changeSuggestionStyle();
       } else if (selectedSuggestion == -1) {
 	searchBar.value = originalText;
-	document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
+	changeSuggestionStyle();
       } else if (selectedSuggestion < -1) {
 	suggestions = [];
 	selectedSuggestion = -1;
@@ -179,12 +224,15 @@
       selectedSuggestion++;
       searchBar.value = suggestions[selectedSuggestion];
 
-      document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
-      document.getElementsByClassName('suggestion')[selectedSuggestion]?.classList.add('selected_suggestion');
+      changeSuggestionStyle();
     }
   }
 
+  let lastKey: string;
+
   function handleKeydown(e: KeyboardEvent) {
+    lastKey = e.key;
+    
     if (e.key === 'Enter') {
       search(searchBar.value);
     } else {
@@ -192,9 +240,15 @@
     }
   }
 
-  function handleInput() {
+  function isControlKey(key: string) {
+    return key.length > 1;
+  }
+
+
+  async function handleInput() {
     originalText = searchBar.value;
-    fetchSuggestions();
+    await fetchSuggestions();
+    if (!isControlKey(lastKey)) getRecentSearches();
   }
 
   let searchBar: HTMLInputElement;
@@ -203,6 +257,12 @@
     searchBar.focus();
 
     searchEngineName = localStorage.getItem('defaultSearchEngine') || defaultSearchEngine;
+
+    try {
+      recentSearches = JSON.parse(window.localStorage.getItem('recentSearches') || '');
+    } catch {
+      recentSearches = [];
+    }
   });
 </script>
 
@@ -220,7 +280,7 @@
     <button on:click={() => {search(searchBar.value)}}><Icon icon="line-md:search-twotone" /></button>
   </div>
   <div id="suggestions">
-    {#each suggestions as suggestion (suggestion)}
+    {#each suggestions as suggestion, i (i)}
       <span class="suggestion">{suggestion}</span>
     {/each}
   </div>

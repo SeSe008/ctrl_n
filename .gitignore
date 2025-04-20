@@ -26,3 +26,7 @@ vite.config.ts.timestamp-*
 
 # Images
 static/images/backgrounds/*
+
+# IDE
+.emacs.desktop
+.emacs.desktop.lock
