@@ -45,7 +45,7 @@
     },
     'oceanhero': {
       name: 'OceanHero',
-      url: 'https://oceanhero.today/',
+      url: 'https://oceanhero.today/web',
       searchParam: 'q=',
       suggestions: {
 	endpoint: 'https://searx.bndkt.io/autocompleter',
