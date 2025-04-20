@@ -35,7 +35,17 @@ body > div > * {
   justify-self: center;
 }
 
-
 input, button, select {
   font-family: "Quicksand", sans-serif;
+}
+
+
+::-moz-selection {
+  color: rgb(var(--c1));
+  background-color: rgb(var(--c4));
+}
+
+::selection {
+  color: rgb(var(--c1));
+  background-color: rgb(var(--c4));
 }

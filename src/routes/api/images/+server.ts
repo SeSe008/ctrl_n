@@ -1,13 +1,16 @@
 import fs from 'fs';
 import path from 'path';
+import { dev } from '$app/environment';
+
 
 /** @type {import('./$types').RequestHandler} */
- export async function POST({ request }: { request: Request }) {
-   const { subdir } = await request.json();
+export async function POST({ request }: { request: Request }) {
+  const { subdir } = await request.json();
   
   // Remove unsafe
   const safeSubdir = subdir.replace(/\.\./g, '');
-  const imagesPath = path.resolve('static/images', safeSubdir);
+  const base = dev ? 'static' : 'client';
+  const imagesPath = path.resolve(base, 'images', safeSubdir);
   
   if (!fs.existsSync(imagesPath)) {
     return new Response(

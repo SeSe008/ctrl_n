@@ -108,13 +108,13 @@
   }
 
   function isUrl(str: string) {
-    const regUrl = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
-    return !!str.match(regUrl);
+   const regUrl = /(?:localhost:\d{1,5}|[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6})(\b[-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
+   return !!str.match(regUrl);
   }
 
   function makeExternal(url: string) {
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
+    if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//i.test(url)) {
+      url = 'http://' + url;
     }
     return url;
   }
@@ -178,8 +178,17 @@
 
   function getRecentSearches() {
     if (searchBar.value === '') return;
-    
-    const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(searchBar.value));
+
+    // Find search having max amound and starting with query
+    const recentSearch: RecentlySearched | undefined = recentSearches.reduce<RecentlySearched | undefined>(
+      (max, curr) => {
+	return curr.query.startsWith(searchBar.value) && (max === undefined || curr.amount > max.amount)
+	  ? curr
+	  : max;
+      },
+      undefined
+    );
+
     
     if (recentSearch) {
       suggestions.pop();

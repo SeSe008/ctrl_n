@@ -137,12 +137,12 @@
     filter: drop-shadow(.5rem .5rem 1rem rgb(var(--c2)));
   }
   
-  :global(.article > div > p) {
+  :global(.article > div) {
     width: 100%;
     text-align: justify;
   }
   
-  :global(.article > div > p > a > img) {
+  :global(.article > div img) {
     max-width: 75%;
     display: inline-block;
     border-radius: .5rem;
