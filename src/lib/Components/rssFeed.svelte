@@ -15,7 +15,7 @@
   let articles: Article[] = [];
 
   async function parseRss() {
-    const url = window.localStorage.getItem('rssURL') || 'https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml'; 
+    const url = window.localStorage.getItem('rssURL') || ''; 
     
     const resp = await fetch('/api/rss', {
       method: 'POST',
@@ -43,7 +43,7 @@
   <div id="articles">
     <h2>RSS Feed</h2>
     {#each articles as article (article)}
-      <a href={article.link}>
+      <a href={article.link} target="_blank">
 	<div class="article">
 	  <h3>{article.title}</h3>
 	  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -60,52 +60,54 @@
 
 <style>
   #rss_feed {
-    margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    max-height: 40vmin;
-    max-width: 66%;
+    max-height: 100%;
+    width: 66%;
     overflow: hidden;
     background-color: rgba(var(--c1), .3);
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
+    container-type: inline-size;
+    min-height: 0;
+    box-sizing: border-box;
   }
 
   #articles {
     display: grid;
     gap: .3rem;
-    grid-template-columns: repeat(3, 33.3%);
+    grid-template-columns: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     padding: 1rem;
     box-sizing: border-box;
   }
 
-  @media screen and (max-width: 1024px) {
+  
+  @container (min-width: 512px) {
     #articles {
       grid-template-columns: repeat(2, 50%) !important;
     }
-
-    #articles h2 {
-      grid-column: 1 / 3 !important;
-    }
-
-    #articles #inputs {
-      grid-column: 1 / 3 !important;
+  }
+  
+  @container (min-width: 1024px) {
+    #articles {
+      grid-template-columns: repeat(3, 33.33%) !important;
     }
   }
 
-  #articles h2 {
+  #articles > h2 {
+    font-size: calc(8px + 2vmin);
     justify-self: center;
     width: max-content;
     padding: .5rem;
     border-radius: .25rem;
     background-color: rgb(var(--c1));
     color: rgb(var(--c2));
-    grid-column: 1 / 4;
+    grid-column: 1 / -1;
   }
 
-  #articles a {
+  #articles > a {
     position: relative;
     display: block;
     text-decoration: none;
@@ -116,12 +118,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(var(--c5), .7);
+    background-color: rgba(var(--c1), .5);
+    border: 2px solid rgb(var(--c1));
     height: 100%;
     color: rgb(var(--c2));
     border-radius: .5rem;
     padding: .5rem;
     box-sizing: border-box;
+    transition: transform .2s, filter .5s;
+  }
+
+  .article h3 {
+    font-size: calc(6px + 1.5vmin);
+  }
+
+  .article:hover {
+    transform: scale(1.01);
+    filter: drop-shadow(.5rem .5rem 1rem rgb(var(--c2)));
   }
   
   :global(.article > div > p) {
@@ -148,7 +161,7 @@
   }
 
   #inputs {
-    grid-column: 1 / 4;
+    grid-column: 1 / -1;
     display: flex;
     flex-direction: row;
     justify-content: stretch;

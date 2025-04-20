@@ -19,11 +19,20 @@ body {
   background-repeat: no-repeat;
   top: 0;
   left: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, min-content) 1fr;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
   font-family: "Quicksand", sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+body > div > * {
+  justify-self: center;
 }
 
 

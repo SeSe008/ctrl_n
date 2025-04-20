@@ -102,7 +102,24 @@
     localStorage.setItem('defaultSearchEngine', searchEngineName);
   }
 
+  function isUrl(str: string) {
+    const regUrl = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
+    return !!str.match(regUrl);
+  }
+
+  function makeExternal(url: string) {
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    return url;
+  }
+  
   function search(text: string) {
+    if (isUrl(text)) {
+      window.location.href = makeExternal(text);
+      return;
+    }
+    
     const searchEngine: SearchEngine = searchEngines[searchEngineName];
 
     const query: string = `${searchEngine.searchParam}${encodeURIComponent(text)}`;
