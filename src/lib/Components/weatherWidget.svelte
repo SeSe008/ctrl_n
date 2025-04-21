@@ -53,8 +53,8 @@
       <span id="location">{weather.name}</span>
       <div id="values">
 	<span id="description">{capitalizeWords(weather.weather[0].description)}</span>
-	<span id="temp"><Icon icon="mdi:temperature" />{weather.main.temp} ({weather.main.feels_like})</span>
-	<span id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}</span>
+	<span id="temp"><Icon icon="mdi:temperature" />{weather.main.temp}°C ({weather.main.feels_like}°C)</span>
+	<span id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
       </div>
     </div>
   {/if}

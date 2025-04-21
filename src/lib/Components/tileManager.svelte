@@ -9,9 +9,13 @@
   export let colorThief: ColorThief;
   export let images: string[];
   export let colors: number;
+
+  function getTiles() {
+    const tilesUnsafe = parseInt(window.localStorage.getItem('tiles')!);
+    tiles = isNaN(tilesUnsafe) ? 1 : tilesUnsafe;
+  }
   
-  let tiles: number = 1;
-  $: if (window) window.localStorage.setItem('tiles', tiles)
+  let tiles: number;
   let tileManager: HTMLDivElement;
 
   $: if (tileManager) tileManager.style.gridTemplateColumns = `repeat(${tiles}, 1fr)`;
@@ -20,12 +24,17 @@
     if (tiles > 1) {
       window.localStorage.removeItem(`tile${tiles - 1}`);
       tiles--;
+      window.localStorage.setItem(`tiles`, tiles.toString());
     }
   }
-  
+
+  function addTile() {
+    tiles++;
+    window.localStorage.setItem(`tiles`, tiles.toString());
+  }
+
   onMount(() => {
-    const tilesUnsafe = parseInt(window.localStorage.getItem('tiles')!);
-    tiles = isNaN(tilesUnsafe) ? 1 : tilesUnsafe;
+    getTiles();
   });
 </script>
 
@@ -34,7 +43,7 @@
     <TileElement id={id} />
   {/each}
   <div id="inputs">
-    <button on:click={() => tiles++}><Icon icon="gg:add" /></button>
+    <button on:click={addTile}><Icon icon="gg:add" /></button>
     <button on:click={removeTile}><Icon icon="gg:remove" /></button>
     <button on:click={() => applyImage(
       images,

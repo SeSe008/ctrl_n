@@ -116,9 +116,9 @@
   }
 
   function isUrl(str: string) {
-   const regUrl = /(?:localhost:\d{1,5}|[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6})(\b[-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
-   return !!str.match(regUrl);
-  }
+    const urlRe = /^(?:https?:\/\/)?(?:localhost:\d{1,5}|(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?:\/\S*)?$/;    
+    return urlRe.test(str);
+ }
 
   function makeExternal(url: string) {
     if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//i.test(url)) {
