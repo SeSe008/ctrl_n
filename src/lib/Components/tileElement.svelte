@@ -1,5 +1,6 @@
 <script lang='ts'>
   import RssFeed from '$lib/Components/rssFeed.svelte';
+  import WeatherWidget from './weatherWidget.svelte';
 
   import Icon from '@iconify/svelte';
   import { onMount } from 'svelte';
@@ -8,7 +9,8 @@
   
   const tiles: string[][] = [
     ['', 'None'],
-    ['material-symbols:news', 'RSS-Feed']
+    ['material-symbols:news', 'RSS-Feed'],
+    ['ph:cloud-sun-fill', 'Weather']
   ];
 
   let selectedTile: number = -1;
@@ -32,6 +34,8 @@
     </select>
   {:else if selectedTile === 1}
     <RssFeed />
+  {:else if selectedTile === 2}
+    <WeatherWidget />
   {/if}
 
   <div id='spacer'></div>

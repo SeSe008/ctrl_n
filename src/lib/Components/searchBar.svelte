@@ -130,7 +130,7 @@
   function search(text: string) {
     if (searchBar.value === '') return;
     
-    const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(text))
+    const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(text));
 
     if (recentSearch) {
       recentSearch.amount++;
@@ -154,7 +154,7 @@
    
     const extras: string = searchEngine.extras.join('&');
     
-    window.location.href = `${searchEngine.url}?${query}&${extras}`
+    window.location.href = `${searchEngine.url}?${query}&${extras}`;
   }
 
   let recentSearches: RecentlySearched[];
@@ -230,7 +230,7 @@
       selectedSuggestion--;
 
       if (selectedSuggestion > -1) {
-	searchBar.value = suggestions[selectedSuggestion]
+	searchBar.value = suggestions[selectedSuggestion];
 
 	changeSuggestionStyle();
       } else if (selectedSuggestion == -1) {
@@ -298,7 +298,7 @@
       {/each}
     </select>
     <input on:keydown={handleKeydown} on:input={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
-    <button on:click={() => {search(searchBar.value)}}><Icon icon="line-md:search-twotone" /></button>
+    <button on:click={() => {search(searchBar.value);}}><Icon icon="line-md:search-twotone" /></button>
   </div>
   <div id="suggestions">
     {#each suggestions as suggestion, i (i)}
