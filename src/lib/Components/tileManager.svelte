@@ -11,6 +11,7 @@
   export let colors: number;
   
   let tiles: number = 1;
+  $: if (window) window.localStorage.setItem('tiles', tiles)
   let tileManager: HTMLDivElement;
 
   $: if (tileManager) tileManager.style.gridTemplateColumns = `repeat(${tiles}, 1fr)`;

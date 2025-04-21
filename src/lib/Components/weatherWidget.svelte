@@ -49,7 +49,7 @@
 <div id="weather">
   {#if weather}
     <div id="properties">
-      <img src={`https://openweathermap.org/img/wn/${weather.weather[0]?.icon}@2x.png`} />
+      <img alt="Weather Icon" src={`https://openweathermap.org/img/wn/${weather.weather[0]?.icon}@2x.png`} />
       <span id="location">{weather.name}</span>
       <div id="values">
 	<span id="description">{capitalizeWords(weather.weather[0].description)}</span>
