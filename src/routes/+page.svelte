@@ -4,10 +4,12 @@
 
   import Clock from '$lib/Components/clock.svelte';
   import SearchBar from '$lib/Components/searchBar.svelte';
-  import RssFeed from '$lib/Components/rssFeed.svelte';
+  import TileManager from '$lib/Components/tileManager.svelte';
   
   import { onMount } from 'svelte';
   import { useImage } from '$lib/Utils/useImage';
+
+  let colorThief: ColorThief;
   
   let images: string[] = [];
   const path: string = 'backgrounds' // Dir-name of the image folder 
@@ -32,7 +34,7 @@
   }
 
   onMount(() => {
-    const colorThief = new ColorThief();
+    colorThief = new ColorThief();
     
     loadImages(path, colorThief);
   });
@@ -40,16 +42,22 @@
 
 <Clock />
 <SearchBar />
-<RssFeed />
-<div id='credit'>Search Suggestions provided by <a href='https://github.com/searxng/searxng'>SearXNG</a></div>
+<TileManager colorThief={colorThief} images={images} colors={colors} />
+<div id='credit'>
+  Search Suggestions provided by <a target="_blank" href="https://github.com/searxng/searxng">SearXNG</a>
+  <br/>
+  Animal Pictures, made by <a target="_blank" href="https://finnbear.com/">Finn Bear</a>, published on <a target="_blank" href="https://squirrelwatching.com">SquirrelWatching</a>, are licensed under <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.en">CC-BY-SA 4.0</a>
+</div>
+
 
 <style>
   #credit {
     color: rgb(var(--c1));
     padding: .25rem;
     background-color: rgba(var(--c2), .7);
-    border-radius: .25rem;
+    border-radius: .75rem;
     font-size: .75rem;
+    text-align: center;
   }
 
   #credit a {

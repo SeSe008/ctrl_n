@@ -14,22 +14,34 @@ html, body {
 }
 
 body {
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  top: 0;
-  left: 0;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(2, min-content) 1fr min-content;
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  font-family: "Quicksand", sans-serif;
-  overflow: hidden;
-  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  
+  /* Box model */
+  margin: 0;
   padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  
+  font-family: "Quicksand", sans-serif;
+  
+  background-color: rgb(var(--c1));
+  background-image: url("…"); /* managed by TS */
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  
+  transition-property: background-image;
+  transition-duration: 1s;
+  transition-timing-function: ease-in-out;
 }
+
 
 body > div > * {
   justify-self: center;

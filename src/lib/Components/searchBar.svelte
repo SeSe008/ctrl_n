@@ -328,13 +328,19 @@
     outline: none;
     color: rgb(var(--c1));
     border: 1px solid rgb(var(--c2));
-    background-color: rgb(var(--c4));
+    background-color: rgba(var(--c4), .7);
     border-radius: .5rem;
     padding: .75rem 2rem;
     margin: 1rem 0;
     justify-self: center;
     font-size: calc(10px + 1vmin);
     font-weight: bold;
+    transition: background-color .2s;
+    cursor: pointer;
+  }
+
+  #inputs > select:open {
+    background-color: rgb(var(--c4));
   }
 
   #inputs > select::picker(select) {
@@ -359,7 +365,12 @@
     border: 1px solid rgb(var(--c2));
     border-right: none;
     color: rgb(var(--c2));
-    background-color: rgb(var(--c1));
+    background-color: rgba(var(--c1), .7);
+    transition: background-color .2s;
+  }
+
+  #inputs > input:focus {
+    background-color: rgba(var(--c1));
   }
 
   #inputs > input::placeholder {
