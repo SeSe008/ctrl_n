@@ -12,7 +12,7 @@
   let colorThief: ColorThief;
   
   let images: string[] = [];
-  const path: string = 'backgrounds' // Dir-name of the image folder 
+  const path: string = 'backgrounds'; // Dir-name of the image folder 
   const colors: number = 5; // Amount of colors for palette
   const changeInterval: number = 5 * 60 * 1000; // Interval of change of bg-image
   

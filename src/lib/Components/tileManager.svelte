@@ -75,7 +75,7 @@
     gap: .25rem;
   }
 
-  button {
+  #inputs button {
     outline: none;
     justify-self: flex-start;
     font-size: .8rem;

@@ -140,7 +140,7 @@
 
   :global(#values .iconify) {
     align-self: center;
-    font-size: calc(8px + 3vmin);
+    font-size: calc(8px + 3vh);
     height: min-content;
   }
 
