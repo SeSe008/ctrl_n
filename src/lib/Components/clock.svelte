@@ -87,7 +87,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: min-content%;
+    height: min-content;
     font-size: calc(24px + 4vmin);
     color: rgb(var(--c1));
     background-color: rgb(var(--c2));
