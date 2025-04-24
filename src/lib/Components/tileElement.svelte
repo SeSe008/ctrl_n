@@ -78,6 +78,7 @@
     justify-self: center;
     font-size: calc(10px + .5vmin);
     font-weight: bold;
+    cursor: pointer;
   }
 
   select::picker(select) {

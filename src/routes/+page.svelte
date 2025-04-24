@@ -7,42 +7,30 @@
   import TileManager from '$lib/Components/tileManager.svelte';
   
   import { onMount } from 'svelte';
-  import { useImage } from '$lib/Utils/useImage';
 
+  import { fetchImages } from '$lib/Utils/fetchImages';
+	import { useImage } from '$lib/Utils/useImage';
+  
   let colorThief: ColorThief;
   
   let images: string[] = [];
-  const path: string = 'backgrounds'; // Dir-name of the image folder 
+  let path: string = 'backgrounds/animals'; // Default Dir-name for the image folder 
   const colors: number = 5; // Amount of colors for palette
   const changeInterval: number = 5 * 60 * 1000; // Interval of change of bg-image
   
-  async function loadImages(path: string, colorThief: ColorThief) {
-    // Fetch images
-    const res = await fetch('/api/images', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subdir: path })
-    });
 
-    if (res.ok) {
-      images = await res.json();
-    } else {
-      images = [];
-    }
-
-    useImage(images, changeInterval, colors, colorThief);
-  }
-
-  onMount(() => {
+  onMount(async () => {
     colorThief = new ColorThief();
-    
-    loadImages(path, colorThief);
+
+    path = window.localStorage.getItem('imageCategory') || path;
+    images = await fetchImages(path);
+    useImage(images, changeInterval, colors, colorThief);
   });
 </script>
 
 <Clock />
 <SearchBar />
-<TileManager colorThief={colorThief} images={images} colors={colors} />
+<TileManager colorThief={colorThief} images={images} colors={colors} changeInterval={changeInterval} />
 <div id='credit'>
   Animal Pictures, made by <a target="_blank" href="https://finnbear.com/">Finn Bear</a>, published on <a target="_blank" href="https://squirrelwatching.com">SquirrelWatching</a>, are licensed under <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.en">CC-BY-SA 4.0</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>

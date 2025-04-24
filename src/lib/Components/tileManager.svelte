@@ -4,12 +4,26 @@
   import ColorThief from "colorthief";
   import Icon from "@iconify/svelte";
   import TileElement from "./tileElement.svelte";
-  import { applyImage } from "$lib/Utils/useImage";
-
+  import { applyImage, useImage } from "$lib/Utils/useImage";
+  import { fetchImages } from "$lib/Utils/fetchImages";
+  
   export let colorThief: ColorThief;
   export let images: string[];
+  export let changeInterval: number;
   export let colors: number;
 
+  const imageCategories: [string, string, string][] = [
+    ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
+    ['Space', 'material-symbols:planet-outline', 'backgrounds/space']
+  ];
+  let selectedImageCategory: string = '/backgrounds/animals';
+
+  async function changeImageCategory() {
+    images = await fetchImages(selectedImageCategory);
+    useImage(images, changeInterval, colors, colorThief);
+    window.localStorage.setItem('imageCategory', selectedImageCategory);
+  }
+  
   function getTiles() {
     const tilesUnsafe = parseInt(window.localStorage.getItem('tiles')!);
     tiles = isNaN(tilesUnsafe) ? 1 : tilesUnsafe;
@@ -51,9 +65,17 @@
       colors,
       colorThief
       )}
-    >
+      >
       <Icon icon="gg:image" />
     </button>
+    <select bind:value={selectedImageCategory} on:change={changeImageCategory}>
+      {#each imageCategories as category (category[2])}
+	<option value={category[2]}>
+	  <Icon icon={category[1]} />
+	  {category[0]}
+	</option>
+      {/each}
+    </select>
   </div>
 </div>
 
@@ -88,5 +110,32 @@
     background-color: rgb(var(--c1));
     color: rgb(var(--c2));
     cursor: pointer;
+  }
+
+  
+  #inputs select {
+    display: flex;
+    align-items: center;
+    grid-column: 1 / 3;
+    min-width: 20%;
+    outline: none;
+    color: rgb(var(--c2));
+    border: 1px solid rgb(var(--c2));
+    background-color: rgb(var(--c1));
+    border-radius: .5rem;
+    padding: 0 .5rem;
+    justify-self: center;
+    font-size: calc(5px + .5vmin);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #inputs select::picker(select) {
+    background-color: rgb(var(--c4));
+    color: rgb(var(--c1));
+  }
+
+  #inputs select, select::picker(select) {
+    appearance: base-select;
   }
 </style>
