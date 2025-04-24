@@ -14,7 +14,5 @@ export async function fetchImages(path: string) {
     images = [];
   }
 
-  console.log(path, images);
-
   return images;
 }

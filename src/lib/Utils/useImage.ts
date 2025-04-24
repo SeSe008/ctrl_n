@@ -1,5 +1,7 @@
 import { getPaletteFromSrc } from './getPalette';
 import { applyPalette } from './applyPalette';
+import { parseExif } from './getExif';
+
 import ColorThief from 'colorthief';
 
 function pickImage(images: string[]) {
@@ -15,8 +17,10 @@ export function applyImage(images: string[], lastImage: string | undefined, colo
   const imgElement = new Image();
   imgElement.src = image;
 
-  imgElement.onload = () => {
+  imgElement.onload = async () => {
     document.body.style.backgroundImage = `url(${image})`;
+
+    parseExif(image);
     
     getPaletteFromSrc(image, colors, colorThief)
       .then((palette) => {

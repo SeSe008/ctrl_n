@@ -9,7 +9,8 @@
   import { onMount } from 'svelte';
 
   import { fetchImages } from '$lib/Utils/fetchImages';
-	import { useImage } from '$lib/Utils/useImage';
+  import { useImage } from '$lib/Utils/useImage';
+  import { exifData } from '$lib/stores/exif';
   
   let colorThief: ColorThief;
   
@@ -30,9 +31,9 @@
 
 <Clock />
 <SearchBar />
-<TileManager colorThief={colorThief} images={images} colors={colors} changeInterval={changeInterval} />
+<TileManager colorThief={colorThief} images={images} colors={colors} changeInterval={changeInterval} defaultCategory={path} />
 <div id='credit'>
-  Animal Pictures, made by <a target="_blank" href="https://finnbear.com/">Finn Bear</a>, published on <a target="_blank" href="https://squirrelwatching.com">SquirrelWatching</a>, are licensed under <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.en">CC-BY-SA 4.0</a><br/>
+  Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[0]}>{$exifData.description[0]}</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>
 </div>
 

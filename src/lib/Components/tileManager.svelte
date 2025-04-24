@@ -11,12 +11,14 @@
   export let images: string[];
   export let changeInterval: number;
   export let colors: number;
-
+  export let defaultCategory: string;
+  
   const imageCategories: [string, string, string][] = [
     ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
     ['Space', 'material-symbols:planet-outline', 'backgrounds/space']
   ];
-  let selectedImageCategory: string = '/backgrounds/animals';
+  let selectedImageCategory: string = defaultCategory;
+  $: selectedImageCategory = defaultCategory;
 
   async function changeImageCategory() {
     images = await fetchImages(selectedImageCategory);
