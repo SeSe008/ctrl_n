@@ -1,21 +1,56 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
+import { z } from 'zod';
 dotenv.config();
 
-/** @type {import('./$types').RequestHandler} */
-export async function POST({ request }: { request: Request }) {
-  const CITY = (await request.json()).city;
-  const API_KEY = process.env.WEATHER_API_KEY;
-  
-  const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${API_KEY}&units=metric`
-  );
+import { error, type RequestHandler } from '@sveltejs/kit';
+import { RateLimiter } from 'sveltekit-rate-limiter/server';
 
-  if (!res.ok) {
-    return new Response('Failed to load weather', {status: 500});
+const LIMITER = new RateLimiter({
+  IP: [10, 'm']
+});
+
+const CITY_SCHEMA = z.object({
+  city: z.string().min(1).max(100).regex(/^[\w\s\-,]+$/),
+});
+
+export const POST: RequestHandler = async (event) => {
+  if (await LIMITER.isLimited(event)) {
+    throw error(429, 'Too many requests');
   }
 
-  const weather = await res.json();
-  return new Response(JSON.stringify(weather), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+  const { request } = event;
+  let city: string;
+  try {
+    ({ city } = CITY_SCHEMA.parse(await request.json()));
+  } catch {
+    return new Response(
+      JSON.stringify({ error: 'Invalid city parameter' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  const encoded = encodeURIComponent(city);
+  const API_KEY = process.env.WEATHER_API_KEY;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${encoded}&appid=${API_KEY}&units=metric`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5_000);
+
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) {
+      throw new Error(`Weather API responded ${res.status}`);
+    }
+
+    const weather = await res.json();
+
+    return new Response(
+      JSON.stringify(weather), { status: 200, headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (err) {
+    console.error('Weather fetch failed:', err);
+    return new Response(JSON.stringify({ error: 'Unable to retrieve weather data' }), { status: 502, headers: { 'Content-Type': 'application/json' }});
+  } finally {
+    clearTimeout(timeoutId);
+  }
 };
