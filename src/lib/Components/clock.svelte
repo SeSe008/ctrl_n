@@ -70,8 +70,7 @@
 
 <style>
   #clock {
-    width: 100%;
-    height: 23vmin;
+    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -120,8 +119,8 @@
   }
   
   #analog {
-    height: 100%;
     position: relative;
+    height: 100%;
     background-color: rgb(var(--c2));
     justify-self: stretch;
     aspect-ratio: 1 / 1;

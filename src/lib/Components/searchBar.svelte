@@ -37,7 +37,7 @@
       url: 'https://ecosia.org/search',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://searx.bndkt.io/autocompleter',
+	endpoint: 'http://localhost:8888/autocompleter',
 	searchParam: 'q=',
 	extras: []
       },
@@ -48,18 +48,29 @@
       url: 'https://oceanhero.today/web',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://searx.bndkt.io/autocompleter',
+	endpoint: 'http://localhost:8888/autocompleter',
 	searchParam: 'q=',
 	extras: []
       },
       extras: []
     },
     'searxng': {
-      name: 'SearXNG',
+      name: 'SearXNG (local)',
+      url: 'http://localhost:8888/search',
+      searchParam:'q=',
+      suggestions: {
+	endpoint: 'http://localhost:8888/autocompleter',
+	searchParam: 'q=',
+	extras: []
+      },
+      extras: []
+    },
+    'searxng_pub': {
+      name: 'SearXNG (public)',
       url: 'https://searx.bndkt.io/search',
       searchParam:'q=',
       suggestions: {
-	endpoint: 'https://searx.bndkt.io/autocompleter',
+	endpoint: 'http://localhost:8888/autocompleter',
 	searchParam: 'q=',
 	extras: []
       },
@@ -70,7 +81,7 @@
       url: 'https://duckduckgo.com/',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://searx.bndkt.io/autocompleter',
+	endpoint: 'http://localhost:8888/autocompleter',
 	searchParam: 'q=',
 	extras: ['type=list']
       },
@@ -81,7 +92,7 @@
       url: 'https://www.startpage.com/sp/search',
       searchParam: 'query=',
       suggestions: {
-	endpoint: 'https://searx.bndkt.io/autocompleter',
+	endpoint: 'http://localhost:8888/autocompleter',
 	searchParam: 'q=',
 	extras: ['type=list']
       },
@@ -103,7 +114,7 @@
       url: 'https://www.bing.com/search',
       searchParam: 'q=',
       suggestions: {
-	endpoint: 'https://ac.duckduckgo.com/ac',
+	endpoint: 'http://localhost:8888/autocompleter',
 	searchParam: 'q=',
 	extras: []
       },
@@ -126,22 +137,11 @@
     }
     return url;
   }
-  
+
   function search(text: string) {
     if (searchBar.value === '') return;
-    
-    const recentSearch: RecentlySearched | undefined = recentSearches.find(search => search.query.startsWith(text));
 
-    if (recentSearch) {
-      recentSearch.amount++;
-      window.localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-    } else if (!recentSearch && recentSearches.length < 50) {
-      recentSearches.push({
-	query: text,
-	amount: 1
-      });
-      window.localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-    }
+    saveRecentSearch(text);
     
     if (isUrl(text)) {
       window.location.href = makeExternal(text);
@@ -157,8 +157,8 @@
     window.location.href = `${searchEngine.url}?${query}&${extras}`;
   }
 
-  let recentSearches: RecentlySearched[];
-  
+  const MAX_RECENT = 50;
+  let recentCache: Map<string, RecentlySearched>;
   let suggestions: string[] = [];
   let selectedSuggestion: number = -1;
   let originalText = '';
@@ -188,9 +188,34 @@
     suggestions = result[1];
   }
 
+  function saveRecentSearch(text: string) {
+    if (recentCache.has(text)) {
+      const searchEntry = recentCache.get(text)!;
+      searchEntry.amount++;
+      recentCache.delete(text);
+      recentCache.set(text, searchEntry);
+    } else {
+      if (recentCache.size >= MAX_RECENT) {
+	const oldestEntry = recentCache.keys().next().value!;
+	recentCache.delete(oldestEntry);
+      }
+
+      recentCache.set(text, {query: text, amount: 1});
+    }
+
+    window.localStorage.setItem(
+      'recentSearches',
+      JSON.stringify(Array.from(recentCache.values()))
+    );
+  }
+
+
   function getRecentSearches() {
     if (searchBar.value === '') return;
 
+    // Get array from map
+    const recentSearches = Array.from(recentCache.values());
+    
     // Find search having max amound and starting with query
     const recentSearch: RecentlySearched | undefined = recentSearches.reduce<RecentlySearched | undefined>(
       (max, curr) => {
@@ -279,11 +304,11 @@
 
     searchEngineName = localStorage.getItem('defaultSearchEngine') || defaultSearchEngine;
 
-    try {
-      recentSearches = JSON.parse(window.localStorage.getItem('recentSearches') || '');
-    } catch {
-      recentSearches = [];
-    }
+    const recentEntries: [string, RecentlySearched][] =
+	  JSON.parse(window.localStorage.getItem('recentSearches') || '[]')
+	  .map((item: RecentlySearched) => [ item.query, item ]);
+
+    recentCache = new Map<string, RecentlySearched>(recentEntries);
   });
 </script>
 
