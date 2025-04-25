@@ -1,7 +1,8 @@
 <script lang='ts'>
   import RssFeed from '$lib/Components/rssFeed.svelte';
   import WeatherWidget from './weatherWidget.svelte';
-
+  import Calculator from './calculator.svelte';
+  
   import Icon from '@iconify/svelte';
   import { onMount } from 'svelte';
   
@@ -10,7 +11,8 @@
   const tiles: string[][] = [
     ['', 'None'],
     ['material-symbols:news', 'RSS-Feed'],
-    ['ph:cloud-sun-fill', 'Weather']
+    ['ph:cloud-sun-fill', 'Weather'],
+    ['iconamoon:calculator', 'Calculator']
   ];
 
   let selectedTile: number = -1;
@@ -22,7 +24,7 @@
 </script>
 
 <div id='tile-element'>
-  {#if selectedTile === -1}
+  {#if selectedTile === -1 || selectedTile > tiles.length}
     <h2>Select Tile</h2>
     <select bind:value={selectedTile} on:change={() => window.localStorage.setItem(`tile${id}`, selectedTile.toString())}>
       {#each tiles as tile, i (tile)}
@@ -36,6 +38,8 @@
     <RssFeed />
   {:else if selectedTile === 2}
     <WeatherWidget />
+  {:else if selectedTile === 3}
+    <Calculator />
   {/if}
 
   <div id='spacer'></div>

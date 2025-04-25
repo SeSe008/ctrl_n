@@ -79,9 +79,7 @@
       background-position: center center;
       background-size: cover;
       
-      transition-property: background-image;
-      transition-duration: 1s;
-      transition-timing-function: ease-in-out;
+      transition: background-image 1s ease-in-out, background-size 0s;
     }
 
     body * {

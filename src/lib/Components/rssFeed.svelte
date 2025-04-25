@@ -35,7 +35,7 @@
   }
 
   onMount(() => {
-    parseRss()
+    parseRss();
   });
 </script>
 
@@ -48,7 +48,7 @@
 	  <h3>{article.title}</h3>
 	  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	  <div>{@html DOMPurify.sanitize(article.content)}</div>
-	</div>
+    </div>
       </a>
    {/each}
    <div id='inputs'>
@@ -69,7 +69,6 @@
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
     container-type: inline-size;
-    min-height: 0;
     box-sizing: border-box;
   }
 
@@ -134,7 +133,7 @@
 
   .article:hover {
     transform: scale(1.01);
-    filter: drop-shadow(.5rem .5rem 1rem rgb(var(--c2)));
+    filter: drop-shadow(0 0 1rem rgb(var(--c2)));
   }
   
   :global(.article > div) {

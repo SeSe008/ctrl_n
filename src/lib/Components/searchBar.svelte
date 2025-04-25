@@ -3,6 +3,9 @@
 
   import Icon from "@iconify/svelte";
 
+  import { searchEngines } from '$lib/constants';
+  import type { SearchEngine, SuggestionEndpoint } from '$lib/constants';
+  
   interface RecentlySearched {
     query: string;
     amount: number;
@@ -10,117 +13,9 @@
 
   type Suggestion = [string, string[]];
   
-  interface SuggestionEndpoint {
-    endpoint: string;
-    searchParam: string;
-    extras: string[];
-  };
-  
-  interface SearchEngine {
-    name: string;
-    url: string;
-    searchParam: string;
-    suggestions: SuggestionEndpoint;
-    extras: string[];
-  }
-
-  type SearchEngines = {
-    [key: string]: SearchEngine;
-  }
-
   const defaultSearchEngine: string = 'ecosia';
   let searchEngineName: string = defaultSearchEngine;
   
-  const searchEngines: SearchEngines = {
-    'ecosia': {
-      name: 'Ecosia',
-      url: 'https://ecosia.org/search',
-      searchParam: 'q=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: []
-      },
-      extras: ['addon=opensearch']
-    },
-    'oceanhero': {
-      name: 'OceanHero',
-      url: 'https://oceanhero.today/web',
-      searchParam: 'q=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: []
-      },
-      extras: []
-    },
-    'searxng': {
-      name: 'SearXNG (local)',
-      url: 'http://localhost:8888/search',
-      searchParam:'q=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: []
-      },
-      extras: []
-    },
-    'searxng_pub': {
-      name: 'SearXNG (public)',
-      url: 'https://searx.bndkt.io/search',
-      searchParam:'q=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: []
-      },
-      extras: []
-    },
-    'duckduckgo': {
-      name: 'DuckDuckGo',
-      url: 'https://duckduckgo.com/',
-      searchParam: 'q=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: ['type=list']
-      },
-      extras: []
-    },
-    'startpage': {
-      name: 'Startpage',
-      url: 'https://www.startpage.com/sp/search',
-      searchParam: 'query=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: ['type=list']
-      },
-      extras: []
-    },
-    'google': {
-      name: 'Google',
-      url: 'https://www.google.com/search',
-      searchParam: 'q=',
-      suggestions: {
-	endpoint: 'https://ac.duckduckgo.com/ac',
-	searchParam: 'q=',
-	extras: ['client=firefox']
-      },
-      extras: []
-    },
-    'microsoft-bing': {
-      name: 'Bing',
-      url: 'https://www.bing.com/search',
-      searchParam: 'q=',
-      suggestions: {
-	endpoint: 'http://localhost:8888/autocompleter',
-	searchParam: 'q=',
-	extras: []
-      },
-      extras: []
-    }
-  };
 
   function storeEngine() {
     localStorage.setItem('defaultSearchEngine', searchEngineName);
@@ -129,7 +24,7 @@
   function isUrl(str: string) {
     const urlRe = /^(?:https?:\/\/)?(?:localhost:\d{1,5}|(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?:\/\S*)?$/;    
     return urlRe.test(str);
- }
+  }
 
   function makeExternal(url: string) {
     if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//i.test(url)) {
