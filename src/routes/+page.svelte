@@ -33,7 +33,7 @@
 <SearchBar />
 <TileManager colorThief={colorThief} images={images} colors={colors} changeInterval={changeInterval} defaultCategory={path} />
 <div id='credit'>
-  Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[0]}>{$exifData.description[0]}</a><br/>
+  Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>
 </div>
 
