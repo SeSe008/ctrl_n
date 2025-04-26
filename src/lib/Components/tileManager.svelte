@@ -101,6 +101,8 @@
 
   #inputs button {
     outline: none;
+    height: min-content;
+    align-self: center;
     justify-self: flex-start;
     font-size: .8rem;
     display: flex;

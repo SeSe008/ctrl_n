@@ -2,7 +2,7 @@
 <script lang="ts"> 
   import ColorThief from 'colorthief';
 
-  import Clock from '$lib/Components/clock.svelte';
+  import Clock from '$lib/Components/Widgets/clock.svelte';
   import SearchBar from '$lib/Components/searchBar.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
   

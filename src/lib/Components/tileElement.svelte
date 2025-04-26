@@ -1,7 +1,8 @@
 <script lang='ts'>
-  import RssFeed from '$lib/Components/rssFeed.svelte';
-  import WeatherWidget from './weatherWidget.svelte';
-  import Calculator from './calculator.svelte';
+  import RssFeed from '$lib/Components/Widgets/rssFeed.svelte';
+  import WeatherWidget from '$lib/Components/Widgets/weatherWidget.svelte';
+  import Calculator from '$lib/Components/Widgets/calculator.svelte';
+  import Bookmars from '$lib/Components/Widgets/bookmars.svelte';
   
   import Icon from '@iconify/svelte';
   import { onMount } from 'svelte';
@@ -12,7 +13,8 @@
     ['', 'None'],
     ['material-symbols:news', 'RSS-Feed'],
     ['ph:cloud-sun-fill', 'Weather'],
-    ['iconamoon:calculator', 'Calculator']
+    ['iconamoon:calculator', 'Calculator'],
+    ['material-symbols:bookmarks', 'Shortcuts']
   ];
 
   let selectedTile: number = -1;
@@ -40,6 +42,8 @@
     <WeatherWidget />
   {:else if selectedTile === 3}
     <Calculator />
+  {:else if selectedTile === 4}
+    <Bookmars />
   {/if}
 
   <div id='spacer'></div>
