@@ -1,34 +1,35 @@
 <script lang='ts'>
+  import Clock from '$lib/Components/Widgets/clock.svelte';
   import RssFeed from '$lib/Components/Widgets/rssFeed.svelte';
   import WeatherWidget from '$lib/Components/Widgets/weatherWidget.svelte';
   import Calculator from '$lib/Components/Widgets/calculator.svelte';
   import Bookmars from '$lib/Components/Widgets/bookmars.svelte';
-  
+
+  import { changeTile } from '$lib/stores/tiles';
+  import type { Tile } from '$lib/stores/tiles';
+   
   import Icon from '@iconify/svelte';
-  import { onMount } from 'svelte';
   
-  export let id: number = 0;
+  export let managerId: number;
+  export let tileId: number;
+  export let tile: Tile;
   
   const tiles: string[][] = [
     ['', 'None'],
+    ['mdi:clock-outline', 'Clock'],
     ['material-symbols:news', 'RSS-Feed'],
     ['ph:cloud-sun-fill', 'Weather'],
     ['iconamoon:calculator', 'Calculator'],
     ['material-symbols:bookmarks', 'Shortcuts']
   ];
 
-  let selectedTile: number = -1;
-
-  onMount(() => {
-    const selectedTileUnsafe: number = parseInt(window.localStorage.getItem(`tile${id}`)!);
-    selectedTile = isNaN(selectedTileUnsafe) ? -1 : selectedTileUnsafe;
-  });
+  let selectedTile: number = tile.element;
 </script>
 
-<div id='tile-element'>
+<div id="tile-element">
   {#if selectedTile === -1 || selectedTile > tiles.length}
     <h2>Select Tile</h2>
-    <select bind:value={selectedTile} on:change={() => window.localStorage.setItem(`tile${id}`, selectedTile.toString())}>
+    <select bind:value={selectedTile} on:change={() => changeTile(managerId, tileId, selectedTile)}>
       {#each tiles as tile, i (tile)}
 	<option value={i}>
 	  <Icon icon={tile[0]} />
@@ -37,16 +38,18 @@
       {/each}
     </select>
   {:else if selectedTile === 1}
-    <RssFeed />
+    <Clock />
   {:else if selectedTile === 2}
-    <WeatherWidget />
+    <RssFeed />
   {:else if selectedTile === 3}
-    <Calculator />
+    <WeatherWidget />
   {:else if selectedTile === 4}
+    <Calculator />
+  {:else if selectedTile === 5}
     <Bookmars />
   {/if}
 
-  <div id='spacer'></div>
+  <div id="spacer"></div>
   
   {#if  selectedTile !== -1}
     <button on:click={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
@@ -66,7 +69,7 @@
     overflow: hidden;
   }
 
-  h2 {
+  #tile-element h2 {
     background-color: rgb(var(--c2));
     color: rgb(var(--c1));
     border: 1px solid rgb(var(--c1));
@@ -74,9 +77,9 @@
     border-radius: .5rem;
   }
   
-  select {
+  #tile-element select {
     grid-column: 1 / 3;
-    min-width: 20%;
+    min-width: 20vmin;
     outline: none;
     color: rgb(var(--c1));
     border: 1px solid rgb(var(--c2));
@@ -89,12 +92,12 @@
     cursor: pointer;
   }
 
-  select::picker(select) {
+  #tile-element select::picker(select) {
     background-color: rgb(var(--c4));
     color: rgb(var(--c1));
   }
 
-  select, select::picker(select) {
+  #tile-element select, select::picker(select) {
     appearance: base-select;
   }
 

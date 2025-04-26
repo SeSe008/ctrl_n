@@ -26,29 +26,34 @@
     window.localStorage.setItem('clockType', clockType.toString());
   }
 
-  $: if (clockType === 1) {
+  let clock: HTMLDivElement;
+  
+  function initAnalog() {
     const date: Date = new Date();
-    const clock: HTMLElement | null = document.getElementById('clock');
-
+    
     if (clock) {
       const hour: number = date.getHours() % 12;
       const minute: number = date.getMinutes();
       const second: number = date.getSeconds();
-
+      
       clock.style.setProperty('--hour', (hour + minute / 60).toString());
       clock.style.setProperty('--minute', (minute + second / 60).toString());
       clock.style.setProperty('--second', second.toString());
     }
   }
+
+  $: if (clockType === 1) initAnalog();
   
   onMount(() => {
     const stored = localStorage.getItem('clockType');
     clockType = stored && !isNaN(+stored) ? +stored : 0;
+
+    if (clockType === 1) initAnalog();
   });
 </script>
 
 
-<div id="clock">
+<div bind:this={clock} id="clock">
   {#if clockType === 0}
     <h1>
       {time}

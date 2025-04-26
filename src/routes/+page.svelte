@@ -1,8 +1,8 @@
 
 <script lang="ts"> 
   import ColorThief from 'colorthief';
+  import Icon from '@iconify/svelte';
 
-  import Clock from '$lib/Components/Widgets/clock.svelte';
   import SearchBar from '$lib/Components/searchBar.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
   
@@ -10,7 +10,9 @@
 
   import { fetchImages } from '$lib/Utils/fetchImages';
   import { useImage } from '$lib/Utils/useImage';
+  import { applyImage } from '$lib/Utils/useImage';
   import { exifData } from '$lib/stores/exif';
+  import { initializeTiles } from '$lib/stores/tiles';
   
   let colorThief: ColorThief;
   
@@ -18,6 +20,18 @@
   let path: string = 'backgrounds/animals'; // Default Dir-name for the image folder 
   const colors: number = 5; // Amount of colors for palette
   const changeInterval: number = 5 * 60 * 1000; // Interval of change of bg-image
+
+  let selectedImageCategory: string = path;
+  const imageCategories: [string, string, string][] = [
+    ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
+    ['Space', 'material-symbols:planet-outline', 'backgrounds/space']
+  ];
+  
+  async function changeImageCategory() {
+    images = await fetchImages(selectedImageCategory);
+    useImage(images, changeInterval, colors, colorThief);
+    window.localStorage.setItem('imageCategory', selectedImageCategory);
+  }
   
 
   onMount(async () => {
@@ -26,12 +40,33 @@
     path = window.localStorage.getItem('imageCategory') || path;
     images = await fetchImages(path);
     useImage(images, changeInterval, colors, colorThief);
+
+    initializeTiles();
   });
 </script>
 
-<Clock />
+<TileManager id={0} />
 <SearchBar />
-<TileManager colorThief={colorThief} images={images} colors={colors} changeInterval={changeInterval} defaultCategory={path} />
+<TileManager id={1} />
+<div id="imageControl">
+    <button on:click={() => applyImage(
+      images,
+      getComputedStyle(document.body).backgroundImage.match(/url\("(?:https?:\/\/[^/]+)?(\/.*)"\)/)?.[1] || '',
+      colors,
+      colorThief
+      )}
+      >
+      <Icon icon="gg:image" />
+    </button>
+    <select bind:value={selectedImageCategory} on:change={changeImageCategory}>
+      {#each imageCategories as category (category[2])}
+	<option value={category[2]}>
+	  <Icon icon={category[1]} />
+	  {category[0]}
+	</option>
+      {/each}
+    </select>
+</div>
 <div id='credit'>
   Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>
@@ -58,7 +93,7 @@
     body {
       display: grid;
       grid-template-columns: 1fr;
-      grid-template-rows: minmax(25%, max-content) min-content 1fr min-content;
+      grid-template-rows: 1fr min-content 1fr repeat(2, min-content);
       gap: 1rem;
       justify-content: center;
       align-items: center;
@@ -106,6 +141,54 @@
     }
   }
 
+  #imageControl {
+    display: flex;
+    flex-direction: row;
+    gap: .25rem;
+    width: 100%;
+  }
+  
+  #imageControl button {
+    outline: none;
+    font-size: .8rem;
+    justify-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: .3rem;
+    border: 1px solid rgb(var(--c2));
+    background-color: rgb(var(--c1));
+    color: rgb(var(--c2));
+    cursor: pointer;
+    justify-self: center;
+    font-size: calc(5px + .75vmin);
+  }
+
+  
+  #imageControl select {
+    display: flex;
+    align-items: center;
+    min-width: 20vmin;
+    outline: none;
+    color: rgb(var(--c2));
+    border: 1px solid rgb(var(--c2));
+    background-color: rgb(var(--c1));
+    border-radius: .5rem;
+    padding: 0 .5rem;
+    font-size: calc(5px + .5vmin);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #imageControl select::picker(select) {
+    background-color: rgb(var(--c4));
+    color: rgb(var(--c1));
+  }
+
+  #imageControl select, select::picker(select) {
+    appearance: base-select;
+  }
+  
   #credit {
     color: rgb(var(--c1));
     padding: .25rem;
