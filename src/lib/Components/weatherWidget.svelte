@@ -90,7 +90,7 @@
     align-self: center;
     gap: .25rem;
     color: rgb(var(--c2));
-    background-color: rgb(var(--c1));
+    background-color: rgba(var(--c1), .5);
     padding: 1rem;
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;

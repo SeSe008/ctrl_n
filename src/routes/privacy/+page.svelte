@@ -10,14 +10,14 @@
   <li><a target="_blank" href="https://www.npmjs.com/package/rss-to-json">rss-to-json</a> for parsing web messages</li>
   <li><a target="_blank" href="https://www.npmjs.com/package/dompurify">DOMPurify</a> to clean up RSS-Elements</li>
   <li><a target="_blank" href="https://www.npmjs.com/package/dotenv">dotenv</a> to retrieve environment variables</li>
+  <li><a target="_blank" href="https://www.mathjs.org/">mathjs</a> to evaluate math expressions in the search bar</li>
 </ul>
 <h2>Privacy</h2>
 <p>
-  No data is ever shared to third parties.<br/>
-  All data is fetched anonimously.<br/>
-  Search suggestions are fetched and locally on the server.<br/>
-  Weather data is fetched from <a target="_blank" href="https://openweathermap.org/">OpenWeatherMaps's Api</a>.<br/>
-  RSS-Data is fetched on the server side before being send to the client.<br/><br/>
+  Your data, not including location (shared to OpenWeatherMap for weather) and search query (shared to local instance of SearXNG for search suggestions), will never be shared to third parties.<br/>
+  All data is fetched anonimously on the server.<br/>
+  Search suggestions are fetched locally on the server with SearXNG.<br/>
+  Weather data is resolved from <a target="_blank" href="https://openweathermap.org/">OpenWeatherMaps's Api</a>.<br/><br/>
   Made by <a target="_blank" href="https://github.com/SeSe008">Se</a><br/>
   <a target="_blank" href="https://github.com/SeSe008/new_tab">GitHub</a>
 </p>
@@ -40,6 +40,7 @@
 
   p {
     text-align: center;
+    max-width: 50%;
   }
 
   a {

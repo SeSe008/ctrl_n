@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
 
   import Icon from "@iconify/svelte";
+  import { parse } from 'mathjs';
 
   import { searchEngines } from '$lib/constants';
   import type { SearchEngine, SuggestionEndpoint } from '$lib/constants';
@@ -81,6 +82,31 @@
     const result: Suggestion = await response.json();
 
     suggestions = result[1];
+  }
+
+  function testExpression(expression: string) {
+    try {
+      const node = parse(expression);
+
+      if (node.type == 'ConstantNode') return;
+      
+      const result = node.evaluate();
+      return result;
+    } catch {
+      return;
+    }
+  }
+
+  function evalMathSuggestion() {
+    const text: string = searchBar.value;
+    const res: number | undefined = testExpression(text);
+
+    if (res) {
+      suggestions = [
+	`${text} = ${res}`,
+	...suggestions.splice(-1)
+      ];
+    }
   }
 
   function saveRecentSearch(text: string) {
@@ -185,11 +211,13 @@
     return key.length > 1;
   }
 
-
   async function handleInput() {
     originalText = searchBar.value;
     await fetchSuggestions();
-    if (!isControlKey(lastKey)) getRecentSearches();
+    if (!isControlKey(lastKey)) {
+      getRecentSearches();
+      evalMathSuggestion();
+    };
   }
 
   let searchBar: HTMLInputElement;
