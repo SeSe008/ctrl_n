@@ -1,8 +1,10 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";  
+
   import TileElement from "./tileElement.svelte";
   import { globalTiles, updateGlobalTiles } from "$lib/stores/tiles";
   import type { Tiles } from "$lib/stores/tiles";
+  import { editMode } from "$lib/stores/editMode";
   
   export let id: number;
 
@@ -36,10 +38,12 @@
   {#each tiles as tile, i (i)}
     <TileElement managerId={id} tileId={i} tile={tile} />
   {/each}
-  <div id="inputs">
-    <button on:click={addTile}><Icon icon="gg:add" /></button>
-    <button on:click={removeTile}><Icon icon="gg:remove" /></button>
-  </div>
+  {#if $editMode}
+    <div id="inputs">
+      <button on:click={addTile}><Icon icon="gg:add" /></button>
+      <button on:click={removeTile}><Icon icon="gg:remove" /></button>
+    </div>
+  {/if}
 </div>
 
 <style>

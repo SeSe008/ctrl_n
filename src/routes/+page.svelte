@@ -2,17 +2,17 @@
 <script lang="ts"> 
   import ColorThief from 'colorthief';
   import Icon from '@iconify/svelte';
-
+  import { onMount } from 'svelte';
+  
   import SearchBar from '$lib/Components/searchBar.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
   
-  import { onMount } from 'svelte';
-
   import { fetchImages } from '$lib/Utils/fetchImages';
   import { useImage } from '$lib/Utils/useImage';
   import { applyImage } from '$lib/Utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
+  import { toggleEditMode, editMode } from '$lib/stores/editMode';
   
   let colorThief: ColorThief;
   
@@ -20,7 +20,7 @@
   let path: string = 'backgrounds/animals'; // Default Dir-name for the image folder 
   const colors: number = 5; // Amount of colors for palette
   const changeInterval: number = 5 * 60 * 1000; // Interval of change of bg-image
-
+  
   let selectedImageCategory: string = path;
   const imageCategories: [string, string, string][] = [
     ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
@@ -32,12 +32,21 @@
     useImage(images, changeInterval, colors, colorThief);
     window.localStorage.setItem('imageCategory', selectedImageCategory);
   }
-  
+
+  function nextImage() {
+    applyImage(
+      images,
+      getComputedStyle(document.body).backgroundImage.match(/url\("(?:https?:\/\/[^/]+)?(\/.*)"\)/)?.[1] || '',
+      colors,
+      colorThief
+    );
+  }
 
   onMount(async () => {
     colorThief = new ColorThief();
 
     path = window.localStorage.getItem('imageCategory') || path;
+    selectedImageCategory = path;
     images = await fetchImages(path);
     useImage(images, changeInterval, colors, colorThief);
 
@@ -48,15 +57,12 @@
 <TileManager id={0} />
 <SearchBar />
 <TileManager id={1} />
-<div id="imageControl">
-    <button on:click={() => applyImage(
-      images,
-      getComputedStyle(document.body).backgroundImage.match(/url\("(?:https?:\/\/[^/]+)?(\/.*)"\)/)?.[1] || '',
-      colors,
-      colorThief
-      )}
-      >
+<div id="pageControl">
+    <button on:click={nextImage}>
       <Icon icon="gg:image" />
+    </button>
+    <button on:click={toggleEditMode}>
+      <Icon icon="material-symbols:edit-outline" />
     </button>
     <select bind:value={selectedImageCategory} on:change={changeImageCategory}>
       {#each imageCategories as category (category[2])}
@@ -139,16 +145,33 @@
       color: rgb(var(--c1));
       background-color: rgb(var(--c4));
     }
+
+    
+    *::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--c2), 0.5);
+      border-radius: 4px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
   }
 
-  #imageControl {
+  #pageControl {
     display: flex;
     flex-direction: row;
     gap: .25rem;
     width: 100%;
   }
   
-  #imageControl button {
+  #pageControl button {
     outline: none;
     font-size: .8rem;
     justify-self: stretch;
@@ -165,7 +188,7 @@
   }
 
   
-  #imageControl select {
+  #pageControl select {
     display: flex;
     align-items: center;
     min-width: 20vmin;
@@ -180,12 +203,12 @@
     cursor: pointer;
   }
 
-  #imageControl select::picker(select) {
+  #pageControl select::picker(select) {
     background-color: rgb(var(--c4));
     color: rgb(var(--c1));
   }
 
-  #imageControl select, select::picker(select) {
+  #pageControl select, select::picker(select) {
     appearance: base-select;
   }
   

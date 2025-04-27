@@ -9,6 +9,7 @@
   import type { Tile } from '$lib/stores/tiles';
    
   import Icon from '@iconify/svelte';
+  import { editMode } from '$lib/stores/editMode';
   
   export let managerId: number;
   export let tileId: number;
@@ -20,7 +21,7 @@
     ['material-symbols:news', 'RSS-Feed'],
     ['ph:cloud-sun-fill', 'Weather'],
     ['iconamoon:calculator', 'Calculator'],
-    ['material-symbols:bookmarks', 'Shortcuts']
+    ['material-symbols:bookmarks', 'Bookmarks']
   ];
 
   let selectedTile: number = tile.element;
@@ -51,7 +52,7 @@
 
   <div id="spacer"></div>
   
-  {#if  selectedTile !== -1}
+  {#if $editMode && selectedTile !== -1}
     <button on:click={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
   {/if}
 </div>

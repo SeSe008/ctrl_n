@@ -1,7 +1,8 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  
   import { onMount } from 'svelte';
+
+  import { editMode } from '$lib/stores/editMode';
  
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -67,10 +68,12 @@
     </div>
   {/if}
 
-  <div id="inputs">
-    <button on:click={lastType}><Icon icon="icon-park-outline:left-c" /></button>
-    <button on:click={nextType}><Icon icon="icon-park-outline:right-c" /></button>
-  </div>
+  {#if $editMode}
+    <div id="inputs">
+      <button on:click={lastType}><Icon icon="icon-park-outline:left-c" /></button>
+      <button on:click={nextType}><Icon icon="icon-park-outline:right-c" /></button>
+    </div>
+  {/if}
 </div>
 
 <style>

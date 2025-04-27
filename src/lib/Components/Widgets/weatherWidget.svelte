@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
+  import { editMode } from "$lib/stores/editMode";
 
   interface Weather {
     name: string;
@@ -58,11 +59,13 @@
       </div>
     </div>
   {/if}
-  
-  <div id="inputs">
-    <input type="text" bind:value={location} placeholder="New Location" />
-    <button on:click={fetchWeather}>Get Weather</button>
-  </div>
+
+  {#if $editMode || !weather}
+    <div id="inputs">
+      <input type="text" bind:value={location} placeholder="New Location" />
+      <button on:click={fetchWeather}>Get Weather</button>
+    </div>
+  {/if}
 </div>
   
 <style>

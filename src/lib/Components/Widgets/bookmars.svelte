@@ -2,6 +2,8 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
 
+  import { editMode } from '$lib/stores/editMode';
+
   interface Bookmark {
     name: string;
     url: string;
@@ -53,6 +55,14 @@
 
 <div id="bookmarks">
   <h2><Icon icon="material-symbols:bookmarks" /> Bookmarks</h2>
+
+  {#if $editMode}
+    <div id="inputs">
+      <input bind:this={newBookmarkName} type="text" placeholder="Bookmark Name" />
+      <input bind:this={newBookmarkUrl} type="text" placeholder="Bookmark Url" />
+      <button on:click={addBookmark}>Add</button>
+    </div>
+  {/if}
   {#if bookmarks}
     {#each Object.entries(bookmarks) as [bookmarkKey, bookmark] (bookmarkKey) }
       <div class="bookmark">
@@ -64,11 +74,6 @@
       </div>
     {/each}
   {/if}
-  <div id="inputs">
-    <input bind:this={newBookmarkName} type="text" placeholder="Bookmark Name" />
-    <input bind:this={newBookmarkUrl} type="text" placeholder="Bookmark Url" />
-    <button on:click={addBookmark}>Add</button>
-  </div>
 </div>
 
 <style>

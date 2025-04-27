@@ -1,7 +1,8 @@
 <script lang="ts">
   import DOMPurify from "dompurify";
-
   import { onMount } from "svelte";
+
+  import { editMode } from "$lib/stores/editMode";
 
   interface Article {
     title: string;
@@ -39,27 +40,31 @@
   });
 </script>
 
-<div id="rss_feed">
-  <div id="articles">
-    <h2>RSS Feed</h2>
-    {#each articles as article (article)}
-      <a href={article.link} target="_blank">
-	<div class="article">
-	  <h3>{article.title}</h3>
-	  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-	  <div>{@html DOMPurify.sanitize(article.content)}</div>
+<div id="rss-feed">
+  {#if $editMode}
+    <h2>Rss Feed</h2>
+    <div id='inputs'>
+      <input bind:this={rssURL} type="text" placeholder="New RSS Url" />
+      <button on:click={changeRss}>Change</button>
     </div>
-      </a>
-   {/each}
-   <div id='inputs'>
-     <input bind:this={rssURL} type="text" placeholder="New RSS Url" />
-     <button on:click={changeRss}>Change</button>
-   </div>
- </div>
+  {:else}
+    <div id="articles">
+      <h2>Rss Feed</h2>
+      {#each articles as article (article)}
+	<a href={article.link} target="_blank">
+	  <div class="article">
+	    <h3>{article.title}</h3>
+	    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	    <div>{@html DOMPurify.sanitize(article.content)}</div>
+	  </div>
+	</a>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>
-  #rss_feed {
+  #rss-feed {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -72,33 +77,9 @@
     box-sizing: border-box;
   }
 
-  #articles {
-    display: grid;
-    gap: .3rem;
-    grid-template-columns: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 1rem;
-    box-sizing: border-box;
-  }
-
-  
-  @container (min-width: 512px) {
-    #articles {
-      grid-template-columns: repeat(2, 50%) !important;
-    }
-  }
-  
-  @container (min-width: 1024px) {
-    #articles {
-      grid-template-columns: repeat(3, 33.33%) !important;
-    }
-  }
-
-
-  #articles h2 {
-    grid-column: 1 / -1;
+  #rss-feed h2 {
     justify-self: center;
+    align-self: center;
     margin: 0;
     margin-bottom: 1vmin;
     
@@ -114,6 +95,36 @@
     
     color: rgb(var(--c2));
     background-color: rgba(var(--c1), .7);
+  }
+
+  #rss-feed > h2 {
+    margin-top: 1rem;
+  }
+  
+  #articles {
+    display: grid;
+    gap: .3rem;
+    grid-template-columns: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  
+  @container (min-width: 512px) {
+    #articles {
+      grid-template-columns: repeat(2, 50%) !important;
+    }
+  }
+  
+  @container (min-width: 1024px) {
+    #articles {
+      grid-template-columns: repeat(3, 33.33%) !important;
+    }
+  }
+
+  #articles > h2 {
+    grid-column: 1 / -1;
   }
 
   #articles > a {
@@ -170,11 +181,12 @@
   }
 
   #inputs {
-    grid-column: 1 / -1;
     display: flex;
     flex-direction: row;
     justify-content: stretch;
     width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
   }
 
   #inputs > input {
