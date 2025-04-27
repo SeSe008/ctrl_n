@@ -12,7 +12,7 @@
   import { applyImage } from '$lib/Utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
-  import { toggleEditMode, editMode } from '$lib/stores/editMode';
+  import { toggleEditMode } from '$lib/stores/editMode';
   
   let colorThief: ColorThief;
   

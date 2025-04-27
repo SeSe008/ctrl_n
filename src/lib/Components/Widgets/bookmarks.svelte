@@ -70,7 +70,9 @@
 	  <Icon icon="mdi:link" />
 	  {bookmark.name}
 	</a>
-	<button on:click={() => deleteBookmark(bookmarkKey)}><Icon icon="mdi:delete" /></button>
+	{#if $editMode}
+	  <button on:click={() => deleteBookmark(bookmarkKey)}><Icon icon="mdi:delete" /></button>
+	{/if}
       </div>
     {/each}
   {/if}

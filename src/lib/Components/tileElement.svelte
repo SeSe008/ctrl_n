@@ -3,7 +3,7 @@
   import RssFeed from '$lib/Components/Widgets/rssFeed.svelte';
   import WeatherWidget from '$lib/Components/Widgets/weatherWidget.svelte';
   import Calculator from '$lib/Components/Widgets/calculator.svelte';
-  import Bookmars from '$lib/Components/Widgets/bookmars.svelte';
+  import Bookmarks from '$lib/Components/Widgets/bookmarks.svelte';
 
   import { changeTile } from '$lib/stores/tiles';
   import type { Tile } from '$lib/stores/tiles';
@@ -14,40 +14,39 @@
   export let managerId: number;
   export let tileId: number;
   export let tile: Tile;
-  
-  const tiles: string[][] = [
-    ['', 'None'],
-    ['mdi:clock-outline', 'Clock'],
-    ['material-symbols:news', 'RSS-Feed'],
-    ['ph:cloud-sun-fill', 'Weather'],
-    ['iconamoon:calculator', 'Calculator'],
-    ['material-symbols:bookmarks', 'Bookmarks']
+
+  interface TileDef {
+    label: string;
+    icon: string;
+    component?: ConstructorOfATypedSvelteComponent;
+  }
+
+  const tileDefs: TileDef[] = [
+    { label: 'None', icon: '' },
+    { label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
+    { label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
+    { label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
+    { label: 'Calculator', icon: 'iconamoon:calculator', component: Calculator },
+    { label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
   ];
 
   let selectedTile: number = tile.element;
+  $: SelectedComponent = tileDefs[selectedTile]?.component;
 </script>
 
 <div id="tile-element">
-  {#if selectedTile === -1 || selectedTile > tiles.length}
+  {#if !SelectedComponent}
     <h2>Select Tile</h2>
     <select bind:value={selectedTile} on:change={() => changeTile(managerId, tileId, selectedTile)}>
-      {#each tiles as tile, i (tile)}
+      {#each tileDefs as def, i (i)}
 	<option value={i}>
-	  <Icon icon={tile[0]} />
-	  {tile[1]}
+	  <Icon icon={def.icon} />
+	  {def.label}
 	</option>
       {/each}
     </select>
-  {:else if selectedTile === 1}
-    <Clock />
-  {:else if selectedTile === 2}
-    <RssFeed />
-  {:else if selectedTile === 3}
-    <WeatherWidget />
-  {:else if selectedTile === 4}
-    <Calculator />
-  {:else if selectedTile === 5}
-    <Bookmars />
+  {:else}
+    <svelte:component this={SelectedComponent} />
   {/if}
 
   <div id="spacer"></div>
