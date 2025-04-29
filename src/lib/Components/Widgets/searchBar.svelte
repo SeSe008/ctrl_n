@@ -6,6 +6,7 @@
 
   import { searchEngines } from '$lib/constants';
   import type { SearchEngine, SuggestionEndpoint } from '$lib/constants';
+  import { editMode } from '$lib/stores/editMode';
   
   interface RecentlySearched {
     query: string;
@@ -237,14 +238,16 @@
 
 <div id="search">
   <div id="inputs">
-    <select bind:value={searchEngineName} on:change={storeEngine}>
-      {#each Object.entries(searchEngines) as [searchEngineKey, searchEngine] (searchEngineKey)}
-	<option value={searchEngineKey}>
-	  <Icon icon={"arcticons-" + searchEngineKey} />
-	  {searchEngine.name}
-	</option>
-      {/each}
-    </select>
+    {#if $editMode}
+      <select bind:value={searchEngineName} on:change={storeEngine}>
+	{#each Object.entries(searchEngines) as [searchEngineKey, searchEngine] (searchEngineKey)}
+	  <option value={searchEngineKey}>
+	    <Icon icon={"arcticons-" + searchEngineKey} />
+	    {searchEngine.name}
+	  </option>
+	{/each}
+      </select>
+    {/if}
     <input on:keydown={handleKeydown} on:input={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
     <button on:click={() => {search(searchBar.value);}}><Icon icon="line-md:search-twotone" /></button>
   </div>
@@ -261,7 +264,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 75%;
+    width: 100%;
+    padding: 0 5vmax;
   }
 
   #inputs {
@@ -347,7 +351,7 @@
   #search:has(#inputs > input:focus) #suggestions {
     position: absolute;
     top: 100%;
-    width: calc(100% - .75rem);
+    width: calc(100% - 10vmax - .75rem);
     display: flex;
     flex-direction: column;
     text-align: left;

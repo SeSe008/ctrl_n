@@ -4,7 +4,6 @@
   import Icon from '@iconify/svelte';
   import { onMount } from 'svelte';
   
-  import SearchBar from '$lib/Components/searchBar.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
   
   import { fetchImages } from '$lib/Utils/fetchImages';
@@ -12,7 +11,8 @@
   import { applyImage } from '$lib/Utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
-  import { toggleEditMode } from '$lib/stores/editMode';
+  import { editMode, toggleEditMode } from '$lib/stores/editMode';
+  import { globalTiles, addManager, removeManager } from '$lib/stores/tiles';
   
   let colorThief: ColorThief;
   
@@ -54,9 +54,14 @@
   });
 </script>
 
-<TileManager id={0} />
-<SearchBar />
-<TileManager id={1} />
+
+<div id="tiles">
+  <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+  {#each {length: $globalTiles.length} as _, i (i) }
+    <TileManager id={i} />
+  {/each}
+</div>
+
 <div id="pageControl">
     <button on:click={nextImage}>
       <Icon icon="gg:image" />
@@ -72,6 +77,14 @@
 	</option>
       {/each}
     </select>
+    {#if $editMode}
+      <button on:click={addManager}>
+	<Icon icon="gg:add" />
+      </button>
+       <button on:click={removeManager}>
+	<Icon icon="gg:remove" />
+      </button>
+    {/if}
 </div>
 <div id='credit'>
   Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
@@ -99,7 +112,7 @@
     body {
       display: grid;
       grid-template-columns: 1fr;
-      grid-template-rows: 1fr min-content 1fr repeat(2, min-content);
+      grid-template-rows: 1fr repeat(2, min-content);
       gap: 1rem;
       justify-content: center;
       align-items: center;
@@ -145,7 +158,6 @@
       color: rgb(var(--c1));
       background-color: rgb(var(--c4));
     }
-
     
     *::-webkit-scrollbar {
       width: 8px;
@@ -162,6 +174,13 @@
       border: 2px solid transparent;
       background-clip: content-box;
     }
+  }
+
+  #tiles {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   #pageControl {

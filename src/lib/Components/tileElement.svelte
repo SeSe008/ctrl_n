@@ -1,5 +1,6 @@
 <script lang='ts'>
   import Clock from '$lib/Components/Widgets/clock.svelte';
+  import SearchBar from '$lib/Components/Widgets/searchBar.svelte';
   import RssFeed from '$lib/Components/Widgets/rssFeed.svelte';
   import WeatherWidget from '$lib/Components/Widgets/weatherWidget.svelte';
   import Calculator from '$lib/Components/Widgets/calculator.svelte';
@@ -23,6 +24,7 @@
 
   const tileDefs: TileDef[] = [
     { label: 'None', icon: '' },
+    { label: 'Search Bar', icon: 'mdi:search', component: SearchBar },
     { label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
     { label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
     { label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
@@ -66,7 +68,6 @@
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
   }
 
   #tile-element h2 {

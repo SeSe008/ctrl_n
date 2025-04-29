@@ -31,15 +31,33 @@ export function changeTile(managerId: number, tileId: number, element: number) {
   });
 }
 
+export function addManager() {
+  globalTiles.update(current => {
+    const newGlobal = [...current, []];
+    return newGlobal;
+  });
+}
+
+export function removeManager() {
+  globalTiles.update(current => {
+    const newGlobal = [...current.slice(0, -1)];
+    return newGlobal;
+  });
+}
+
 export function initializeTiles() {
   const stored = window.localStorage.getItem('tiles') || '';
 
   try {
     globalTiles.set(JSON.parse(stored));
   } catch {
+    // Clock and search bar
     globalTiles.set([
       [
-	{pos: 0, element: 1}
+	{ pos: 0, element: 2 }
+      ],
+      [
+	{ pos: 1, element: 1 }
       ]
     ]);
   }

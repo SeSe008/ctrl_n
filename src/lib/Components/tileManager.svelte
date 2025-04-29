@@ -53,7 +53,6 @@
     gap: 0 1rem;
     width: 100%;
     height: 100%;
-    overflow: hidden;
     padding: 0 3rem;
     box-sizing: border-box;
   }
@@ -67,7 +66,7 @@
   #inputs button {
     outline: none;
     height: min-content;
-    align-self: center;
+    align-self: flex-end;
     justify-self: flex-start;
     font-size: .8rem;
     display: flex;
