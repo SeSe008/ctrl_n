@@ -31,13 +31,13 @@
     { label: 'Calculator', icon: 'iconamoon:calculator', component: Calculator },
     { label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
   ];
-
+  
   let selectedTile: number = tile.element;
   $: SelectedComponent = tileDefs[selectedTile]?.component;
 </script>
 
-<div id="tile-element">
-  {#if !SelectedComponent}
+<div class="tile-element">
+  {#if !SelectedComponent && selectedTile !== 0}
     <h2>Select Tile</h2>
     <select bind:value={selectedTile} on:change={() => changeTile(managerId, tileId, selectedTile)}>
       {#each tileDefs as def, i (i)}
@@ -47,30 +47,45 @@
 	</option>
       {/each}
     </select>
-  {:else}
+  {:else if selectedTile !== 0 }
     <svelte:component this={SelectedComponent} />
+  {:else}
+    <div id="spacer"></div>
   {/if}
 
-  <div id="spacer"></div>
-  
   {#if $editMode && selectedTile !== -1}
     <button on:click={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
   {/if}
 </div>
 
 <style>
-  #tile-element {
+  .tile-element {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: .5rem;
     align-items: center;
     position: relative;
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
   }
 
-  #tile-element h2 {
+  /* Custom Element Rules */
+  .tile-element:has(#spacer) {
+    height: 10vmax;
+  }
+  
+  :global {
+    .tile-element:not(:has(#search)) {
+      overflow: hidden;
+    }
+    
+    .tile-element:has(#clock) {
+      min-height: 15vmax;
+    }
+  }
+
+  .tile-element h2 {
     background-color: rgb(var(--c2));
     color: rgb(var(--c1));
     border: 1px solid rgb(var(--c1));
@@ -78,7 +93,7 @@
     border-radius: .5rem;
   }
   
-  #tile-element select {
+  .tile-element select {
     grid-column: 1 / 3;
     min-width: 20vmin;
     outline: none;
@@ -93,20 +108,16 @@
     cursor: pointer;
   }
 
-  #tile-element select::picker(select) {
+  .tile-element select::picker(select) {
     background-color: rgb(var(--c4));
     color: rgb(var(--c1));
   }
 
-  #tile-element select, select::picker(select) {
+  .tile-element select, select::picker(select) {
     appearance: base-select;
   }
 
-  #spacer {
-    flex-grow: 1;
-  }
-
-  button {
+  .tile-element button {
     outline: none;
     justify-self: flex-end;
     font-size: 1rem;

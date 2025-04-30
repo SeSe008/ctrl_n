@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { portal } from 'svelte-portal';
 
   import Icon from "@iconify/svelte";
   import { parse } from 'mathjs';
@@ -269,6 +270,7 @@
   }
 
   #inputs {
+    position: relative;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr min-content;
@@ -345,10 +347,6 @@
   }
 
   #suggestions {
-    display: none;
-  }
-
-  #search:has(#inputs > input:focus) #suggestions {
     position: absolute;
     top: 100%;
     width: calc(100% - 10vmax - .75rem);
@@ -360,6 +358,10 @@
     background-color: rgb(var(--c3));
     overflow: hidden;
     z-index: 10;
+  }
+
+  #search:has(#inputs > input:focus) #suggestions {
+    display: flex;
   }
 
   .suggestion {

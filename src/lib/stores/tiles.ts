@@ -33,7 +33,7 @@ export function changeTile(managerId: number, tileId: number, element: number) {
 
 export function addManager() {
   globalTiles.update(current => {
-    const newGlobal = [...current, []];
+    const newGlobal = [...current, [{ pos: 0, element: -1}]];
     return newGlobal;
   });
 }

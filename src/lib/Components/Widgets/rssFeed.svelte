@@ -69,7 +69,6 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    overflow: hidden;
     background-color: rgba(var(--c1), .3);
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;

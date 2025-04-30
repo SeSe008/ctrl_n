@@ -179,8 +179,10 @@
   #tiles {
     height: 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .5rem;
+    overflow: hidden;
   }
 
   #pageControl {

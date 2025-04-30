@@ -42,6 +42,7 @@
 		"dotenv": "^16.5.0",
 		"exif-parser": "^0.1.12",
 		"mathjs": "^14.4.0",
-		"rss-to-json": "^2.1.1"
+		"rss-to-json": "^2.1.1",
+		"svelte-portal": "^2.2.1"
 	}
 }

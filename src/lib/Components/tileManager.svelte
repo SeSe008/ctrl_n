@@ -34,7 +34,7 @@
   }
 </script>
 
-<div id="tile-manager" bind:this={tileManager}>
+<div class="tile-manager" bind:this={tileManager}>
   {#each tiles as tile, i (i)}
     <TileElement managerId={id} tileId={i} tile={tile} />
   {/each}
@@ -47,14 +47,19 @@
 </div>
 
 <style>
-  #tile-manager {
+  .tile-manager {
     display: grid;
     grid-template-rows: 1fr min-content;
     gap: 0 1rem;
-    width: 100%;
     height: 100%;
-    padding: 0 3rem;
-    box-sizing: border-box;
+    width: 100%;
+  }
+
+  /* Custom element rules */
+  :global{
+    .tile-manager:not(:has(#search)) {
+      overflow: hidden;
+    }
   }
 
   #inputs {
