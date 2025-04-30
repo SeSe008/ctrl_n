@@ -28,7 +28,7 @@
 </p>
 <div style="text-align: center;">
   Made by <a target="_blank" href="https://github.com/SeSe008">Se</a><br/>
-  <a target="_blank" href="https://github.com/SeSe008/new_tab">GitHub</a>
+  <a target="_blank" href="https://github.com/SeSe008/ctrl_n">GitHub</a>
 </div>
 
 <style>
