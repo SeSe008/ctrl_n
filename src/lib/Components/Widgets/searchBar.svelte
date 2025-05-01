@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { portal } from 'svelte-portal';
 
   import Icon from "@iconify/svelte";
   import { parse } from 'mathjs';

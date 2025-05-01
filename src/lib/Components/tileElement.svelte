@@ -71,17 +71,9 @@
   }
 
   /* Custom Element Rules */
-  .tile-element:has(#spacer) {
-    height: 10vmax;
-  }
-  
   :global {
     .tile-element:not(:has(#search)) {
       overflow: hidden;
-    }
-    
-    .tile-element:has(#clock) {
-      min-height: 15vmax;
     }
   }
 

@@ -42,6 +42,16 @@
     );
   }
 
+  let tileGrid: HTMLDivElement;
+  globalTiles.subscribe(managers => {
+    if (tileGrid) {
+      const rows = managers
+	    .map(m => m.height === 0 ? 'fit-content' : `${m.height}fr`)
+	    .join(' ');
+      tileGrid.style.gridTemplateRows = rows;
+    }
+  });
+
   onMount(async () => {
     colorThief = new ColorThief();
 
@@ -55,7 +65,7 @@
 </script>
 
 
-<div id="tiles">
+<div bind:this={tileGrid} id="tiles">
   <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
   {#each {length: $globalTiles.length} as _, i (i) }
     <TileManager id={i} />

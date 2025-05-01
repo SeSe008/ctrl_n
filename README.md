@@ -72,13 +72,14 @@ Elements willnot follow chronological order
 - [x] All Elements are Tilable
 - [x] Vertical Tiling
 - [ ] CSS-Rework for compatibility purposes 
-- [ ] Tile-Resizing
+- [x] Tile-Manager-Resizing
 - [ ] Custom Search Engines
 - [ ] User Backgrounds
 - [ ] More Styling Control for Site but also Individual Widgets (Font, Opacity, ...)
 - [ ] Custom Widgets
 - [ ] Stable offline version
 - [ ] Native redirect extension
+- [ ] Port to runes mode
 
 Future widget ideas:
 - Notes

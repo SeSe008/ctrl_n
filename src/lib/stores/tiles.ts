@@ -5,35 +5,49 @@ export interface Tile {
   element: number
 };
 
-export type Tiles = Tile[]
+export interface TileManager {
+  tiles: Tile[],
+  height: number
+};
 
-type GlobalTiles = Tiles[];
+type GlobalTiles = TileManager[];
 
 export const globalTiles = writable<GlobalTiles>([]);
 
-export function updateGlobalTiles(tiles: Tiles, id: number) {
+export function updateManager(manager: TileManager, id: number) {
   globalTiles.update(current => {
     const newGlobal = [...current];
-    newGlobal[id] = tiles;
+    newGlobal[id] = manager;
     return newGlobal;
   });
 }
 
 export function changeTile(managerId: number, tileId: number, element: number) {
   globalTiles.update(current => {
-    const newGlobal = current.map((managerTiles, idx) => {
-      if (idx !== managerId) return managerTiles;
-      return managerTiles.map((tile, i) =>
-        i === tileId ? { pos: tile.pos, element } : tile
-      );
+    return current.map((manager, idx) => {
+      if (idx !== managerId) {
+        return manager;
+      }
+
+      return {
+        ...manager,
+        tiles: manager.tiles.map((tile, i) =>
+          i === tileId ? { ...tile, element } : tile
+        )
+      };
     });
-    return newGlobal;
   });
 }
 
 export function addManager() {
   globalTiles.update(current => {
-    const newGlobal = [...current, [{ pos: 0, element: -1}]];
+    const newGlobal = [
+      ...current,
+      {
+	tiles: [{ pos: 0, element: -1}],
+	height: 1
+      }
+    ];
     return newGlobal;
   });
 }
@@ -53,12 +67,14 @@ export function initializeTiles() {
   } catch {
     // Clock and search bar
     globalTiles.set([
-      [
-	{ pos: 0, element: 2 }
-      ],
-      [
-	{ pos: 1, element: 1 }
-      ]
+      {
+	tiles: [{ pos: 0, element: 2 }],
+	height: 1
+      },
+      {
+	tiles: [{ pos: 1, element: 1 }],
+	height: 1
+      }
     ]);
   }
   
