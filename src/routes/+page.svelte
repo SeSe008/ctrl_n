@@ -46,7 +46,7 @@
   globalTiles.subscribe(managers => {
     if (tileGrid) {
       const rows = managers
-	    .map(m => m.height === 0 ? 'fit-content' : `${m.height}fr`)
+	    .map(m => m.height === 0 ? 'max-content' : `${m.height}fr`)
 	    .join(' ');
       tileGrid.style.gridTemplateRows = rows;
     }
