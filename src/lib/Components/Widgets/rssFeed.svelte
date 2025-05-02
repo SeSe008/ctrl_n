@@ -3,17 +3,11 @@
   import { onMount } from "svelte";
 
   import { editMode } from "$lib/stores/editMode";
+  import type { Article } from "$lib/types/rss";
+	import errorMap from "zod/locales/en.js";
 
-  interface Article {
-    title: string;
-    description: string;
-    link: string;
-    published: number;
-    created: number;
-    content: string;
-  };
-  
   let articles: Article[] = [];
+  let error: string;
 
   async function parseRss() {
     const url = window.localStorage.getItem('rssURL') || ''; 
@@ -24,7 +18,13 @@
       body: JSON.stringify({ url: url })
     });
 
-    articles = await resp.json();
+    if (resp.ok) {
+      articles = await resp.json();
+      error = "";
+    } else {
+      articles = [];
+      error = (await resp.json()).error;
+    }
   }
 
   let rssURL: HTMLInputElement;
@@ -54,12 +54,18 @@
 	<a href={article.link} target="_blank">
 	  <div class="article">
 	    <h3>{article.title}</h3>
+	    {#if article.imageUrl}
+	      <img src={article.imageUrl} alt={article.title} />
+	    {/if}
 	    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-	    <div>{@html DOMPurify.sanitize(article.content)}</div>
+	    <div>{@html DOMPurify.sanitize(article.desc)}</div>
 	  </div>
 	</a>
       {/each}
     </div>
+  {/if}
+  {#if error}
+    <div class="error">Error parsing RSS: {error}</div>
   {/if}
 </div>
 
@@ -156,23 +162,18 @@
     filter: drop-shadow(0 0 1rem rgb(var(--c2)));
   }
   
-  :global(.article > div) {
+  .article > div {
     width: 100%;
     text-align: justify;
   }
   
-  :global(.article > div img) {
+  .article img {
     max-width: 75%;
     display: inline-block;
     border-radius: .5rem;
     border: 1px solid rgb(var(--c2));
     margin: 0 auto;
     display: block;
-  }
-
-  :global(.article > div > p > a) {
-    text-decoration: none;
-    color: rgb(var(--c2));
   }
 
   .article h3 {
@@ -217,5 +218,16 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+
+  .error {
+    background-color: rgb(var(--c1));
+    color: rgb(var(--c2));
+    border: 1px solid rgb(var(--c2));
+    border-radius: .3rem;
+    
+    width: max-content;
+    align-self: center;
+    padding: .5rem;
   }
 </style>
