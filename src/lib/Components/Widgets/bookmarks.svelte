@@ -13,20 +13,22 @@
     [key: string]: Bookmark;
   }
 
-  let bookmarks: Bookmarks = {};
-  let newBookmarkName: HTMLInputElement;
-  let newBookmarkUrl: HTMLInputElement;
+  let bookmarks = $state<Bookmarks>({});
+  let newBookmarkName = $state<HTMLInputElement>();
+  let newBookmarkUrl = $state<HTMLInputElement>();
 
   function addBookmark() {
-    bookmarks[newBookmarkName.value] = {
-      name: newBookmarkName.value,
-      url: newBookmarkUrl.value
-    };
+    if (newBookmarkName && newBookmarkUrl) {
+      bookmarks[newBookmarkName.value] = {
+	name: newBookmarkName.value,
+	url: newBookmarkUrl.value
+      };
+      
+      window.localStorage.setItem('savedBookmarks', JSON.stringify(bookmarks));
 
-    window.localStorage.setItem('savedBookmarks', JSON.stringify(bookmarks));
-
-    newBookmarkName.value = '';
-    newBookmarkUrl.value = '';
+      newBookmarkName.value = '';
+      newBookmarkUrl.value = '';
+    }
   }
 
   function deleteBookmark(key: string) {
@@ -60,7 +62,7 @@
     <div id="inputs">
       <input bind:this={newBookmarkName} type="text" placeholder="Bookmark Name" />
       <input bind:this={newBookmarkUrl} type="text" placeholder="Bookmark Url" />
-      <button on:click={addBookmark}>Add</button>
+      <button onclick={addBookmark}>Add</button>
     </div>
   {/if}
   {#if bookmarks}
@@ -71,7 +73,7 @@
 	  {bookmark.name}
 	</a>
 	{#if $editMode}
-	  <button on:click={() => deleteBookmark(bookmarkKey)}><Icon icon="mdi:delete" /></button>
+	  <button onclick={() => deleteBookmark(bookmarkKey)}><Icon icon="mdi:delete" /></button>
 	{/if}
       </div>
     {/each}

@@ -16,8 +16,7 @@
   type Suggestion = [string, string[]];
   
   const defaultSearchEngine: string = 'ecosia';
-  let searchEngineName: string = defaultSearchEngine;
-  
+  let searchEngineName = $state<string>(defaultSearchEngine);  
 
   function storeEngine() {
     localStorage.setItem('defaultSearchEngine', searchEngineName);
@@ -56,7 +55,7 @@
 
   const MAX_RECENT = 50;
   let recentCache: Map<string, RecentlySearched>;
-  let suggestions: string[] = [];
+  let suggestions = $state<string[]>([]);
   let selectedSuggestion: number = -1;
   let originalText = '';
 
@@ -239,7 +238,7 @@
 <div id="search">
   <div id="inputs">
     {#if $editMode}
-      <select bind:value={searchEngineName} on:change={storeEngine}>
+      <select bind:value={searchEngineName} onchange={storeEngine}>
 	{#each Object.entries(searchEngines) as [searchEngineKey, searchEngine] (searchEngineKey)}
 	  <option value={searchEngineKey}>
 	    <Icon icon={"arcticons-" + searchEngineKey} />
@@ -248,8 +247,8 @@
 	{/each}
       </select>
     {/if}
-    <input on:keydown={handleKeydown} on:input={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
-    <button on:click={() => {search(searchBar.value);}}><Icon icon="line-md:search-twotone" /></button>
+    <input onkeydown={handleKeydown} oninput={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
+    <button onclick={() => {search(searchBar.value);}}><Icon icon="line-md:search-twotone" /></button>
   </div>
   <div id="suggestions">
     {#each suggestions as suggestion, i (i)}

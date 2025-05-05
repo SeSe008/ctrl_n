@@ -11,15 +11,20 @@
    
   import Icon from '@iconify/svelte';
   import { editMode } from '$lib/stores/editMode';
+  import type { Component } from 'svelte';
   
-  export let managerId: number;
-  export let tileId: number;
-  export let tile: Tile;
+  interface Props {
+    managerId: number;
+    tileId: number;
+    tile: Tile
+  }
+  
+  let { managerId, tileId, tile }: Props = $props();
 
   interface TileDef {
     label: string;
     icon: string;
-    component?: ConstructorOfATypedSvelteComponent;
+    component?: Component;
   }
 
   const tileDefs: TileDef[] = [
@@ -28,18 +33,21 @@
     { label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
     { label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
     { label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
-    { label: 'Calculator', icon: 'iconamoon:calculator', component: Calculator },
+    { label: 'Calculator', icon: 'iconamloon:calculator', component: Calculator },
     { label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
   ];
   
-  let selectedTile: number = tile.element;
-  $: SelectedComponent = tileDefs[selectedTile]?.component;
+  let selectedTile = $state<number>(tile.element);
+  let SelectedComponent = $state<Component>();
+  $effect(() => {
+    SelectedComponent = tileDefs[selectedTile]?.component;
+  });
 </script>
 
 <div class="tile-element">
   {#if !SelectedComponent && selectedTile !== 0}
     <h2>Select Tile</h2>
-    <select bind:value={selectedTile} on:change={() => changeTile(managerId, tileId, selectedTile)}>
+    <select bind:value={selectedTile} onchange={() => changeTile(managerId, tileId, selectedTile)}>
       {#each tileDefs as def, i (i)}
 	<option value={i}>
 	  <Icon icon={def.icon} />
@@ -48,13 +56,13 @@
       {/each}
     </select>
   {:else if selectedTile !== 0 }
-    <svelte:component this={SelectedComponent} />
+    <SelectedComponent />
   {:else}
     <div id="spacer"></div>
   {/if}
 
   {#if $editMode && selectedTile !== -1}
-    <button on:click={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
+    <button onclick={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
   {/if}
 </div>
 

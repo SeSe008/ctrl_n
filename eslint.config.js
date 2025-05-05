@@ -24,6 +24,7 @@ export default ts.config(
       'no-undef': 'off',
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       semi: ['error', 'always'],
+      "@typescript-eslint/no-explicit-any": "off",
     }
   },
   {
@@ -35,6 +36,9 @@ export default ts.config(
 	parser: ts.parser,
 	svelteConfig
       }
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
     }
   }
 );

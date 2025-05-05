@@ -5,8 +5,8 @@
   import { editMode } from "$lib/stores/editMode";
   import type { Article } from "$lib/types/rss";
   
-  let articles: Article[] = [];
-  let error: string;
+  let articles = $state<Article[]>([]);
+  let error = $state<string>();
 
   async function parseRss() {
     const url = window.localStorage.getItem('rssURL') || ''; 
@@ -26,12 +26,14 @@
     }
   }
 
-  let rssURL: HTMLInputElement;
+  let rssURL = $state<HTMLInputElement>();
   
   function changeRss() {
-    window.localStorage.setItem('rssURL', rssURL.value);
+    if (rssURL) {
+      window.localStorage.setItem('rssURL', rssURL.value);
 
-    parseRss();
+      parseRss();
+    }
   }
 
   onMount(() => {
@@ -44,7 +46,7 @@
     <h2>Rss Feed</h2>
     <div id='inputs'>
       <input bind:this={rssURL} type="text" placeholder="New RSS Url" />
-      <button on:click={changeRss}>Change</button>
+      <button onclick={changeRss}>Change</button>
     </div>
   {:else}
     <div id="articles">

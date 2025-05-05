@@ -15,8 +15,8 @@
 
   type Equation = [number, Operation | null][];
   
-  let history: [number, Equation][] = [];
-  let currentEquation: Equation = [];
+  let history = $state<[number, Equation][]>([]);
+  let currentEquation = $state<Equation>([]);
 
   function addNumber(digit: number) {
     if (currentEquation.length === 0) {
@@ -129,16 +129,16 @@
   <div id="numbers">
     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
     {#each {length: 10} as _, i (i)}
-      <button on:click={() => addNumber((i + 1) % 10)}>{(i + 1) % 10}</button>
+      <button onclick={() => addNumber((i + 1) % 10)}>{(i + 1) % 10}</button>
     {/each}
   </div>
   <div id="operations">
-    <button on:click={clearCalculation}>C</button>
+    <button onclick={clearCalculation}>C</button>
     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
     {#each Object.entries(Operations) as [_, operation], i (i)}
-      <button on:click={() => addOperation(operation)}><Icon icon={operation.icon} /></button>
+      <button onclick={() => addOperation(operation)}><Icon icon={operation.icon} /></button>
     {/each}
-    <button on:click={evaluateExpression}><Icon icon="mdi:equal" /></button>
+    <button onclick={evaluateExpression}><Icon icon="mdi:equal" /></button>
   </div>
 </div>
 

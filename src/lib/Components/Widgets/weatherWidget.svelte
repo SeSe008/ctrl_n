@@ -15,22 +15,23 @@
     };
   }
 
-  let location: string = '';
-  
-  let weather: Weather;
+  let location = $state<string>();
+  let weather = $state<Weather>();
   
   async function fetchWeather() {
-    if (location.length > 0) window.localStorage.setItem('weatherLocation', location);
+    if (location) {
+      if (location.length > 0) window.localStorage.setItem('weatherLocation', location);
 
-    const resp = await fetch('/api/weather', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city: window.localStorage.getItem('weatherLocation') || '' })
-    });
+      const resp = await fetch('/api/weather', {
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({ city: window.localStorage.getItem('weatherLocation') || '' })
+      });
 
-    if (resp.status === 500) return;
-    
-    weather = await resp.json();
+      if (resp.status === 500) return;
+      
+      weather = await resp.json();
+    }
   }
 
   function capitalizeWords(sentence: string): string {
@@ -63,7 +64,7 @@
   {#if $editMode || !weather}
     <div id="inputs">
       <input type="text" bind:value={location} placeholder="New Location" />
-      <button on:click={fetchWeather}>Get Weather</button>
+      <button onclick={fetchWeather}>Get Weather</button>
     </div>
   {/if}
 </div>

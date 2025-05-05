@@ -21,7 +21,7 @@
   const colors: number = 5; // Amount of colors for palette
   const changeInterval: number = 5 * 60 * 1000; // Interval of change of bg-image
   
-  let selectedImageCategory: string = path;
+  let selectedImageCategory = $state<string>(path);
   const imageCategories: [string, string, string][] = [
     ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
     ['Space', 'material-symbols:planet-outline', 'backgrounds/space']
@@ -73,13 +73,13 @@
 </div>
 
 <div id="pageControl">
-    <button on:click={nextImage}>
+    <button onclick={nextImage}>
       <Icon icon="gg:image" />
     </button>
-    <button on:click={toggleEditMode}>
+    <button onclick={toggleEditMode}>
       <Icon icon="material-symbols:edit-outline" />
     </button>
-    <select bind:value={selectedImageCategory} on:change={changeImageCategory}>
+    <select bind:value={selectedImageCategory} onchange={changeImageCategory}>
       {#each imageCategories as category (category[2])}
 	<option value={category[2]}>
 	  <Icon icon={category[1]} />
@@ -88,10 +88,10 @@
       {/each}
     </select>
     {#if $editMode}
-      <button on:click={addManager}>
+      <button onclick={addManager}>
 	<Icon icon="gg:add" />
       </button>
-       <button on:click={removeManager}>
+       <button onclick={removeManager}>
 	<Icon icon="gg:remove" />
       </button>
     {/if}

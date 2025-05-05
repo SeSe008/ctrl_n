@@ -6,20 +6,22 @@
   import type { TileManager } from "$lib/stores/tiles";
   import { editMode } from "$lib/stores/editMode";
   
-  export let id: number;
+  let { id } = $props();
 
-  let manager: TileManager;
+  let manager = $state<TileManager>();
 
-  $: if ($globalTiles && $globalTiles[id]) {
-    manager = $globalTiles[id];
-  }
+  $effect(() => {
+    if ($globalTiles && $globalTiles[id]) manager = $globalTiles[id];
+  });
   
   let tileManager: HTMLDivElement;
   
-  $: if (tileManager) tileManager.style.gridTemplateColumns = `repeat(${manager.tiles.length}, 1fr)`;
+  $effect(() => {
+    if (manager && tileManager) tileManager.style.gridTemplateColumns = `repeat(${manager.tiles.length}, 1fr)`;
+  });
   
   function removeTile() {
-    if (manager.tiles.length > 1) {
+    if (manager && manager.tiles.length > 1) {
       manager.tiles.pop();
 
       updateManager(manager, id);
@@ -27,28 +29,39 @@
   }
 
   function addTile() {
-    manager.tiles.push({
-      pos: manager.tiles.length + 1,
-      element: -1
-    });
+    if (manager) {
+      manager.tiles.push({
+	pos: manager.tiles.length + 1,
+	element: -1
+      });
     
-    updateManager(manager, id);
+      updateManager(manager, id);
+    }
+  }
+
+  function changeSize() {
+    if (manager) {
+      manager.height = 1;
+      updateManager(manager, id);
+    }
   }
 </script>
 
 <div class="tile-manager" bind:this={tileManager}>
-  {#each manager.tiles as tile, i (i)}
-    <TileElement managerId={id} tileId={i} tile={tile} />
-  {/each}
+  {#if manager}
+    {#each manager.tiles as tile, i (i)}
+      <TileElement managerId={id} tileId={i} tile={tile} />
+    {/each}
+  {/if}
   {#if $editMode}
     <div id="inputs">
-      <button on:click={addTile}><Icon icon="gg:add" /></button>
-      <button on:click={removeTile}><Icon icon="gg:remove" /></button>
-      <button on:click={() => {manager.height = 1; updateManager(manager, id);}}>Reset Height</button>
-      <input type='range' min='0' max='5' step='0.01' bind:value={manager.height} on:input={() => updateManager(manager, id)} />
+      <button onclick={addTile}><Icon icon="gg:add" /></button>
+      <button onclick={removeTile}><Icon icon="gg:remove" /></button>
+      <button onclick={changeSize}>Reset Height</button>
+      <input type='range' min='0' max='5' step='0.01' bind:value={manager!.height} oninput={() => updateManager(manager!, id)} />
       <span>
 	Preferred Height:
-	{#if manager.height !== 0}
+	{#if manager && manager.height !== 0}
 	  {manager.height}fr
 	{:else}
 	  Fit Content

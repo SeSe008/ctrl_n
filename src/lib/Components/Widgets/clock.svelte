@@ -8,23 +8,27 @@
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  let time: string = getTime();
+  let time = $state<string>(getTime());
 
   setInterval(() => {
     time = getTime();
   }, 1000);
 
-  let clockType: number;
+  let clockType = $state<number>();
   const clockTypeAmount: number = 2;
   
   function nextType() {
-    clockType = (clockType + 1) % clockTypeAmount;
-    window.localStorage.setItem('clockType', clockType.toString());
+    if (clockType) {
+      clockType = (clockType + 1) % clockTypeAmount;
+      window.localStorage.setItem('clockType', clockType.toString());
+    }
   }
 
   function lastType() {
-    clockType = (clockType <= 0) ? clockTypeAmount - 1 : clockType - 1;
-    window.localStorage.setItem('clockType', clockType.toString());
+    if (clockType) {
+      clockType = (clockType <= 0) ? clockTypeAmount - 1 : clockType - 1;
+      window.localStorage.setItem('clockType', clockType.toString());
+    }
   }
 
   let clock: HTMLDivElement;
@@ -43,7 +47,9 @@
     }
   }
 
-  $: if (clockType === 1) initAnalog();
+  $effect(() => {
+    if (clockType === 1) initAnalog();
+  });
   
   onMount(() => {
     const stored = localStorage.getItem('clockType');
@@ -70,8 +76,8 @@
 
   {#if $editMode}
     <div id="inputs">
-      <button on:click={lastType}><Icon icon="icon-park-outline:left-c" /></button>
-      <button on:click={nextType}><Icon icon="icon-park-outline:right-c" /></button>
+      <button onclick={lastType}><Icon icon="icon-park-outline:left-c" /></button>
+      <button onclick={nextType}><Icon icon="icon-park-outline:right-c" /></button>
     </div>
   {/if}
 </div>
