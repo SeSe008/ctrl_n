@@ -71,6 +71,7 @@ The full privacy statement is located [here](https://newtab.se-008.net/privacy).
 Elements willnot follow chronological order
 - [x] All Elements are Tilable
 - [x] Vertical Tiling
+- [ ] Adaptable Settings-Component
 - [ ] CSS-Rework for compatibility purposes 
 - [x] Tile-Manager-Resizing
 - [ ] Custom Search Engines
@@ -79,7 +80,7 @@ Elements willnot follow chronological order
 - [ ] Custom Widgets
 - [ ] Stable offline version
 - [ ] Native redirect extension
-- [ ] Port to runes mode
+- [x] Port to runes mode
 
 Future widget ideas:
 - Notes
