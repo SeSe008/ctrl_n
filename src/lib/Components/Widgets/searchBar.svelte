@@ -261,9 +261,6 @@
 <style>
   #search {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     width: 100%;
     padding: 0 5vmax;
   }
@@ -271,25 +268,30 @@
   #inputs {
     position: relative;
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr min-content;
+    display: flex;
+    flex-direction: row;
   }
 
   #inputs > select {
-    grid-column: 1 / 3;
-    min-width: 30%;
-    outline: none;
-    color: rgb(var(--c1));
-    border: 1px solid rgb(var(--c2));
-    background-color: rgba(var(--c4), .7);
-    border-radius: .5rem;
-    padding: .75rem 2rem;
-    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     justify-self: center;
+    min-width: 30%;
+    margin-right: .5rem;
+
+    background-color: rgba(var(--c4), .7);
+    color: rgb(var(--c1));
+    outline: none;
+    border: 1px solid rgb(var(--c2));
+    border-radius: .5rem;
+    cursor: pointer;
+
     font-size: calc(10px + 1vmin);
     font-weight: bold;
+
     transition: background-color .2s;
-    cursor: pointer;
   }
 
   #inputs > select:open {
@@ -320,6 +322,7 @@
     color: rgb(var(--c2));
     background-color: rgba(var(--c1), .7);
     transition: background-color .2s;
+    flex-grow: 1;
   }
 
   #inputs > input:focus {
@@ -347,15 +350,20 @@
 
   #suggestions {
     position: absolute;
-    top: 100%;
-    width: calc(100% - 10vmax - .75rem);
-    display: flex;
+    display: none;
     flex-direction: column;
     text-align: left;
-    color: rgb(var(--c2));
-    border-radius: 0 0 .5rem .5rem;
-    background-color: rgb(var(--c3));
+
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 10vmax - .75rem);
     overflow: hidden;
+
+    color: rgb(var(--c2));
+    background-color: rgb(var(--c3));
+    border-radius: 0 0 .5rem .5rem;
+
     z-index: 10;
   }
 

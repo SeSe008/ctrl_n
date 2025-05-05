@@ -4,8 +4,7 @@
 
   import { editMode } from "$lib/stores/editMode";
   import type { Article } from "$lib/types/rss";
-	import errorMap from "zod/locales/en.js";
-
+  
   let articles: Article[] = [];
   let error: string;
 
@@ -178,6 +177,10 @@
 
   .article h3 {
     text-align: center;
+  }
+
+  :global(.article a) {
+    color: inherit;
   }
 
   #inputs {
