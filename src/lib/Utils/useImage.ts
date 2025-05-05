@@ -43,10 +43,9 @@ export function applyImage(images: string[], lastImage: string | undefined, colo
 
 export async function useImage(images: string[], changeInterval: number, colors: number, colorThief: ColorThief) {
   // Pick a random image and set it as the pages background in intervals
-
   let lastImage: string = applyImage(images, undefined, colors, colorThief);
 
-  setInterval(
+  return setInterval(
     () => {
       lastImage = applyImage(images, lastImage, colors, colorThief);
     },

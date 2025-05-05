@@ -28,8 +28,10 @@
   ];
   
   async function changeImageCategory() {
+    if (imageInterval) clearInterval(imageInterval);
+
     images = await fetchImages(selectedImageCategory);
-    useImage(images, changeInterval, colors, colorThief);
+    imageInterval = await useImage(images, changeInterval, colors, colorThief);
     window.localStorage.setItem('imageCategory', selectedImageCategory);
   }
 
@@ -52,13 +54,14 @@
     }
   });
 
+  let imageInterval: ReturnType<typeof setInterval>;
   onMount(async () => {
     colorThief = new ColorThief();
 
     path = window.localStorage.getItem('imageCategory') || path;
     selectedImageCategory = path;
     images = await fetchImages(path);
-    useImage(images, changeInterval, colors, colorThief);
+    imageInterval = await useImage(images, changeInterval, colors, colorThief);
 
     initializeTiles();
   });

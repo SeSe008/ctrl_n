@@ -232,7 +232,9 @@
     border-radius: .3rem;
     
     width: max-content;
+    max-width: 100%;
     align-self: center;
     padding: .5rem;
+    box-sizing: border-box;
   }
 </style>
