@@ -10,6 +10,7 @@
   export interface Options {
     selectOptions: SelectOptions[];
     changeFunction: (_value: any, _: HTMLSelectElement) => void;
+    defaultValue?: () => any;
     label?: string;
   }
   
@@ -18,9 +19,9 @@
   }
 
   const { options }: Props = $props();
-  const { selectOptions, changeFunction, label } = options;
+  const { selectOptions, changeFunction, defaultValue, label } = options;
 
-  let selectValue = $state();
+  let selectValue = $state(defaultValue?.() ?? undefined);
   let selectElement: HTMLSelectElement;
 
   function update() {

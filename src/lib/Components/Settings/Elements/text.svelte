@@ -59,4 +59,8 @@
   .small {
     font-size: .75em;
   }
+
+  .margin_vert {
+    margin: 1rem 0;
+  }
 </style>

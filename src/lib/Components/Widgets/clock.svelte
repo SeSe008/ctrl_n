@@ -28,13 +28,17 @@
       clock.style.setProperty('--second', second.toString());
     }
   }
-
+  
   clockType.subscribe(newType => {
     if (newType === "analog") initAnalog();
   });
   
   onMount(() => {
     initClockType();
+
+    if ($clockType === "analog") {
+      initAnalog();
+    }
   });
 </script>
 

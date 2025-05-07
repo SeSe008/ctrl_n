@@ -7,7 +7,7 @@
   import Bookmarks from '$lib/Components/Widgets/bookmarks.svelte';
   import Settings from './Settings/settings.svelte';
 
-  import { setClockType } from '$lib/stores/clockType';
+  import { setClockType, clockType } from '$lib/stores/clockType';
   
   import { changeTile } from '$lib/stores/tiles';
   import type { Tile } from '$lib/stores/tiles';
@@ -39,7 +39,7 @@
     { name: "clock", label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
     { name: "rss_feed", label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
     { name: "weather", label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
-    { name: "calculator", label: 'Calculator', icon: 'iconamloon:calculator', component: Calculator },
+    { name: "calculator", label: 'Calculator', icon: 'iconamoon:calculator', component: Calculator },
     { name: "bookmarks", label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
   ];
   
@@ -51,17 +51,40 @@
 
   let settingsEnabled = $state<boolean>(false);
 
+  const tileSettings: Element[] = [
+    {
+      elementType: "text",
+      elementOptions: {
+	text: "Tile Settings",
+	classes: ["large", "center", "strong"]
+      }
+    },
+    {
+      elementType: "select",
+      elementOptions: {
+	selectOptions: tileDefs.map(({ label, icon }) => { return { label, icon }; }),	
+	changeFunction: (value: number) => {
+	  selectedTile = value;
+	  changeTile(managerId, tileId, selectedTile);
+	},
+	defaultValue: () => selectedTile,
+	label: "Widget-Type:"
+      }
+    }
+  ];
+  
   interface SettingElements {
     [key: string]: Element[];
   }
 
-  const elementPropsList: SettingElements = {
-    "clock": [
+  const defaultWidgetsProps: SettingElements = {
+    search_bar: [],
+    clock: [
       {
 	elementType: "text",
 	elementOptions: {
 	  text: "Clock-Options",
-	  classes: ["big", "center", "strong"]
+	  classes: ["big", "center", "strong", "margin_vert"]
 	}
       },
       {
@@ -74,25 +97,26 @@
 	  changeFunction: (value: string) => {
 	    setClockType(value);
 	  },
+	  defaultValue: () => $clockType,
 	  label: "Clock-Type:"
 	}
       }
-    ]
+    ],
+    rss_feed: [],
+    weather: [],
+    calculator: [],
+    bookmarks: []
   };
+
+  const elementPropsList = Object.fromEntries(
+    Object.entries(defaultWidgetsProps).map(
+      ([key, elems]) => [key, [...tileSettings, ...elems]] as [string, Element[]]
+    )
+  );
 </script>
 
 <div class="tile-element">
-  {#if !SelectedComponent && selectedTile !== 0}
-    <h2>Select Tile</h2>
-    <select bind:value={selectedTile} onchange={() => changeTile(managerId, tileId, selectedTile)}>
-      {#each tileDefs as def, i (i)}
-	<option value={i}>
-	  <Icon icon={def.icon} />
-	  {def.label}
-	</option>
-      {/each}
-    </select>
-  {:else if selectedTile !== 0 }
+  {#if selectedTile !== 0 && SelectedComponent }
     <SelectedComponent />
   {:else}
     <div id="spacer"></div>
@@ -100,7 +124,6 @@
 
   {#if $editMode && selectedTile !== -1}
     <div id="inputs">
-      <button onclick={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
       <button onclick={() => settingsEnabled = !settingsEnabled}><Icon icon="lucide:settings" /></button>
     </div>
 
@@ -128,43 +151,9 @@
       overflow: hidden;
     }
   }
-
-  .tile-element h2 {
-    background-color: rgb(var(--c2));
-    color: rgb(var(--c1));
-    border: 1px solid rgb(var(--c1));
-    padding: .5rem;
-    border-radius: .5rem;
-  }
-  
-  .tile-element select {
-    grid-column: 1 / 3;
-    min-width: 20vmin;
-    outline: none;
-    color: rgb(var(--c1));
-    border: 1px solid rgb(var(--c2));
-    background-color: rgb(var(--c4));
-    border-radius: .5rem;
-    padding: .5rem .5rem;
-    justify-self: center;
-    font-size: calc(10px + .5vmin);
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .tile-element select::picker(select) {
-    background-color: rgb(var(--c4));
-    color: rgb(var(--c1));
-  }
-
-  .tile-element select, select::picker(select) {
-    appearance: base-select;
-  }
-
   #inputs {
     display: flex;
     flex-direction: row;
-    gap: .25rem;
     margin-bottom: .25rem;
   }
   
