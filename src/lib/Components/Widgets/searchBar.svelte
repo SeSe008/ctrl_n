@@ -359,7 +359,7 @@
     width: calc(100% - 10vmax - .75rem);
     overflow: hidden;
 
-    color: rgb(var(--c2));
+    color: rgb(var(--c1));
     background-color: rgb(var(--c3));
     border-radius: 0 0 .5rem .5rem;
 

@@ -32,7 +32,7 @@
 
     images = await fetchImages(selectedImageCategory);
     imageInterval = await useImage(images, changeInterval, colors, colorThief);
-    window.localStorage.setItem('imageCategory', selectedImageCategory);
+    Window.localStorage.setItem('imageCategory', selectedImageCategory);
   }
 
   function nextImage() {

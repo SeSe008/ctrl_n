@@ -5,12 +5,17 @@
   import WeatherWidget from '$lib/Components/Widgets/weatherWidget.svelte';
   import Calculator from '$lib/Components/Widgets/calculator.svelte';
   import Bookmarks from '$lib/Components/Widgets/bookmarks.svelte';
+  import Settings from './Settings/settings.svelte';
 
+  import { setClockType } from '$lib/stores/clockType';
+  
   import { changeTile } from '$lib/stores/tiles';
   import type { Tile } from '$lib/stores/tiles';
    
-  import Icon from '@iconify/svelte';
   import { editMode } from '$lib/stores/editMode';
+  import type { Element } from '$lib/Components/Settings/settings.svelte'; 
+  
+  import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
   
   interface Props {
@@ -22,19 +27,20 @@
   let { managerId, tileId, tile }: Props = $props();
 
   interface TileDef {
+    name: string;
     label: string;
     icon: string;
     component?: Component;
   }
 
   const tileDefs: TileDef[] = [
-    { label: 'None', icon: '' },
-    { label: 'Search Bar', icon: 'mdi:search', component: SearchBar },
-    { label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
-    { label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
-    { label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
-    { label: 'Calculator', icon: 'iconamloon:calculator', component: Calculator },
-    { label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
+    { name: "none", label: 'None', icon: '' },
+    { name: "search_bar", label: 'Search Bar', icon: 'mdi:search', component: SearchBar },
+    { name: "clock", label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
+    { name: "rss_feed", label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
+    { name: "weather", label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
+    { name: "calculator", label: 'Calculator', icon: 'iconamloon:calculator', component: Calculator },
+    { name: "bookmarks", label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
   ];
   
   let selectedTile = $state<number>(tile.element);
@@ -42,6 +48,37 @@
   $effect(() => {
     SelectedComponent = tileDefs[selectedTile]?.component;
   });
+
+  let settingsEnabled = $state<boolean>(false);
+
+  interface SettingElements {
+    [key: string]: Element[];
+  }
+
+  const elementPropsList: SettingElements = {
+    "clock": [
+      {
+	elementType: "text",
+	elementOptions: {
+	  text: "Clock-Options",
+	  classes: ["big", "center", "strong"]
+	}
+      },
+      {
+	elementType: "select",
+	elementOptions: {
+	  selectOptions: [
+	    { label: "Digital", value: "digital" },
+	    { label: "Analog", value: "analog" }
+	  ],
+	  changeFunction: (value: string) => {
+	    setClockType(value);
+	  },
+	  label: "Clock-Type:"
+	}
+      }
+    ]
+  };
 </script>
 
 <div class="tile-element">
@@ -62,7 +99,14 @@
   {/if}
 
   {#if $editMode && selectedTile !== -1}
-    <button onclick={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
+    <div id="inputs">
+      <button onclick={() => selectedTile = -1}><Icon icon="lucide:edit" /></button>
+      <button onclick={() => settingsEnabled = !settingsEnabled}><Icon icon="lucide:settings" /></button>
+    </div>
+
+    {#if settingsEnabled}
+      <Settings elements={elementPropsList[tileDefs[selectedTile].name]} bind:settingsEnabled={settingsEnabled} />
+    {/if}
   {/if}
 </div>
 
@@ -117,7 +161,14 @@
     appearance: base-select;
   }
 
-  .tile-element button {
+  #inputs {
+    display: flex;
+    flex-direction: row;
+    gap: .25rem;
+    margin-bottom: .25rem;
+  }
+  
+  #inputs button {
     outline: none;
     justify-self: flex-end;
     font-size: 1rem;

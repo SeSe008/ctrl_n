@@ -1,0 +1,54 @@
+<script lang="ts">
+  import Icon from "@iconify/svelte";
+
+  interface SelectOptions {
+    label: string;
+    icon?: string;
+    value?: any;
+  }
+
+  export interface Options {
+    selectOptions: SelectOptions[];
+    changeFunction: (_value: any, _: HTMLSelectElement) => void;
+    label?: string;
+  }
+  
+  interface Props {
+    options: Options;
+  }
+
+  const { options }: Props = $props();
+  const { selectOptions, changeFunction, label } = options;
+
+  let selectValue = $state();
+  let selectElement: HTMLSelectElement;
+
+  function update() {
+    if (selectElement && selectValue) changeFunction(selectValue, selectElement);
+  }
+</script>
+
+<div class="settings_select">
+  {#if label}
+    <span>{label}</span>
+  {/if}
+  <select bind:this={selectElement} bind:value={selectValue} onchange={update}>
+    {#each selectOptions as selectOption, i (i)}
+      <option value={(selectOption.value) ? selectOption.value : i}>
+	{#if selectOption.icon}
+	  <Icon icon={selectOption.icon} />
+	{/if}
+	{selectOption.label}
+      </option>
+    {/each}
+  </select>
+</div>
+
+<style>
+  .settings_select {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+  }
+</style>

@@ -1,8 +1,7 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
   import { onMount } from 'svelte';
 
-  import { editMode } from '$lib/stores/editMode';
+  import { clockType, initClockType } from '$lib/stores/clockType';
  
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -13,23 +12,6 @@
   setInterval(() => {
     time = getTime();
   }, 1000);
-
-  let clockType = $state<number>();
-  const clockTypeAmount: number = 2;
-  
-  function nextType() {
-    if (clockType) {
-      clockType = (clockType + 1) % clockTypeAmount;
-      window.localStorage.setItem('clockType', clockType.toString());
-    }
-  }
-
-  function lastType() {
-    if (clockType) {
-      clockType = (clockType <= 0) ? clockTypeAmount - 1 : clockType - 1;
-      window.localStorage.setItem('clockType', clockType.toString());
-    }
-  }
 
   let clock: HTMLDivElement;
   
@@ -47,37 +29,27 @@
     }
   }
 
-  $effect(() => {
-    if (clockType === 1) initAnalog();
+  clockType.subscribe(newType => {
+    if (newType === "analog") initAnalog();
   });
   
   onMount(() => {
-    const stored = localStorage.getItem('clockType');
-    clockType = stored && !isNaN(+stored) ? +stored : 0;
-
-    if (clockType === 1) initAnalog();
+    initClockType();
   });
 </script>
 
 
 <div bind:this={clock} id="clock">
-  {#if clockType === 0}
+  {#if $clockType === "digital"}
     <h1>
       {time}
     </h1>
-  {:else if clockType === 1}
+  {:else if $clockType === "analog"}
     <div id="analog">
       <div id="hand_hour"></div>
       <div id="hand_minute"></div>
       <div id="hand_second"></div>
       <div id="center"></div>
-    </div>
-  {/if}
-
-  {#if $editMode}
-    <div id="inputs">
-      <button onclick={lastType}><Icon icon="icon-park-outline:left-c" /></button>
-      <button onclick={nextType}><Icon icon="icon-park-outline:right-c" /></button>
     </div>
   {/if}
 </div>
@@ -258,26 +230,5 @@
     to {
       transform: translate(-50%, -50%) rotate(calc(var(--second) * 6deg + 360deg));
     }
-  }
-
-  #inputs {
-    display: flex;
-    flex-direction: row;
-    gap: .25rem;
-  }
-
-  #inputs button {
-    outline: none;
-    justify-self: flex-start;
-    font-size: .8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: .125rem;
-    border-radius: .3rem;
-    border: 1px solid rgb(var(--c2));
-    background-color: rgb(var(--c1));
-    color: rgb(var(--c2));
-    cursor: pointer;
   }
 </style>
