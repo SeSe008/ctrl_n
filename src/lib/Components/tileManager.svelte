@@ -3,7 +3,7 @@
 
   import TileElement from "./tileElement.svelte";
   import { globalTiles, updateManager } from "$lib/stores/tiles";
-  import type { TileManager } from "$lib/stores/tiles";
+  import type { TileManager } from "$lib/types/tiles";
   import { editMode } from "$lib/stores/editMode";
   
   let { id } = $props();
@@ -80,7 +80,7 @@
     width: 100%;
   }
 
-  /* Custom element rules */
+  /* Special widget rules */
   :global{
     .tile-manager:not(:has(#search)) {
       overflow: hidden;

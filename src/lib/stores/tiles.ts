@@ -1,16 +1,6 @@
 import { writable } from "svelte/store";
 
-export interface Tile {
-  pos: number,
-  element: number
-};
-
-export interface TileManager {
-  tiles: Tile[],
-  height: number
-};
-
-type GlobalTiles = TileManager[];
+import type { GlobalTiles, TileManager } from '$lib/types/tiles';
 
 export const globalTiles = writable<GlobalTiles>([]);
 

@@ -1,9 +1,6 @@
 <script lang="ts">
-  export interface Options {
-    text: string;
-    classes: string[];
-  }
-
+  import type { Options } from "$lib/types/settings/text";
+  
   interface Props {
     options: Options;
   }
@@ -11,7 +8,7 @@
   const { options }: Props = $props();
 </script>
 
-<div class={`settings_text ${options.classes.join(" ")}`}>
+<div class={`settings_text ${options.classes?.join(" ")}`}>
   {options.text}
 </div>
 

@@ -1,19 +1,14 @@
 <script lang='ts'>
-  import Clock from '$lib/Components/Widgets/clock.svelte';
-  import SearchBar from '$lib/Components/Widgets/searchBar.svelte';
-  import RssFeed from '$lib/Components/Widgets/rssFeed.svelte';
-  import WeatherWidget from '$lib/Components/Widgets/weatherWidget.svelte';
-  import Calculator from '$lib/Components/Widgets/calculator.svelte';
-  import Bookmarks from '$lib/Components/Widgets/bookmarks.svelte';
+  import { tileDefs } from '$lib/constants/tileDefs';
   import Settings from './Settings/settings.svelte';
 
-  import { setClockType, clockType } from '$lib/stores/clockType';
-  
   import { changeTile } from '$lib/stores/tiles';
-  import type { Tile } from '$lib/stores/tiles';
-   
+  import type { Tile } from '$lib/types/tiles';
+
   import { editMode } from '$lib/stores/editMode';
-  import type { Element } from '$lib/Components/Settings/settings.svelte'; 
+  import type { Element } from '$lib/types/settings';
+  
+  import { setClockType, clockType } from '$lib/stores/clockType';
   
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
@@ -26,23 +21,6 @@
   
   let { managerId, tileId, tile }: Props = $props();
 
-  interface TileDef {
-    name: string;
-    label: string;
-    icon: string;
-    component?: Component;
-  }
-
-  const tileDefs: TileDef[] = [
-    { name: "none", label: 'None', icon: '' },
-    { name: "search_bar", label: 'Search Bar', icon: 'mdi:search', component: SearchBar },
-    { name: "clock", label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
-    { name: "rss_feed", label: 'Rss-Feed',  icon: 'material-symbols:news', component: RssFeed },
-    { name: "weather", label: 'Weather', icon: 'ph:cloud-sun-fill', component: WeatherWidget },
-    { name: "calculator", label: 'Calculator', icon: 'iconamoon:calculator', component: Calculator },
-    { name: "bookmarks", label: 'Bookmarks', icon: 'material-symbols:bookmarks', component: Bookmarks },
-  ];
-  
   let selectedTile = $state<number>(tile.element);
   let SelectedComponent = $state<Component>();
   $effect(() => {

@@ -4,8 +4,8 @@
   import Icon from "@iconify/svelte";
   import { parse } from 'mathjs';
 
-  import { searchEngines } from '$lib/constants';
-  import type { SearchEngine, SuggestionEndpoint } from '$lib/constants';
+  import { searchEngines } from '$lib/constants/searchEngines';
+  import type { SearchEngine, SuggestionEndpoint } from '$lib/types/searchEngines';
   import { editMode } from '$lib/stores/editMode';
   
   interface RecentlySearched {
@@ -242,7 +242,7 @@
 	{#each Object.entries(searchEngines) as [searchEngineKey, searchEngine] (searchEngineKey)}
 	  <option value={searchEngineKey}>
 	    <Icon icon={"arcticons-" + searchEngineKey} />
-	    {searchEngine.name}
+	    {(searchEngine as SearchEngine).name}
 	  </option>
 	{/each}
       </select>

@@ -1,19 +1,6 @@
 <script lang="ts">
-  import type { Component } from "svelte";
-
-  import Text from "$lib/Components/Settings/Elements/text.svelte";
-  import Select from "$lib/Components/Settings/Elements/select.svelte";
-
-  import type { Options as TextProps } from "$lib/Components/Settings/Elements/text.svelte";
-  import type { Options as SelectProps } from "$lib/Components/Settings/Elements/select.svelte";
-
-  type ElementProps = TextProps | SelectProps;
-  
-  export interface Element {
-    elementType: string;
-    elementOptions: ElementProps;
-    changeFunction?: () => void;
-  }
+  import type { Element } from '$lib/types/settings';
+  import { elementComponents } from '$lib/constants/settings';
   
   interface Props {
     settingsEnabled?: boolean;
@@ -21,15 +8,6 @@
   }
 
   let { settingsEnabled = $bindable(), elements }: Props = $props();
-
-  interface ElementComponents {
-    [key: string]: Component<any>;
-  }
-  
-  const elementComponents: ElementComponents = {
-    "text": Text,
-    "select": Select,
-  };
 </script>
 
 <aside id="settings">

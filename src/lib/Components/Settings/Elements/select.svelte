@@ -1,18 +1,6 @@
 <script lang="ts">
-  import Icon from "@iconify/svelte";
-
-  interface SelectOptions {
-    label: string;
-    icon?: string;
-    value?: any;
-  }
-
-  export interface Options {
-    selectOptions: SelectOptions[];
-    changeFunction: (_value: any, _: HTMLSelectElement) => void;
-    defaultValue?: () => any;
-    label?: string;
-  }
+  import Icon from '@iconify/svelte';
+  import type { Options } from '$lib/types/settings/select';
   
   interface Props {
     options: Options;
