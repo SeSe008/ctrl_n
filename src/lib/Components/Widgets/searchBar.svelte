@@ -295,15 +295,14 @@
   }
 
   #suggestions {
-    position: absolute;
+    position: fixed;
     display: none;
     flex-direction: column;
     text-align: left;
 
-    top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(100% - 10vmax - .75rem);
+    width: calc(100% - 1.75rem - 1.5vmax);
     overflow: hidden;
 
     color: rgb(var(--c1));

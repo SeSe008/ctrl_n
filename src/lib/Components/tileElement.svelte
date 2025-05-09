@@ -59,6 +59,7 @@
   }
 
   const defaultWidgetsProps: SettingElements = {
+    none: [],
     search_bar: [
       {
 	elementType: 'text',

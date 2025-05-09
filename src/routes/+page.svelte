@@ -32,7 +32,7 @@
 
     images = await fetchImages(selectedImageCategory);
     imageInterval = await useImage(images, changeInterval, colors, colorThief);
-    Window.localStorage.setItem('imageCategory', selectedImageCategory);
+    window.localStorage.setItem('imageCategory', selectedImageCategory);
   }
 
   function nextImage() {
@@ -69,35 +69,34 @@
 
 
 <div bind:this={tileGrid} id="tiles">
-  <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
   {#each {length: $globalTiles.length} as _, i (i) }
     <TileManager id={i} />
   {/each}
 </div>
 
 <div id="pageControl">
-    <button onclick={nextImage}>
-      <Icon icon="gg:image" />
+  <button onclick={nextImage}>
+    <Icon icon="gg:image" />
+  </button>
+  <button onclick={toggleEditMode}>
+    <Icon icon="material-symbols:edit-outline" />
+  </button>
+  <select bind:value={selectedImageCategory} onchange={changeImageCategory}>
+    {#each imageCategories as category (category[2])}
+      <option value={category[2]}>
+	<Icon icon={category[1]} />
+	{category[0]}
+      </option>
+    {/each}
+  </select>
+  {#if $editMode}
+    <button onclick={addManager}>
+      <Icon icon="gg:add" />
     </button>
-    <button onclick={toggleEditMode}>
-      <Icon icon="material-symbols:edit-outline" />
+    <button onclick={removeManager}>
+      <Icon icon="gg:remove" />
     </button>
-    <select bind:value={selectedImageCategory} onchange={changeImageCategory}>
-      {#each imageCategories as category (category[2])}
-	<option value={category[2]}>
-	  <Icon icon={category[1]} />
-	  {category[0]}
-	</option>
-      {/each}
-    </select>
-    {#if $editMode}
-      <button onclick={addManager}>
-	<Icon icon="gg:add" />
-      </button>
-       <button onclick={removeManager}>
-	<Icon icon="gg:remove" />
-      </button>
-    {/if}
+  {/if}    
 </div>
 <div id='credit'>
   Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
@@ -195,7 +194,8 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: .5rem;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   #pageControl {

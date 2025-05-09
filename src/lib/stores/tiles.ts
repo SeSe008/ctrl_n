@@ -34,7 +34,7 @@ export function addManager() {
     const newGlobal = [
       ...current,
       {
-	tiles: [{ pos: 0, element: -1}],
+	tiles: [{ pos: 0, element: 0}],
 	height: 1
       }
     ];

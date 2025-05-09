@@ -32,14 +32,14 @@
     if (manager) {
       manager.tiles.push({
 	pos: manager.tiles.length + 1,
-	element: -1
+	element: 0
       });
     
       updateManager(manager, id);
     }
   }
 
-  function changeSize() {
+  function resetSize() {
     if (manager) {
       manager.height = 1;
       updateManager(manager, id);
@@ -57,8 +57,10 @@
     <div id="inputs">
       <button onclick={addTile}><Icon icon="gg:add" /></button>
       <button onclick={removeTile}><Icon icon="gg:remove" /></button>
-      <button onclick={changeSize}>Reset Height</button>
-      <input type='range' min='0' max='5' step='0.01' bind:value={manager!.height} oninput={() => updateManager(manager!, id)} />
+      <button onclick={resetSize}>Reset Height</button>
+      {#if manager}
+	<input type='range' min='0' max='5' step='0.01' bind:value={manager.height} oninput={() => updateManager(manager!, id)} />
+      {/if}
       <span>
 	Preferred Height:
 	{#if manager && manager.height !== 0}
