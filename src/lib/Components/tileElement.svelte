@@ -9,6 +9,9 @@
   import type { Element } from '$lib/types/settings';
   
   import { setClockType, clockType } from '$lib/stores/clockType';
+
+  import { setSearchEngineName, searchEngineName } from '$lib/stores/searchEngine';
+  import { searchEngines } from '$lib/constants/searchEngines';
   
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
@@ -46,7 +49,7 @@
 	  changeTile(managerId, tileId, selectedTile);
 	},
 	defaultValue: () => selectedTile,
-	label: "Widget-Type:"
+	label: "Widget Type:"
       }
     }
   ];
@@ -56,7 +59,29 @@
   }
 
   const defaultWidgetsProps: SettingElements = {
-    search_bar: [],
+    search_bar: [
+      {
+	elementType: 'text',
+	elementOptions: {
+	  text: 'Search-Options',
+	  classes: ['big', 'center', 'strong', 'margin_vert']
+	}
+      },
+      {
+	elementType: 'select',
+	elementOptions: {
+	  selectOptions: Object.entries(searchEngines).map(
+	    ([value, { name: label, icon }]) =>
+	    ({ label, icon, value })
+	  ),
+	  changeFunction(value: string) {
+	    setSearchEngineName(value);
+	  },
+	  defaultValue: () => $searchEngineName,
+	  label: 'Search Engine:'
+	}
+      }
+    ],
     clock: [
       {
 	elementType: "text",

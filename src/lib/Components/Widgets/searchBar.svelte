@@ -5,8 +5,9 @@
   import { parse } from 'mathjs';
 
   import { searchEngines } from '$lib/constants/searchEngines';
+  import { initSearchEngineName, searchEngineName } from '$lib/stores/searchEngine';
+  
   import type { SearchEngine, SuggestionEndpoint } from '$lib/types/searchEngines';
-  import { editMode } from '$lib/stores/editMode';
   
   interface RecentlySearched {
     query: string;
@@ -16,11 +17,6 @@
   type Suggestion = [string, string[]];
   
   const defaultSearchEngine: string = 'ecosia';
-  let searchEngineName = $state<string>(defaultSearchEngine);  
-
-  function storeEngine() {
-    localStorage.setItem('defaultSearchEngine', searchEngineName);
-  }
 
   function isUrl(str: string) {
     const urlRe = /^(?:https?:\/\/)?(?:localhost:\d{1,5}|(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?:\/\S*)?$/;    
@@ -43,9 +39,9 @@
       window.location.href = makeExternal(text);
       return;
     }
-    
-    const searchEngine: SearchEngine = searchEngines[searchEngineName];
 
+    const searchEngine: SearchEngine = searchEngines[$searchEngineName];
+    
     const query: string = `${searchEngine.searchParam}${encodeURIComponent(text)}`;
    
     const extras: string = searchEngine.extras.join('&');
@@ -223,9 +219,10 @@
   let searchBar: HTMLInputElement;
   
   onMount(() => {
+    document.body.focus();
     searchBar.focus();
 
-    searchEngineName = localStorage.getItem('defaultSearchEngine') || defaultSearchEngine;
+    initSearchEngineName();
 
     const recentEntries: [string, RecentlySearched][] =
 	  JSON.parse(window.localStorage.getItem('recentSearches') || '[]')
@@ -237,16 +234,6 @@
 
 <div id="search">
   <div id="inputs">
-    {#if $editMode}
-      <select bind:value={searchEngineName} onchange={storeEngine}>
-	{#each Object.entries(searchEngines) as [searchEngineKey, searchEngine] (searchEngineKey)}
-	  <option value={searchEngineKey}>
-	    <Icon icon={"arcticons-" + searchEngineKey} />
-	    {(searchEngine as SearchEngine).name}
-	  </option>
-	{/each}
-      </select>
-    {/if}
     <input onkeydown={handleKeydown} oninput={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
     <button onclick={() => {search(searchBar.value);}}><Icon icon="line-md:search-twotone" /></button>
   </div>
@@ -269,46 +256,6 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-  }
-
-  #inputs > select {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    justify-self: center;
-    min-width: 30%;
-    margin-right: .5rem;
-
-    background-color: rgba(var(--c4), .7);
-    color: rgb(var(--c1));
-    outline: none;
-    border: 1px solid rgb(var(--c2));
-    border-radius: .5rem;
-    cursor: pointer;
-
-    font-size: calc(10px + 1vmin);
-    font-weight: bold;
-
-    transition: background-color .2s;
-  }
-
-  #inputs > select:open {
-    background-color: rgb(var(--c4));
-  }
-
-  #inputs > select::picker(select) {
-    background-color: rgb(var(--c4));
-    color: rgb(var(--c1));
-  }
-
-  :global(#inputs > select .iconify--arcticons) {
-    font-size: calc(10px + 2vmin);
-    stroke-width: 2px;
-  }
-
-  #inputs > select, #inputs > select::picker(select) {
-    appearance: base-select;
   }
 
   #inputs > input {

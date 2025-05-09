@@ -1,4 +1,4 @@
-import type { SearchEngines } from "$lib/types/searchEnginesType";
+import type { SearchEngines } from "$lib/types/searchEngines";
 
 export const searchEngines: SearchEngines = {
   'ecosia': {
@@ -10,7 +10,8 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: []
     },
-    extras: ['addon=opensearch']
+    extras: ['addon=opensearch'],
+    icon: 'arcticons:ecosia'
   },
   'oceanhero': {
     name: 'OceanHero',
@@ -21,7 +22,7 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: []
     },
-    extras: []
+    extras: [],
   },
   'searxng': {
     name: 'SearXNG (local)',
@@ -32,18 +33,20 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: []
     },
-    extras: []
+    extras: [],
+    icon: 'simple-icons:searxng'
   },
   'searxng_pub': {
     name: 'SearXNG (public)',
-    url: 'https://searx.bndkt.io/search',
+    url: 'https://searx.tiekoetter.com/search',
     searchParam: 'q=',
     suggestions: {
       endpoint: 'http://localhost:8888/autocompleter',
       searchParam: 'q=',
       extras: []
     },
-    extras: []
+    extras: [],
+    icon: 'simple-icons:searxng'
   },
   'duckduckgo': {
     name: 'DuckDuckGo',
@@ -54,7 +57,8 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: ['type=list']
     },
-    extras: []
+    extras: [],
+    icon: 'arcticons:duckduckgo'
   },
   'startpage': {
     name: 'Startpage',
@@ -65,7 +69,8 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: ['type=list']
     },
-    extras: []
+    extras: [],
+    icon: 'arcticons:startpage'
   },
   'google': {
     name: 'Google',
@@ -76,7 +81,8 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: ['client=firefox']
     },
-    extras: []
+    extras: [],
+    icon: 'arcticons:google'
   },
   'microsoft-bing': {
     name: 'Bing',
@@ -87,6 +93,7 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: []
     },
-    extras: []
+    extras: [],
+    icon: 'arcticons:microsoft-bing-alt'
   }
 };

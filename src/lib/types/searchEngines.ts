@@ -10,6 +10,7 @@ export interface SearchEngine {
   searchParam: string;
   suggestions: SuggestionEndpoint;
   extras: string[];
+  icon?: string;
 }
 
 export type SearchEngines = {

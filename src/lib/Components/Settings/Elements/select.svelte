@@ -39,5 +39,7 @@
     flex-direction: row;
     align-items: center;
     gap: .5rem;
+
+    stroke-width: 3px;
   }
 </style>
