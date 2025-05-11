@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 import RSS from 'rss-to-json';
 const { parse } = RSS;
-import type { RawRssItem, Article } from "$lib/types/rss";
+import type { RawRssItem, Article } from "$lib/types/widgets/rss";
 
 function normalizeItem(item: RawRssItem): Article {
   // Get title

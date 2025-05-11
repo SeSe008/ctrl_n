@@ -27,7 +27,7 @@ export async function POST({ request }: { request: Request }) {
   let dirents;
   try {
     dirents = await fs.readdir(targetPath, { withFileTypes: true });
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (err.code === 'ENOENT') {
       return new Response(JSON.stringify({ error: 'Directory not found' }), { status: 404 });
     }

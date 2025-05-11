@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
 
   import { editMode } from "$lib/stores/editMode";
-  import type { Article } from "$lib/types/rss";
+  import type { Article } from "$lib/types/widgets/rss";
   
   let articles = $state<Article[]>([]);
   let error = $state<string>();

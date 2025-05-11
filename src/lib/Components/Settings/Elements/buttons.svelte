@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import type { Options } from '$lib/types/settings/buttons';
+  import type { Options } from '$lib/types/settings/elements/buttons';
 
   interface Props {
     options: Options;

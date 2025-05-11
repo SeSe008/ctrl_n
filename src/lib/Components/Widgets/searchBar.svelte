@@ -5,9 +5,9 @@
   import { parse } from 'mathjs';
 
   import { searchEngines } from '$lib/constants/searchEngines';
-  import { initSearchEngineName, searchEngineName } from '$lib/stores/searchEngine';
+  import { initSearchEngineName, searchEngineName } from '$lib/stores/widgets/searchEngine';
   
-  import type { SearchEngine, SuggestionEndpoint } from '$lib/types/searchEngines';
+  import type { SearchEngine, SuggestionEndpoint } from '$lib/types/widgets/searchEngines';
   
   interface RecentlySearched {
     query: string;

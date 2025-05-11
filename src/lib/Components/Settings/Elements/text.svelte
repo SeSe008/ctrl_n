@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Options } from "$lib/types/settings/text";
+  import type { Options } from "$lib/types/settings/elements/text";
   
   interface Props {
     options: Options;

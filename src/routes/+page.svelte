@@ -6,9 +6,9 @@
   
   import TileManager from '$lib/Components/tileManager.svelte';
   
-  import { fetchImages } from '$lib/Utils/fetchImages';
-  import { useImage } from '$lib/Utils/useImage';
-  import { applyImage } from '$lib/Utils/useImage';
+  import { fetchImages } from '$lib/utils/fetchImages';
+  import { useImage } from '$lib/utils/useImage';
+  import { applyImage } from '$lib/utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
   import { editMode, toggleEditMode } from '$lib/stores/editMode';

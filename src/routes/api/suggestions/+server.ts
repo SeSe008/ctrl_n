@@ -37,7 +37,7 @@ export async function POST({ request }: { request: Request }) {
   
   const query: string = `${suggestionEndpoint.searchParam}${encodeURIComponent(queryText)}`;   
   const extras: string = suggestionEndpoint.extras.join('&');
-  const url: string = `${suggestionEndpoint.endpoint}?${query}&${extras}`
+  const url: string = `${suggestionEndpoint.endpoint}?${query}&${extras}`;
   
   try {
     const res = await fetch(url);

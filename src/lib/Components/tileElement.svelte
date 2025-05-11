@@ -6,15 +6,16 @@
   import type { Tile } from '$lib/types/tiles';
 
   import { editMode } from '$lib/stores/editMode';
-  import type { Element } from '$lib/types/settings';
+  import type { Element } from '$lib/types/settings/settings';
   
-  import { setClockType, clockType } from '$lib/stores/clockType';
+  import { setClockType, clockType } from '$lib/stores/widgets/clockType';
 
-  import { setSearchEngineName, searchEngineName } from '$lib/stores/searchEngine';
+  import { setSearchEngineName, searchEngineName } from '$lib/stores/widgets/searchEngine';
   import { searchEngines } from '$lib/constants/searchEngines';
   
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
+  import type { SearchEngines } from '$lib/types/widgets/searchEngines';
   
   interface Props {
     managerId: number;
@@ -135,7 +136,7 @@
       {
 	elementType: 'select',
 	elementOptions: {
-	  selectOptions: Object.entries(searchEngines).map(
+	  selectOptions: Object.entries(searchEngines as SearchEngines).map(
 	    ([value, { name: label, icon }]) =>
 	    ({ label, icon, value })
 	  ),
