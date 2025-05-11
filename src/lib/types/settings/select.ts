@@ -6,7 +6,7 @@ interface SelectOption {
 
 export interface Options {
   selectOptions: SelectOption[];
-  changeFunction: (_value: any, _: HTMLSelectElement) => void;
+  onChange: (_value: any) => void;
   defaultValue?: () => any;
   label?: string;
 }

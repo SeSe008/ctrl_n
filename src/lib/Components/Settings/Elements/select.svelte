@@ -7,21 +7,16 @@
   }
 
   const { options }: Props = $props();
-  const { selectOptions, changeFunction, defaultValue, label } = options;
+  const { selectOptions, onChange, defaultValue, label } = options;
 
   let selectValue = $state(defaultValue?.() ?? undefined);
-  let selectElement: HTMLSelectElement;
-
-  function update() {
-    if (selectElement && selectValue) changeFunction(selectValue, selectElement);
-  }
 </script>
 
 <div class="settings_select">
   {#if label}
     <span>{label}</span>
   {/if}
-  <select bind:this={selectElement} bind:value={selectValue} onchange={update}>
+  <select bind:value={selectValue} onchange={() => {if (selectValue !== undefined) onChange(selectValue);}}>
     {#each selectOptions as selectOption, i (i)}
       <option value={(selectOption.value) ? selectOption.value : i}>
 	{#if selectOption.icon}

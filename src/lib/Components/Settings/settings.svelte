@@ -94,6 +94,53 @@
       color: inherit;
       font-size: calc(8px + 1vmin);
     }
+
+    #settings input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 6rem;
+      height: 1.2rem;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    #settings input[type="range"]::-webkit-slider-runnable-track {
+      height: .4rem;
+      background-color: rgb(var(--c1));
+      border: 1px solid rgb(var(--c2));
+      border-radius: .3rem;
+    }
+
+    #settings input[type="range"]::-moz-range-track {
+      height: .4rem;
+      background-color: rgb(var(--c1));
+      border: 1px solid rgb(var(--c2));
+      border-radius: .3rem;
+    }
+
+    #settings input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 1rem;
+      height: 1rem;
+      margin-top: -.35rem;
+      background-color: rgb(var(--c2));
+      border: 1px solid rgb(var(--c2));
+      border-radius: 50%;
+    }
+
+    #settings input[type="range"]::-moz-range-thumb {
+      width: 1rem;
+      height: 1rem;
+      background-color: rgb(var(--c2));
+      border: 1px solid rgb(var(--c2));
+      border-radius: 50%;
+    }
+
+    #settings input[type="range"]:focus {
+      outline: none;
+    }
   }
 
   #elements {

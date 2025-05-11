@@ -14,18 +14,8 @@ export function updateManager(manager: TileManager, id: number) {
 
 export function changeTile(managerId: number, tileId: number, element: number) {
   globalTiles.update(current => {
-    return current.map((manager, idx) => {
-      if (idx !== managerId) {
-        return manager;
-      }
-
-      return {
-        ...manager,
-        tiles: manager.tiles.map((tile, i) =>
-          i === tileId ? { ...tile, element } : tile
-        )
-      };
-    });
+    if (current[managerId] && current[managerId].tiles[tileId]) current[managerId].tiles[tileId].element = element;
+    return current;
   });
 }
 
@@ -46,6 +36,33 @@ export function removeManager() {
   globalTiles.update(current => {
     const newGlobal = [...current.slice(0, -1)];
     return newGlobal;
+  });
+}
+
+export function addTile(managerId: number) {
+  globalTiles.update(current => {
+    if (current[managerId]) current[managerId].tiles = [
+      ...current[managerId].tiles,
+      {
+	pos: current[managerId].tiles.length,
+	element: 0
+      }
+    ];
+    return current;
+  });
+}
+
+export function removeTile(managerId: number) {
+  globalTiles.update(current => {
+    if (current[managerId] && current[managerId].tiles.length > 1) current[managerId].tiles = [ ...current[managerId].tiles.slice(0, -1) ];
+    return current;
+  });
+}
+
+export function changeManagerHeight(managerId: number, height: number) {
+  globalTiles.update(current => {
+    if (current[managerId]) current[managerId].height = height;
+    return current;
   });
 }
 

@@ -8,7 +8,7 @@ import Bookmarks from '$lib/Components/Widgets/bookmarks.svelte';
 import type { TileDef } from "$lib/types/tiles";
 
 export const tileDefs: TileDef[] = [
-  { name: "none", label: 'None', icon: '' },
+  { name: "spacer", label: 'spacer', icon: '' },
   { name: "search_bar", label: 'Search Bar', icon: 'mdi:search', component: SearchBar },
   { name: "clock", label: 'Clock', icon: 'mdi:clock-outline', component: Clock },
   { name: "rss_feed", label: 'Rss-Feed', icon: 'material-symbols:news', component: RssFeed },

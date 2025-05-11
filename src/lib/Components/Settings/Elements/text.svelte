@@ -60,4 +60,12 @@
   .margin_vert {
     margin: 1rem 0;
   }
+
+  .margin_top {
+    margin-top: 1rem;
+  }
+
+  .margin_bottom {
+    margin-bottom: 1rem;
+  }
 </style>

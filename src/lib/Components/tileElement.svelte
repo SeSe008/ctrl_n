@@ -2,7 +2,7 @@
   import { tileDefs } from '$lib/constants/tileDefs';
   import Settings from './Settings/settings.svelte';
 
-  import { changeTile } from '$lib/stores/tiles';
+  import { changeTile, addTile, removeTile, globalTiles, changeManagerHeight } from '$lib/stores/tiles';
   import type { Tile } from '$lib/types/tiles';
 
   import { editMode } from '$lib/stores/editMode';
@@ -34,22 +34,86 @@
 
   const tileSettings: Element[] = [
     {
-      elementType: "text",
+      elementType: 'text',
       elementOptions: {
-	text: "Tile Settings",
-	classes: ["large", "center", "strong"]
+	text: 'Tile Settings',
+	classes: ['large', 'center', 'strong']
       }
     },
     {
-      elementType: "select",
+      elementType: 'select',
       elementOptions: {
 	selectOptions: tileDefs.map(({ label, icon }) => { return { label, icon }; }),	
-	changeFunction: (value: number) => {
+	onChange: (value: number) => {
 	  selectedTile = value;
 	  changeTile(managerId, tileId, selectedTile);
 	},
 	defaultValue: () => selectedTile,
-	label: "Widget Type:"
+	label: 'Widget Type:'
+      }
+    }
+  ];
+
+  const tileManagerSettings: Element[] = [
+    {
+      elementType: 'text',
+      elementOptions: {
+	text: 'Row Settings',
+	classes: ['large', 'center', 'strong', 'margin_vert']
+      }
+    },
+    {
+      elementType: 'buttons',
+      elementOptions: {
+	buttons: [
+	  {
+	    text: 'Add Element',
+	    icon: 'gg:add',
+	    onClick: () => addTile(managerId)
+	  },
+	  {
+	    text: 'Remove Element',
+	    icon: 'gg:remove',
+	    onClick: () => removeTile(managerId)
+	  }
+	]
+      }
+    },
+    {
+      elementType: 'text',
+      elementOptions: {
+	text: 'Row-Height:',
+	classes: ['medium', 'left', 'margin_vert']
+      }
+    },
+    {
+      elementType: 'range',
+      elementOptions: {
+	min: 0,
+	max: 5,
+	step: 0.1,
+	onInput: (value: number) => {
+	  changeManagerHeight(managerId, value);
+	},
+	defaultValue: () => $globalTiles[managerId].height,
+	specialValues: {
+	  0: 'Fit-Content'
+	},
+	valueLabel: 'Preferred height:',
+	unit: 'fr'
+      }
+    },
+    {
+      elementType: 'buttons',
+      elementOptions: {
+	buttons: [
+	  {
+	    onClick: () => {
+	      changeManagerHeight(managerId, 1);
+	    },
+	    text: 'Reset Height'
+	  }
+	]
       }
     }
   ];
@@ -59,7 +123,7 @@
   }
 
   const defaultWidgetsProps: SettingElements = {
-    none: [],
+    spacer: [],
     search_bar: [
       {
 	elementType: 'text',
@@ -75,7 +139,7 @@
 	    ([value, { name: label, icon }]) =>
 	    ({ label, icon, value })
 	  ),
-	  changeFunction(value: string) {
+	  onChange: (value: string) => {
 	    setSearchEngineName(value);
 	  },
 	  defaultValue: () => $searchEngineName,
@@ -85,24 +149,24 @@
     ],
     clock: [
       {
-	elementType: "text",
+	elementType: 'text',
 	elementOptions: {
-	  text: "Clock-Options",
-	  classes: ["big", "center", "strong", "margin_vert"]
+	  text: 'Clock-Options',
+	  classes: ['big', 'center', 'strong', 'margin_vert']
 	}
       },
       {
-	elementType: "select",
+	elementType: 'select',
 	elementOptions: {
 	  selectOptions: [
-	    { label: "Digital", value: "digital" },
-	    { label: "Analog", value: "analog" }
+	    { label: 'Digital', value: 'digital' },
+	    { label: 'Analog', value: 'analog' }
 	  ],
-	  changeFunction: (value: string) => {
+	  onChange: (value: string) => {
 	    setClockType(value);
 	  },
 	  defaultValue: () => $clockType,
-	  label: "Clock-Type:"
+	  label: 'Clock-Type:'
 	}
       }
     ],
@@ -114,7 +178,7 @@
 
   const elementPropsList = Object.fromEntries(
     Object.entries(defaultWidgetsProps).map(
-      ([key, elems]) => [key, [...tileSettings, ...elems]] as [string, Element[]]
+      ([key, elems]) => [key, [...tileSettings, ...elems, ...tileManagerSettings]] as [string, Element[]]
     )
   );
 </script>
@@ -145,8 +209,8 @@
     gap: .5rem;
     align-items: center;
     position: relative;
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
   }
 
   /* Custom Element Rules */
@@ -155,6 +219,7 @@
       overflow: hidden;
     }
   }
+
   #inputs {
     display: flex;
     flex-direction: row;
