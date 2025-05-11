@@ -211,13 +211,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-  }
-
-  /* Custom Element Rules */
-  :global {
-    .tile-element:not(:has(#search)) {
-      overflow: hidden;
-    }
+    overflow: hidden;
   }
 
   #inputs {

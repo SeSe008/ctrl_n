@@ -21,9 +21,7 @@
 <div class="tile-manager" bind:this={tileManager}>
   {#if manager}
     {#each manager.tiles as tile, i (i)}
-      <div id="element">
-	<TileElement managerId={id} tileId={i} tile={tile} />
-      </div>
+      <TileElement managerId={id} tileId={i} tile={tile} />
     {/each}
   {/if}
 </div>
@@ -35,9 +33,6 @@
     
     height: 100%;
     width: 100%;
-  }
-
-  #element {
-    flex-grow: 1;
+    overflow: hidden;
   }
 </style>
