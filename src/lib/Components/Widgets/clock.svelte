@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { clockType, initClockType } from '$lib/stores/clockType';
+  import { clockType, initClockType } from '$lib/stores/widgets/clockType';
  
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

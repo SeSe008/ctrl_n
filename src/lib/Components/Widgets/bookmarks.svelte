@@ -2,56 +2,28 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
 
+  import { addBookmark, bookmarks, parseBookmarks, removeBookmark } from '$lib/stores/widgets/bookmarks';
+
   import { editMode } from '$lib/stores/editMode';
 
-  interface Bookmark {
-    name: string;
-    url: string;
-  }
-
-  type Bookmarks = {
-    [key: string]: Bookmark;
-  }
-
-  let bookmarks = $state<Bookmarks>({});
   let newBookmarkName = $state<HTMLInputElement>();
   let newBookmarkUrl = $state<HTMLInputElement>();
 
-  function addBookmark() {
+  function addNewBookmark() {
     if (newBookmarkName && newBookmarkUrl) {
-      bookmarks[newBookmarkName.value] = {
-	name: newBookmarkName.value,
-	url: newBookmarkUrl.value
-      };
-      
-      window.localStorage.setItem('savedBookmarks', JSON.stringify(bookmarks));
+      addBookmark(newBookmarkName.value, newBookmarkUrl.value);
 
       newBookmarkName.value = '';
       newBookmarkUrl.value = '';
     }
   }
 
-  function deleteBookmark(key: string) {
-    delete bookmarks[key];
-    bookmarks = { ...bookmarks };
-    window.localStorage.setItem('savedBookmarks', JSON.stringify(bookmarks));
+  function deleteBookmark(id: number) {
+    removeBookmark(id);
   }
   
   onMount(() => {
-    const raw = window.localStorage.getItem('savedBookmarks');
-    let parsed: unknown;
-    try {
-      parsed = raw ? JSON.parse(raw) : {};
-    } catch {
-      parsed = {};
-    }
-
-    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-      bookmarks = parsed as Bookmarks;
-    } else {
-      bookmarks = {};
-      window.localStorage.removeItem('savedBookmarks');
-    }
+    parseBookmarks();
   }); 
 </script>
 
@@ -62,30 +34,34 @@
     <div id="inputs">
       <input bind:this={newBookmarkName} type="text" placeholder="Bookmark Name" />
       <input bind:this={newBookmarkUrl} type="text" placeholder="Bookmark Url" />
-      <button onclick={addBookmark}>Add</button>
+      <button onclick={addNewBookmark}>Add</button>
     </div>
   {/if}
   {#if bookmarks}
-    {#each Object.entries(bookmarks) as [bookmarkKey, bookmark] (bookmarkKey) }
-      <div class="bookmark">
-	<a href={bookmark.url} target="_blank" rel="noopener noreferrer">
-	  <Icon icon="mdi:link" />
-	  {bookmark.name}
-	</a>
-	{#if $editMode}
-	  <button onclick={() => deleteBookmark(bookmarkKey)}><Icon icon="mdi:delete" /></button>
-	{/if}
-      </div>
-    {/each}
+    <div id="bookmark_list">
+      {#each $bookmarks as { name, url }, i (i) }
+	<div class="bookmark">
+	  <a href={url} target="_blank" rel="noopener noreferrer">
+	    <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
+	    <span>{name}</span>
+	  </a>
+	  {#if $editMode}
+	    <button onclick={() => deleteBookmark(i)}><Icon icon="mdi:delete" /></button>
+	  {/if}
+	</div>
+      {/each}
+    </div>
   {/if}
 </div>
-
+    
 <style>
   #bookmarks {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    grid-template-columns: 1fr;
     gap: .5rem;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     height: 100%;
     max-height: 100%;
@@ -99,9 +75,10 @@
   }
 
   #bookmarks h2 {
-    align-self: center;
+    justify-self: center;
     margin: 0;
     margin-bottom: 1vmin;
+    grid-column: 1 / -1;
     
     display: flex;
     flex-direction: row;
@@ -117,37 +94,67 @@
     background-color: rgba(var(--c1), .7);
   }
 
-  .bookmark {
+  #bookmark_list {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 
-    font-size: 2vmin;
-    padding: 0 .25rem;
+  .bookmark {
+    width: min-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    width: calc(8px + 8vmin);
+    overflow-x: hidden;
+  }
+
+  .bookmark a {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: .25rem .5rem;
+    border-radius: 1vmin;
 
     background-color: rgba(var(--c1), .7);
     color: rgb(var(--c2));
-
-    border: 1px solid rgb(var(--c2));
-    border-radius: 1vmin;
+    
+    text-decoration: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: calc(8px + 1vmin);
 
     transition: transform .2s ease-in-out;
   }
 
-  .bookmark:hover {
+  .bookmark a span {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-size: calc(8px + 1vmin);
+  }
+
+  .bookmark a:hover {
     transform: scale(1.01);
   }
 
-  .bookmark  a {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: .5rem;
-
-    text-decoration: none;
-    word-break: break-all;
-    
+  .bookmark img {
+    box-sizing: border-box;
+    background-color: white;
+    padding: .5rem;
+    border-radius: 10%;
     width: 100%;
-    color: inherit;
   }
 
   .bookmark button {
@@ -156,8 +163,10 @@
     align-items: center;
     outline: none;
     border: none;
-    background-color: transparent;
+    background-color: rgba(var(--c1), .7);
     color: rgb(var(--c2));
+    padding: .25rem;
+    border-radius: .25vmin;
     font-size: inherit;
     cursor: pointer;
   }
