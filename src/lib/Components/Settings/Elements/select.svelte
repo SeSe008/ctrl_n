@@ -1,7 +1,6 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import type { Options } from '$lib/types/settings/elements/select';
-  import { get } from 'svelte/store';
   
   interface Props {
     options: Options;
@@ -9,15 +8,13 @@
 
   const { options }: Props = $props();
   const { selectOptions, onChange, defaultValue, label } = options;
-
-  let selectValue = $state(defaultValue ? get(defaultValue) : 0);
 </script>
 
 <div class="settings_select">
   {#if label}
     <span>{label}</span>
   {/if}
-  <select bind:value={selectValue} onchange={() => onChange(selectValue)}>
+  <select bind:value={$defaultValue} onchange={(e: Event) => onChange((e.target! as HTMLSelectElement).value)}>
     {#each selectOptions as selectOption, i (i)}
       <option value={(selectOption.value) ? selectOption.value : i}>
 	{#if selectOption.icon}

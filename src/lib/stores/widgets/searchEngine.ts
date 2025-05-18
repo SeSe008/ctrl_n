@@ -12,4 +12,6 @@ export function setSearchEngineName(newEngine: string) {
 export function initSearchEngineName() {
   const stored = window.localStorage.getItem('searchEngine') || defaultSearchEngineName;
   searchEngineName.set((searchEngines[stored]) ? stored : defaultSearchEngineName);
+
+  searchEngineName.subscribe(engine => window.localStorage.setItem('searchEngine', engine));
 }

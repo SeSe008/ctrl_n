@@ -1,14 +1,15 @@
 <script lang="ts">
   import { elementComponents } from '$lib/constants/settings';
   import { settings, toggleSettings } from '$lib/stores/settings';
+  import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
 </script>
 
 {#if $settings.enabled}
   <aside id="settings">
     <div id="elements">
-      {#if $settings.selectedManager !== undefined && tileDefs[$settings.selectedManager].tileProps}
-        {#each tileDefs[$settings.selectedManager].tileProps as element, i (i)}
+      {#if $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+        {#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps as element, i (i)}
 	  {#if elementComponents[element.elementType]}
             {@const Comp = elementComponents[element.elementType]}
             <Comp options={element.elementOptions} /> 
