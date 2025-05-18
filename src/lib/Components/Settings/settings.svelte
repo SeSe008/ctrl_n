@@ -1,31 +1,28 @@
 <script lang="ts">
-  import type { Element } from '$lib/types/settings';
   import { elementComponents } from '$lib/constants/settings';
-  
-  interface Props {
-    settingsEnabled?: boolean;
-    elements: Element[];
-  }
-
-  let { settingsEnabled = $bindable(), elements }: Props = $props();
+  import { settings, toggleSettings } from '$lib/stores/settings';
 </script>
 
-<aside id="settings">
-  <div id="elements">
-    {#each elements as element, i (i)}
-      {#if elementComponents[element.elementType]}
-        {@const Comp = elementComponents[element.elementType]}
-        <Comp options={element.elementOptions} /> 
+{#if $settings.enabled}
+  <aside id="settings">
+    <div id="elements">
+      {#if $settings.elements}
+	{#each $settings.elements as element, i (i)}
+	  {#if elementComponents[element.elementType]}
+            {@const Comp = elementComponents[element.elementType]}
+            <Comp options={element.elementOptions} /> 
+	  {/if}
+	{/each}
       {/if}
-    {/each}
-  </div>
-  <div id="closeControls">
-    <button onclick={() => settingsEnabled = false}>
-      Close
-    </button>
-  </div>
-</aside>
-
+    </div>
+    <div id="closeControls">
+      <button onclick={() => toggleSettings()}>
+	Close
+      </button>
+    </div>
+  </aside>
+{/if}
+  
 <style>
   #settings {
     position: fixed;

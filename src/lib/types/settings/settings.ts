@@ -1,9 +1,16 @@
-import type { Options as TextProps } from "$lib/types/settings/text";
-import type { Options as SelectProps } from "$lib/types/settings/select";
-import type { Options as ButtonsProps } from "$lib/types/settings/buttons";
-import type { Options as RangeProps } from "$lib/types/settings/range";
+import type { Options as TextProps } from "$lib/types/settings/elements/text";
+import type { Options as SelectProps } from "$lib/types/settings/elements/select";
+import type { Options as ButtonsProps } from "$lib/types/settings/elements/buttons";
+import type { Options as RangeProps } from "$lib/types/settings/elements/range";
 
 import type { Component } from "svelte";
+
+export interface Settings {
+  enabled: boolean;
+  elements?: Element[];
+  selectedManager?: number;
+  selectedTile?: number;
+}
 
 type ElementProps = TextProps | SelectProps | ButtonsProps | RangeProps;
 

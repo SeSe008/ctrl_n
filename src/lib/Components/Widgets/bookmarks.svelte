@@ -37,7 +37,7 @@
       <button onclick={addNewBookmark}>Add</button>
     </div>
   {/if}
-  {#if bookmarks}
+  {#if $bookmarks}
     <div id="bookmark_list">
       {#each $bookmarks as { name, url }, i (i) }
 	<div class="bookmark">

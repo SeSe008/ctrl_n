@@ -1,6 +1,5 @@
 <script lang='ts'>
   import { tileDefs } from '$lib/constants/tileDefs';
-  import Settings from './Settings/settings.svelte';
 
   import { changeTile, addTile, removeTile, globalTiles, changeManagerHeight } from '$lib/stores/tiles';
   import type { Tile } from '$lib/types/tiles';
@@ -16,6 +15,7 @@
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
   import type { SearchEngines } from '$lib/types/widgets/searchEngines';
+  import { toggleSettings } from '$lib/stores/settings';
   
   interface Props {
     managerId: number;
@@ -30,8 +30,6 @@
   $effect(() => {
     SelectedComponent = tileDefs[selectedTile]?.component;
   });
-
-  let settingsEnabled = $state<boolean>(false);
 
   const tileSettings: Element[] = [
     {
@@ -193,12 +191,8 @@
 
   {#if $editMode && selectedTile !== -1}
     <div id="inputs">
-      <button onclick={() => settingsEnabled = !settingsEnabled}><Icon icon="lucide:settings" /></button>
+      <button onclick={() => toggleSettings(elementPropsList[tileDefs[selectedTile].name], managerId, tileId)}><Icon icon="lucide:settings" /></button>
     </div>
-
-    {#if settingsEnabled}
-      <Settings elements={elementPropsList[tileDefs[selectedTile].name]} bind:settingsEnabled={settingsEnabled} />
-    {/if}
   {/if}
 </div>
 

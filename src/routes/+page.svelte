@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
   
   import TileManager from '$lib/Components/tileManager.svelte';
+  import Settings from '$lib/Components/Settings/settings.svelte';
   
   import { fetchImages } from '$lib/utils/fetchImages';
   import { useImage } from '$lib/utils/useImage';
@@ -102,7 +103,7 @@
   Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>
 </div>
-
+<Settings />
 
 <style>
   :global {
