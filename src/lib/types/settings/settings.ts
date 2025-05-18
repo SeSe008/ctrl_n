@@ -7,7 +7,6 @@ import type { Component } from "svelte";
 
 export interface Settings {
   enabled: boolean;
-  elements?: Element[];
   selectedManager?: number;
   selectedTile?: number;
 }

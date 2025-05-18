@@ -1,10 +1,9 @@
 import { writable } from "svelte/store";
-import type { Element, Settings } from "$lib/types/settings/settings";
+import type { Settings } from "$lib/types/settings/settings";
 
 export const settings = writable<Settings>({ enabled: false });
 
 export function toggleSettings(
-  elements?: Element[],
   managerId?: number,
   tileId?: number
 ) {
@@ -14,10 +13,16 @@ export function toggleSettings(
     } else {
       return {
         enabled: true,
-        elements,
         selectedManager: managerId,
         selectedTile: tileId
       };
     }
+  });
+}
+
+export function setSelectedTile(selectedTile: number) {
+  settings.update(current => {
+    current.selectedTile = selectedTile;
+    return current;
   });
 }

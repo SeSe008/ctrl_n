@@ -19,9 +19,10 @@
 </script>
 
 <div class="tile-manager" bind:this={tileManager}>
+  
   {#if manager}
-    {#each manager.tiles as tile, i (i)}
-      <TileElement managerId={id} tileId={i} tile={tile} />
+    {#each manager.tiles as _, i (i)}
+      <TileElement managerId={id} tileId={i} />
     {/each}
   {/if}
 </div>

@@ -12,9 +12,9 @@ export function updateManager(manager: TileManager, id: number) {
   });
 }
 
-export function changeTile(managerId: number, tileId: number, element: number) {
-  globalTiles.update(current => {
-    if (current[managerId] && current[managerId].tiles[tileId]) current[managerId].tiles[tileId].element = element;
+export function changeTile(managerId: number | undefined, tileId: number | undefined, element: number) {
+  if (managerId !== undefined && tileId !== undefined) globalTiles.update(current => {
+    if (current[managerId] !== undefined && current[managerId].tiles[tileId] !== undefined) current[managerId].tiles[tileId].element = element;
     return current;
   });
 }
@@ -39,8 +39,8 @@ export function removeManager() {
   });
 }
 
-export function addTile(managerId: number) {
-  globalTiles.update(current => {
+export function addTile(managerId: number | undefined) {
+  if (managerId !== undefined) globalTiles.update(current => {
     if (current[managerId]) current[managerId].tiles = [
       ...current[managerId].tiles,
       {
@@ -52,15 +52,15 @@ export function addTile(managerId: number) {
   });
 }
 
-export function removeTile(managerId: number) {
-  globalTiles.update(current => {
+export function removeTile(managerId: number | undefined) {
+  if (managerId !== undefined) globalTiles.update(current => {
     if (current[managerId] && current[managerId].tiles.length > 1) current[managerId].tiles = [ ...current[managerId].tiles.slice(0, -1) ];
     return current;
   });
 }
 
-export function changeManagerHeight(managerId: number, height: number) {
-  globalTiles.update(current => {
+export function changeManagerHeight(managerId: number | undefined, height: number) {
+  if (managerId !== undefined) globalTiles.update(current => {
     if (current[managerId]) current[managerId].height = height;
     return current;
   });

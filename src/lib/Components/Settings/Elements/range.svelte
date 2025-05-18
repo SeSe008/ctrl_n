@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { Options } from "$lib/types/settings/elements/range";
+  import type { Options } from '$lib/types/settings/elements/range';
+  import { get } from 'svelte/store';
 
   interface Props {
     options: Options;
@@ -8,7 +9,7 @@
   const { options }: Props = $props();
   const { min, max, step, onInput, defaultValue, specialValues, valueLabel, unit, label } = options;
 
-  let rangeValue: number = $state(defaultValue?.() || 0);
+  let rangeValue: number = $state(defaultValue ? get(defaultValue) : 0);
 </script>
 
 <div class="settings_range">

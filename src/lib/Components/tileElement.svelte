@@ -1,185 +1,24 @@
-<script lang='ts'>
+<script lang="ts">
+  import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
-
-  import { changeTile, addTile, removeTile, globalTiles, changeManagerHeight } from '$lib/stores/tiles';
-  import type { Tile } from '$lib/types/tiles';
-
+  import { toggleSettings } from '$lib/stores/settings';
   import { editMode } from '$lib/stores/editMode';
-  import type { Element } from '$lib/types/settings/settings';
-  
-  import { setClockType, clockType } from '$lib/stores/widgets/clockType';
-
-  import { setSearchEngineName, searchEngineName } from '$lib/stores/widgets/searchEngine';
-  import { searchEngines } from '$lib/constants/searchEngines';
   
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
-  import type { SearchEngines } from '$lib/types/widgets/searchEngines';
-  import { toggleSettings } from '$lib/stores/settings';
   
   interface Props {
     managerId: number;
     tileId: number;
-    tile: Tile
   }
   
-  let { managerId, tileId, tile }: Props = $props();
+  let { managerId, tileId }: Props = $props();
 
-  let selectedTile = $state<number>(tile.element);
+  let selectedTile = $globalTiles[managerId]?.tiles[tileId]?.element;
   let SelectedComponent = $state<Component>();
-  $effect(() => {
-    SelectedComponent = tileDefs[selectedTile]?.component;
+  globalTiles.subscribe(tile => {
+    SelectedComponent = tileDefs[tile[managerId]?.tiles[tileId]?.element]?.component;
   });
-
-  const tileSettings: Element[] = [
-    {
-      elementType: 'text',
-      elementOptions: {
-	text: 'Tile Settings',
-	classes: ['large', 'center', 'strong']
-      }
-    },
-    {
-      elementType: 'select',
-      elementOptions: {
-	selectOptions: tileDefs.map(({ label, icon }) => { return { label, icon }; }),	
-	onChange: (value: number) => {
-	  selectedTile = value;
-	  changeTile(managerId, tileId, selectedTile);
-	},
-	defaultValue: () => selectedTile,
-	label: 'Widget Type:'
-      }
-    }
-  ];
-
-  const tileManagerSettings: Element[] = [
-    {
-      elementType: 'text',
-      elementOptions: {
-	text: 'Row Settings',
-	classes: ['large', 'center', 'strong', 'margin_vert']
-      }
-    },
-    {
-      elementType: 'buttons',
-      elementOptions: {
-	buttons: [
-	  {
-	    text: 'Add Element',
-	    icon: 'gg:add',
-	    onClick: () => addTile(managerId)
-	  },
-	  {
-	    text: 'Remove Element',
-	    icon: 'gg:remove',
-	    onClick: () => removeTile(managerId)
-	  }
-	]
-      }
-    },
-    {
-      elementType: 'text',
-      elementOptions: {
-	text: 'Row-Height:',
-	classes: ['medium', 'left', 'margin_vert']
-      }
-    },
-    {
-      elementType: 'range',
-      elementOptions: {
-	min: 0,
-	max: 5,
-	step: 0.1,
-	onInput: (value: number) => {
-	  changeManagerHeight(managerId, value);
-	},
-	defaultValue: () => $globalTiles[managerId].height,
-	specialValues: {
-	  0: 'Fit-Content'
-	},
-	valueLabel: 'Preferred height:',
-	unit: 'fr'
-      }
-    },
-    {
-      elementType: 'buttons',
-      elementOptions: {
-	buttons: [
-	  {
-	    onClick: () => {
-	      changeManagerHeight(managerId, 1);
-	    },
-	    text: 'Reset Height'
-	  }
-	]
-      }
-    }
-  ];
-  
-  interface SettingElements {
-    [key: string]: Element[];
-  }
-
-  const defaultWidgetsProps: SettingElements = {
-    spacer: [],
-    search_bar: [
-      {
-	elementType: 'text',
-	elementOptions: {
-	  text: 'Search-Options',
-	  classes: ['big', 'center', 'strong', 'margin_vert']
-	}
-      },
-      {
-	elementType: 'select',
-	elementOptions: {
-	  selectOptions: Object.entries(searchEngines as SearchEngines).map(
-	    ([value, { name: label, icon }]) =>
-	    ({ label, icon, value })
-	  ),
-	  onChange: (value: string) => {
-	    setSearchEngineName(value);
-	  },
-	  defaultValue: () => $searchEngineName,
-	  label: 'Search Engine:'
-	}
-      }
-    ],
-    clock: [
-      {
-	elementType: 'text',
-	elementOptions: {
-	  text: 'Clock-Options',
-	  classes: ['big', 'center', 'strong', 'margin_vert']
-	}
-      },
-      {
-	elementType: 'select',
-	elementOptions: {
-	  selectOptions: [
-	    { label: 'Digital', value: 'digital' },
-	    { label: 'Analog', value: 'analog' }
-	  ],
-	  onChange: (value: string) => {
-	    setClockType(value);
-	  },
-	  defaultValue: () => $clockType,
-	  label: 'Clock-Type:'
-	}
-      }
-    ],
-    rss_feed: [],
-    weather: [],
-    calculator: [],
-    bookmarks: []
-  };
-
-  const elementPropsList = Object.fromEntries(
-    Object.entries(defaultWidgetsProps).map(
-      ([key, elems]) => [key, [...tileSettings, ...elems, ...tileManagerSettings]] as [string, Element[]]
-    )
-  );
 </script>
 
 <div class="tile-element">
@@ -191,7 +30,7 @@
 
   {#if $editMode && selectedTile !== -1}
     <div id="inputs">
-      <button onclick={() => toggleSettings(elementPropsList[tileDefs[selectedTile].name], managerId, tileId)}><Icon icon="lucide:settings" /></button>
+      <button onclick={() => toggleSettings(managerId, tileId)}><Icon icon="lucide:settings" /></button>
     </div>
   {/if}
 </div>

@@ -1,3 +1,5 @@
+import type { Readable } from "svelte/store";
+
 interface SelectOption {
   label: string;
   icon?: string;
@@ -7,7 +9,7 @@ interface SelectOption {
 export interface Options {
   selectOptions: SelectOption[];
   onChange: (_value: any) => void;
-  defaultValue?: () => any;
+  defaultValue?: Readable<any>;
   label?: string;
 }
 
