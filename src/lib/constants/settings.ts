@@ -30,7 +30,14 @@ export const tileSettings: Element[] = [
     elementOptions: {
       selectOptions: tileMetadata.map(({ label, icon }) => { return { label, icon }; }),	
       onChange: (value: number) => changeTile(get(settings).selectedManager, get(settings).selectedTile, value),
-      defaultValue: derived(settings, ($settings) => $settings.selectedTile),
+      defaultValue: derived(
+	[ globalTiles, settings ],
+	( [ $globalTiles, $settings ] ) => {
+	  const mgr = $settings.selectedManager;
+	  const tle = $settings.selectedTile;
+	  return mgr !== undefined && tle !== undefined ? $globalTiles[mgr].tiles[tle].element : 0;
+	}
+      ),
       label: 'Widget Type:'
     }
   }
@@ -81,7 +88,7 @@ export const tileManagerSettings: Element[] = [
 	[ globalTiles, settings ],
 	( [ $globalTiles, $settings ] ) => {
 	  const mgr = $settings.selectedManager;
-	  return mgr ? $globalTiles[ mgr ].height : 0;
+	  return mgr !== undefined ? $globalTiles[mgr].height : 0;
 	}
       ),
       specialValues: {
