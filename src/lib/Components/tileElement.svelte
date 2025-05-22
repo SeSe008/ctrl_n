@@ -38,9 +38,8 @@
 <style>
   .tile-element {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -48,9 +47,11 @@
   }
   
   #inputs {
+    justify-self: center;
     display: flex;
     flex-direction: row;
     margin: .25rem;
+    height: 2rem;
   }
   
   #inputs button {
@@ -60,7 +61,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: .125rem;
     border-radius: .3rem;
     border: 1px solid rgb(var(--c2));
     background-color: rgb(var(--c1));

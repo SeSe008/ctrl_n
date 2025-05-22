@@ -248,7 +248,7 @@
   #search {
     position: relative;
     width: 100%;
-    padding: 0 5vmax;
+    height: min-content;
   }
 
   #inputs {

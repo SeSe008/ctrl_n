@@ -56,7 +56,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: calc(100% - 2rem);
+    height: 100%;
     background-color: rgba(var(--c1), .3);
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
