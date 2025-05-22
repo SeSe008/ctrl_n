@@ -1,20 +1,24 @@
 import type { Element, ElementComponents } from '$lib/types/settings/settings';
 
 import { derived, get } from 'svelte/store';
-import { addTile, changeManagerHeight, changeTile, globalTiles, removeTile } from '$lib/stores/tiles';
-import { settings } from '$lib/stores/settings';
+import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles } from '$lib/stores/tiles';
+import { settings } from '$lib/stores/settings/settings';
 import { tileMetadata } from '$lib/constants/tileMetadata';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
 import Buttons from '$lib/Components/Settings/Elements/buttons.svelte';
 import Range from '$lib/Components/Settings/Elements/range.svelte';
+import TextInput from '$lib/Components/Settings/Elements/textInput.svelte';
+import Group from '$lib/Components/Settings/Elements/group.svelte';
 
 export const elementComponents: ElementComponents = {
   text: Text,
   select: Select,
   buttons: Buttons,
-  range: Range
+  range: Range,
+  textInput: TextInput,
+  group: Group,
 };
 
 export const tileSettings: Element[] = [

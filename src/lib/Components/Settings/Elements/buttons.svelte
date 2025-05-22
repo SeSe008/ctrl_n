@@ -35,6 +35,7 @@
 
   .buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: .5rem;
   }
 

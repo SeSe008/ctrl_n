@@ -7,6 +7,10 @@ export function addBookmark(name: string, url: string) {
   if (!url.startsWith("http")) {
     url = "http://" + url;
   }
+
+  if (name === undefined) {
+    name = url;
+  }
   
   bookmarks.update(current => {
     return [ ...current, { name, url } ];

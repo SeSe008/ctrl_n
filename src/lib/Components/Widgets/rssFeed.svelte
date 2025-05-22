@@ -2,15 +2,13 @@
   import DOMPurify from "dompurify";
   import { onMount } from "svelte";
 
-  import { editMode } from "$lib/stores/editMode";
   import type { Article } from "$lib/types/widgets/rss";
+  import { initRssUrl, rssUrl } from "$lib/stores/widgets/rssUrl";
   
   let articles = $state<Article[]>([]);
   let error = $state<string>();
 
-  async function parseRss() {
-    const url = window.localStorage.getItem('rssURL') || ''; 
-    
+  async function parseRss(url: string) {
     const resp = await fetch('/api/rss', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -26,45 +24,28 @@
     }
   }
 
-  let rssURL = $state<HTMLInputElement>();
-  
-  function changeRss() {
-    if (rssURL) {
-      window.localStorage.setItem('rssURL', rssURL.value);
 
-      parseRss();
-    }
-  }
+  rssUrl.subscribe(url => parseRss(url));
 
-  onMount(() => {
-    parseRss();
-  });
+  onMount(initRssUrl);
 </script>
 
 <div id="rss-feed">
-  {#if $editMode}
+  <div id="articles">
     <h2>Rss Feed</h2>
-    <div id='inputs'>
-      <input bind:this={rssURL} type="text" placeholder="New RSS Url" />
-      <button onclick={changeRss}>Change</button>
-    </div>
-  {:else}
-    <div id="articles">
-      <h2>Rss Feed</h2>
-      {#each articles as article (article)}
-	<a href={article.link} target="_blank">
-	  <div class="article">
-	    <h3>{article.title}</h3>
-	    {#if article.imageUrl}
-	      <img src={article.imageUrl} alt={article.title} />
-	    {/if}
-	    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+    {#each articles as article (article)}
+      <a href={article.link} target="_blank">
+	<div class="article">
+	  <h3>{article.title}</h3>
+	  {#if article.imageUrl}
+	    <img src={article.imageUrl} alt={article.title} />
+	  {/if}
+	  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	    <div>{@html DOMPurify.sanitize(article.desc)}</div>
-	  </div>
-	</a>
-      {/each}
-    </div>
-  {/if}
+	</div>
+      </a>
+    {/each}
+  </div>
   {#if error}
     <div class="error">Error parsing RSS: {error}</div>
   {/if}
@@ -74,8 +55,8 @@
   #rss-feed {
     display: flex;
     flex-direction: column;
-    height: 100%;
     width: 100%;
+    height: calc(100% - 2rem);
     background-color: rgba(var(--c1), .3);
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
@@ -103,10 +84,6 @@
     background-color: rgba(var(--c1), .7);
   }
 
-  #rss-feed > h2 {
-    margin-top: 1rem;
-  }
-  
   #articles {
     display: grid;
     gap: .3rem;
@@ -183,46 +160,6 @@
 
   :global(.article a) {
     color: inherit;
-  }
-
-  #inputs {
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    width: 100%;
-    padding: 1rem;
-    box-sizing: border-box;
-  }
-
-  #inputs > input {
-    outline: none;
-    width: 100%;
-    padding: .25rem;
-    font-size: calc(5px + .75vmin);
-    border-radius: .5rem 0 0 .5rem;
-    border: 1px solid rgb(var(--c2));
-    border-right: none;
-    color: rgb(var(--c2));
-    background-color: rgb(var(--c1));
-  }
-
-  #inputs > input::placeholder {
-    color: rgb(var(--c2));
-  }
-
-  #inputs > button {
-    border-radius: 0 .5rem .5rem 0;
-    border: 1px solid rgb(var(--c2));
-    border-left: none;
-    outline: none;
-    color: rgb(var(--c2));
-    background-color: rgb(var(--c3));
-    cursor: pointer;
-    font-size: calc(5px + .75vmin);
-    padding: 0 .25rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
   }
 
   .error {

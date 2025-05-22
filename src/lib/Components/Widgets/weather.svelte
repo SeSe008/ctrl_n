@@ -1,6 +1,7 @@
 <script lang="ts">
-  import Icon from "@iconify/svelte";
-  import { editMode } from "$lib/stores/editMode";
+  import Icon from '@iconify/svelte';
+  import { initWeatherLoaction, weatherLocation } from '$lib/stores/widgets/weatherLocation';
+  import { onMount } from 'svelte';
 
   interface Weather {
     name: string;
@@ -15,23 +16,22 @@
     };
   }
 
-  let location = $state<string>();
   let weather = $state<Weather>();
+  let error = $state<string>();
   
-  async function fetchWeather() {
-    if (location) {
-      if (location.length > 0) window.localStorage.setItem('weatherLocation', location);
+  async function fetchWeather(location: string) {
+    const resp = await fetch('/api/weather', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ city: location })
+    });
 
-      const resp = await fetch('/api/weather', {
-	method: 'POST',
-	headers: { 'Content-Type': 'application/json' },
-	body: JSON.stringify({ city: window.localStorage.getItem('weatherLocation') || '' })
-      });
-
-      if (resp.status === 500) return;
-      
-      weather = await resp.json();
+    if (resp.status !== 200) {
+      error = (await resp.json()).error;
+      return;
     }
+
+    weather = await resp.json();
   }
 
   function capitalizeWords(sentence: string): string {
@@ -45,11 +45,13 @@
       .join(' ');
   }
 
-  fetchWeather();
+  onMount(initWeatherLoaction);
+
+  weatherLocation.subscribe(loc => { if (loc ) fetchWeather(loc); });
 </script>
 
 <div id="weather">
-  {#if weather}
+  {#if weather && !error}
     <div id="properties">
       <img alt="Weather Icon" src={`https://openweathermap.org/img/wn/${weather.weather[0]?.icon}@2x.png`} />
       <span id="location">{weather.name}</span>
@@ -59,12 +61,9 @@
 	<span id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
       </div>
     </div>
-  {/if}
-
-  {#if $editMode || !weather}
-    <div id="inputs">
-      <input type="text" bind:value={location} placeholder="New Location" />
-      <button onclick={fetchWeather}>Get Weather</button>
+  {:else}
+    <div id="info">
+      {error ? error : 'Could not load weather. Try setting a new location in the settings.'}
     </div>
   {/if}
 </div>
@@ -148,45 +147,17 @@
     font-size: calc(8px + 3vh);
     height: min-content;
   }
-
-  #inputs {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: row;
-    justify-content: stretch;
-    width: 100%;
-  }
-
-  #inputs > input {
-    outline: none;
-    width: 100%;
-    padding: .25rem;
-    font-size: calc(5px + .75vmin);
-    border-radius: .5rem 0 0 .5rem;
+  
+  #info {
+    flex-grow: 1;
+    box-sizing: border-box;
+    padding: .5rem;
+    font-size: calc(8px + 1vmin);
+    text-align: center;
+    border-radius: .5rem;
     border: 1px solid rgb(var(--c2));
-    border-right: none;
     color: rgb(var(--c2));
     background-color: rgb(var(--c1));
-  }
-
-  #inputs > input::placeholder {
-    color: rgb(var(--c2));
-  }
-
-  #inputs > button {
-    border-radius: 0 .5rem .5rem 0;
-    border: 1px solid rgb(var(--c2));
-    border-left: none;
-    outline: none;
-    color: rgb(var(--c2));
-    background-color: rgb(var(--c3));
-    cursor: pointer;
-    font-size: calc(5px + .75vmin);
-    padding: 0 .25rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    white-space: nowrap;
   }
 </style>
 

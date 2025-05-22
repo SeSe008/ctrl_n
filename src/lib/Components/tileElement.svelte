@@ -1,7 +1,7 @@
 <script lang="ts">
   import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
-  import { toggleSettings } from '$lib/stores/settings';
+  import { toggleSettings } from '$lib/stores/settings/settings';
   import { editMode } from '$lib/stores/editMode';
   
   import Icon from '@iconify/svelte';
@@ -37,21 +37,20 @@
 
 <style>
   .tile-element {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    gap: .5rem;
     align-items: center;
-    position: relative;
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
-
+  
   #inputs {
     display: flex;
     flex-direction: row;
-    margin-bottom: .25rem;
+    margin: .25rem;
   }
   
   #inputs button {

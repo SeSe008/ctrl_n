@@ -1,4 +1,4 @@
-import type { SearchEngines } from "$lib/types/searchEngines";
+import type { SearchEngines } from '$lib/types/widgets/searchEngines';
 
 export const searchEngines: SearchEngines = {
   'ecosia': {

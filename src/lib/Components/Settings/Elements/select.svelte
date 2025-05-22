@@ -1,26 +1,27 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import type { Options } from '$lib/types/settings/elements/select';
-  import { readable, get } from 'svelte/store';
-  import type { Readable } from 'svelte/store';
+  import { get } from 'svelte/store';
   
   interface Props {
     options: Options;
   }
 
   const { options }: Props = $props();
-  const { selectOptions, onChange, defaultValue, label } = options;
+  const { selectOptions, store, onChange, defaultValue, label } = options;
 
-  const _default: Readable<number> = defaultValue ?? readable(0);
-  
-  let selected: number = $state(get(_default));
+  let selectValue: number = $state(defaultValue ? get(defaultValue) : 0);
+
+  $effect(() => {
+    if (store) store.update(() => selectValue);
+  });
 </script>
 
 <div class="settings_select">
   {#if label}
     <span>{label}</span>
   {/if}
-  <select bind:value={selected} onchange={() => onChange(selected)}>
+  <select bind:value={selectValue} onchange={() => onChange?.(selectValue)}>
     {#each selectOptions as selectOption, i (i)}
       <option value={(selectOption.value) ? selectOption.value : i}>
 	{#if selectOption.icon}

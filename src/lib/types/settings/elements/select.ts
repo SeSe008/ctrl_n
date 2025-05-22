@@ -1,4 +1,4 @@
-import type { Readable } from "svelte/store";
+import type { Readable, Writable } from "svelte/store";
 
 interface SelectOption {
   label: string;
@@ -8,7 +8,8 @@ interface SelectOption {
 
 export interface Options {
   selectOptions: SelectOption[];
-  onChange: (_value: any) => void;
+  store?: Writable<any>;
+  onChange?: (_value: any) => void;
   defaultValue?: Readable<any>;
   label?: string;
 }

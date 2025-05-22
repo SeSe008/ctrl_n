@@ -68,10 +68,11 @@ The full privacy statement is located [here](https://newtab.se-008.net/privacy).
 
 ## Roadmap
 
-Elements willnot follow chronological order
+Elements will not follow chronological order
 - [x] All Elements are Tilable
 - [x] Vertical Tiling
-- [ ] Adaptable Settings-Component
+- [x] Adaptable Settings-Component
+- [ ] Settings-creation helper-functions
 - [ ] CSS-Rework for compatibility purposes 
 - [x] Tile-Manager-Resizing
 - [ ] Custom Search Engines
@@ -87,7 +88,7 @@ Future widget ideas:
 - ToDo
 - Music Controller with Spotify/YouTube integration
 - Calendar
-- Social-Media Feed (Reddit/BlueSky)
+- Social-Media Feed (Reddit/X/BlueSky)
 - Daily Facts/Trivia
 - Custom Widgets
 - Give me ideas :)

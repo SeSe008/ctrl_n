@@ -7,14 +7,18 @@
   }
   
   const { options }: Props = $props();
-  const { min, max, step, onInput, defaultValue, specialValues, valueLabel, unit, label } = options;
+  const { min, max, step, store, onInput, defaultValue, specialValues, valueLabel, unit, label } = options;
 
   let rangeValue: number = $state(defaultValue ? get(defaultValue) : 0);
+
+  $effect(() => {
+    if (store) store.update(() => rangeValue);
+  });
 </script>
 
 <div class="settings_range">
   {label}
-  <input type="range" bind:value={rangeValue} min={min} max={max} step={step} oninput={() => onInput(rangeValue)} />
+  <input type="range" bind:value={rangeValue} min={min} max={max} step={step} oninput={() => onInput?.(rangeValue)} />
   <div>
     {valueLabel}
     <span>

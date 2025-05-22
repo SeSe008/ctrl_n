@@ -1,6 +1,6 @@
 <script lang="ts">
   import { elementComponents } from '$lib/constants/settings';
-  import { settings, toggleSettings } from '$lib/stores/settings';
+  import { settings, toggleSettings } from '$lib/stores/settings/settings';
   import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
 </script>
@@ -139,6 +139,26 @@
 
     #settings input[type="range"]:focus {
       outline: none;
+    }
+
+    #settings input[type="text"] {
+      appearance: base-select;
+      
+      width: max-content;
+      height: min-content;
+
+      outline: none;
+      border: 1px solid rgb(var(--c2));
+      border-radius: .5vmin;
+      background-color: rgb(var(--c1));
+      color: inherit;
+
+      font-size: calc(8px + 1vmin);
+    }
+
+    #settings input[type="text"]::placeholder {
+      color: inherit;
+      opacity: .7;
     }
   }
 

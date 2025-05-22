@@ -31,6 +31,7 @@
   .tile-manager {
     display: grid;
     grid-template-rows: 1fr;
+    gap: 1rem;
     
     height: 100%;
     width: 100%;

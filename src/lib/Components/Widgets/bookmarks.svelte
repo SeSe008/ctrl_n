@@ -2,21 +2,9 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
 
-  import { addBookmark, bookmarks, parseBookmarks, removeBookmark } from '$lib/stores/widgets/bookmarks';
+  import { bookmarks, parseBookmarks, removeBookmark } from '$lib/stores/widgets/bookmarks';
 
   import { editMode } from '$lib/stores/editMode';
-
-  let newBookmarkName = $state<HTMLInputElement>();
-  let newBookmarkUrl = $state<HTMLInputElement>();
-
-  function addNewBookmark() {
-    if (newBookmarkName && newBookmarkUrl) {
-      addBookmark(newBookmarkName.value, newBookmarkUrl.value);
-
-      newBookmarkName.value = '';
-      newBookmarkUrl.value = '';
-    }
-  }
 
   function deleteBookmark(id: number) {
     removeBookmark(id);
@@ -30,13 +18,6 @@
 <div id="bookmarks">
   <h2><Icon icon="material-symbols:bookmarks" /> Bookmarks</h2>
 
-  {#if $editMode}
-    <div id="inputs">
-      <input bind:this={newBookmarkName} type="text" placeholder="Bookmark Name" />
-      <input bind:this={newBookmarkUrl} type="text" placeholder="Bookmark Url" />
-      <button onclick={addNewBookmark}>Add</button>
-    </div>
-  {/if}
   {#if $bookmarks}
     <div id="bookmark_list">
       {#each $bookmarks as { name, url }, i (i) }
@@ -170,52 +151,4 @@
     font-size: inherit;
     cursor: pointer;
   }
-
-  #inputs {
-    display: flex;
-    flex-direction: row;
-    
-    height: min-content;
-    width: 100%;
-  }
-
-  #inputs > input {
-    outline: none;
-    font-size: calc(5px + .75vmin);
-
-    width: 100%;
-    justify-self: stretch;
-
-    border: 1px solid rgb(var(--c2));
-    border-right: none;
-    padding: .25rem;
-
-    color: rgb(var(--c2));
-    background-color: rgb(var(--c1));
-  }
-
-  #inputs > input::placeholder {
-    color: rgb(var(--c2));
-  }
-
-  #inputs > input:first-child {
-    border-radius: .5rem 0 0 .5rem;
-  }
-
-  #inputs > button {
-    border-radius: 0 .5rem .5rem 0;
-    border: 1px solid rgb(var(--c2));
-    border-left: none;
-    outline: none;
-    color: rgb(var(--c2));
-    background-color: rgb(var(--c3));
-    cursor: pointer;
-    font-size: calc(5px + .75vmin);
-    padding: 0 .25rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    white-space: nowrap;
-  }
 </style>
-
