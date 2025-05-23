@@ -151,7 +151,7 @@
     max-height: 100%;
     width: 100%;
     overflow: hidden;
-    background-color: rgba(var(--c1), .3);
+    background-color: rgba(var(--c1), var(--o1));
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
     box-sizing: border-box;
@@ -170,7 +170,7 @@
     overflow-y: auto;
     overflow-x: hidden;
 
-    background-color: rgba(var(--c1), .7);
+    background-color: rgba(var(--c1), var(--o2));
     color: rgb(var(--c2));
 
     border: 2px solid rgb(var(--c1));
@@ -189,7 +189,7 @@
     word-break: break-all;
 
     padding: .25rem;
-    border: 1px solid rgba(var(--c2), .5);
+    border: 1px solid rgb(var(--c2));
     border-radius: 1vmin;
   }
 
@@ -243,7 +243,7 @@
 
     outline: none;
     color: rgb(var(--c2));
-    background-color: rgba(var(--c1), .5);
+    background-color: rgba(var(--c1), var(--o2));
     border: 2px solid rgb(var(--c1));
     border-radius: 1vmin;
     cursor: pointer;

@@ -1,7 +1,7 @@
 import type { Element, ElementComponents } from '$lib/types/settings/settings';
 
 import { derived, get } from 'svelte/store';
-import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles } from '$lib/stores/tiles';
+import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar } from '$lib/stores/tiles';
 import { settings } from '$lib/stores/settings/settings';
 import { tileMetadata } from '$lib/constants/tileMetadata';
 
@@ -43,8 +43,59 @@ export const tileSettings: Element[] = [
 	}
       ),
       label: 'Widget Type:'
-    }
-  }
+    },
+  },
+  {
+    elementType: 'group',
+    elementOptions: {
+      layout: 'vert',
+      elements: [
+	{
+	  elementType: 'text',
+	  elementOptions: {
+	    text: 'Opacity',
+	    classes: ['big', 'left', 'margin-top'],
+	  },
+	},
+	{
+	  elementType: 'range',
+	  elementOptions: {
+	    min: 0,
+	    max: 1,
+	    step: 0.1,
+	    onInput: (value: number) => changeCssVar(get(settings).selectedManager, get(settings).selectedTile, '--o1', value.toString()),
+	    defaultValue: derived(
+	      [ globalTiles, settings ],
+	      ( [ $globalTiles, $settings ] ) => {
+		const mgr = $settings.selectedManager;
+		const tle = $settings.selectedTile;
+		return mgr !== undefined && tle !== undefined && $globalTiles[mgr].tiles[tle].cssVars['--o1'] ? $globalTiles[mgr].tiles[tle].cssVars['--o1'] : .3;
+	      }
+	    ),
+	    label: 'Primary opacity:'
+	  },
+	},
+	{
+	  elementType: 'range',
+	  elementOptions: {
+	    min: 0,
+	    max: 1,
+	    step: 0.1,
+	    onInput: (value: number) => changeCssVar(get(settings).selectedManager, get(settings).selectedTile, '--o2', value.toString()),
+	    defaultValue: derived(
+	      [ globalTiles, settings ],
+	      ( [ $globalTiles, $settings ] ) => {
+		const mgr = $settings.selectedManager;
+		const tle = $settings.selectedTile;
+		return mgr !== undefined && tle !== undefined && $globalTiles[mgr].tiles[tle].cssVars['--o2'] ? $globalTiles[mgr].tiles[tle].cssVars['--o2'] : .7;
+	      }
+	    ),
+	    label: 'Secondary opacity:'
+	  }
+	},
+      ],
+    },
+  },
 ];
 
 export const tileManagerSettings: Element[] = [
@@ -85,9 +136,7 @@ export const tileManagerSettings: Element[] = [
       min: 0,
       max: 5,
       step: 0.1,
-      onInput: (value: number) => {
-	changeManagerHeight((get(settings)).selectedManager, value);
-      },
+      onInput: (value: number) => changeManagerHeight((get(settings)).selectedManager, value),
       defaultValue: derived(
 	[ globalTiles, settings ],
 	( [ $globalTiles, $settings ] ) => {
@@ -107,9 +156,7 @@ export const tileManagerSettings: Element[] = [
     elementOptions: {
       buttons: [
 	{
-	  onClick: () => {
-	    changeManagerHeight((get(settings)).selectedManager, 1);
-	  },
+	  onClick: () => changeManagerHeight((get(settings)).selectedManager, 1),
 	  text: 'Reset Height'
 	}
       ]

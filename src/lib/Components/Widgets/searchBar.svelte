@@ -266,7 +266,7 @@
     border: 1px solid rgb(var(--c2));
     border-right: none;
     color: rgb(var(--c2));
-    background-color: rgba(var(--c1), .7);
+    background-color: rgba(var(--c1), var(--o1));
     transition: background-color .2s;
     flex-grow: 1;
   }
@@ -324,6 +324,6 @@
   }
 
   :global(.selected_suggestion) {
-    background-color: rgba(var(--c1), .3);
+    background-color: rgba(var(--c1), var(--o1));
   }
 </style>

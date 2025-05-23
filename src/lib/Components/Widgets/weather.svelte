@@ -70,13 +70,14 @@
   
 <style>
   #weather {
+    justify-self: center;
     display: flex;
     flex-direction: column;
     height: min-content;
     width: fit-content;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: rgba(var(--c1), .3);
+    background-color: rgba(var(--c1), var(--o2));
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
     box-sizing: border-box;
@@ -94,10 +95,6 @@
     align-self: center;
     gap: .25rem;
     color: rgb(var(--c2));
-    background-color: rgba(var(--c1), .5);
-    padding: 1rem;
-    border: 1px solid rgb(var(--c2));
-    border-radius: 1rem;
     max-width: 100%;
   }
 
@@ -108,6 +105,7 @@
     align-self: center;
     justify-self: center;
     margin: 0;
+    border-radius: 1rem;
   }
 
   #location {

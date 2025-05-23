@@ -24,8 +24,8 @@ export function addManager() {
     const newGlobal = [
       ...current,
       {
-	tiles: [{ pos: 0, element: 0}],
-	height: 1
+	tiles: [{ pos: 0, element: 0, cssVars: {} }],
+	height: 1,
       }
     ];
     return newGlobal;
@@ -45,7 +45,8 @@ export function addTile(managerId: number | undefined) {
       ...current[managerId].tiles,
       {
 	pos: current[managerId].tiles.length,
-	element: 0
+	element: 0,
+	cssVars: {}
       }
     ];
     return current;
@@ -66,6 +67,20 @@ export function changeManagerHeight(managerId: number | undefined, height: numbe
   });
 }
 
+export function changeCssVar(managerId: number | undefined, tileId: number | undefined, varName: string, varValue: string) {
+  if (managerId !== undefined && tileId !== undefined) globalTiles.update(current => {
+    if (current[managerId] && current[managerId].tiles[tileId]) current[managerId].tiles[tileId].cssVars[varName] = varValue;
+    return current;
+  });
+}
+
+export function deleteCssVar(managerId: number | undefined, tileId: number | undefined, varName: string) {
+  if (managerId !== undefined && tileId !== undefined) globalTiles.update(current => {
+    if (current[managerId] && current[managerId].tiles[tileId]) delete current[managerId].tiles[tileId].cssVars[varName];
+    return current;
+  });
+}
+
 export function initializeTiles() {
   const stored = window.localStorage.getItem('tiles') || '';
 
@@ -75,11 +90,11 @@ export function initializeTiles() {
     // Clock and search bar
     globalTiles.set([
       {
-	tiles: [{ pos: 0, element: 2 }],
+	tiles: [{ pos: 0, element: 2, cssVars: {} }],
 	height: 1
       },
       {
-	tiles: [{ pos: 1, element: 1 }],
+	tiles: [{ pos: 1, element: 1, cssVars: {} }],
 	height: 1
       }
     ]);

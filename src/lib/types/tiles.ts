@@ -4,6 +4,7 @@ import type { Element } from "./settings/settings";
 export interface Tile {
   pos: number,
   element: number,
+  cssVars: Record<string, string>,
 };
 
 export interface TileManager {

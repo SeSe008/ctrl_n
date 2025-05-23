@@ -57,7 +57,7 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background-color: rgba(var(--c1), .3);
+    background-color: rgba(var(--c1), var(--o1));
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
     container-type: inline-size;
@@ -81,7 +81,7 @@
     border-radius: 1vmin;
     
     color: rgb(var(--c2));
-    background-color: rgba(var(--c1), .7);
+    background-color: rgba(var(--c1), var(--o2));
   }
 
   #articles {
@@ -121,7 +121,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(var(--c1), .5);
+    background-color: rgba(var(--c1), var(--o2));
     border: 1px solid rgb(var(--c2));
     height: 100%;
     color: rgb(var(--c2));

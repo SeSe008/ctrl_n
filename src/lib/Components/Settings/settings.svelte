@@ -3,21 +3,26 @@
   import { settings, toggleSettings } from '$lib/stores/settings/settings';
   import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
+  import TileElement from '$lib/Components/tileElement.svelte';
 </script>
 
 {#if $settings.enabled}
   <aside id="settings">
-    <div id="elements">
-      {#if $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-        {#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps as element, i (i)}
+    {#if $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+      <div id="elements">
+	{#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps as element, i (i)}
 	  {#if elementComponents[element.elementType]}
             {@const Comp = elementComponents[element.elementType]}
-            <Comp options={element.elementOptions} /> 
+            <div class="element"><Comp options={element.elementOptions} /></div>
 	  {/if}
 	{/each}
-      {/if}
-    </div>
-    <div id="closeControls">
+        <h2>Tile Preview</h2>
+	<div id="tile_preview" inert>
+	  <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
+	</div>
+      </div>
+    {/if}
+    <div id="close_controls">
       <button onclick={() => toggleSettings()}>
 	Close
       </button>
@@ -34,8 +39,8 @@
     width: 90%;
     height: 90%;
 
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
     
     background-color: rgba(var(--c1), .9);
     color: rgb(var(--c2));
@@ -45,8 +50,71 @@
     z-index: 100;
   }
 
+  #elements {
+    flex-grow: 1;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    padding: 1rem;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+  }
+
+  #elements h2 {
+    font-size: 2em;
+    font-weight: bold;
+    align-self: center;
+  }
+
+  #tile_preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    min-height: 50%;
+    max-height: 50%;
+
+    padding-bottom: 1rem;
+  }
+
   :global {
-    #settings button {
+    #tile_preview .tile_element {
+      max-width: 75% !important;
+      pointer-events: none !important;
+      cursor: not-allowed !important;
+    }
+    
+    #tile_preview .tile_element > #inputs {
+      display: none;
+    }
+  }
+  
+  #close_controls {
+    align-self: flex-end;
+    justify-self: stretch;
+    width: 100%;
+    height: min-content;
+
+    padding: .5rem;
+    box-sizing: border-box;
+    
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    background-color: rgb(var(--c1));
+    border-top: 1px solid rgb(var(--c2));
+
+    z-index: 200;
+  }
+
+  :global {
+    .element button, #close_controls button {
       width: max-content;
       height: min-content;
 
@@ -62,11 +130,11 @@
       transition: .2s opacity;
     }
 
-    #settings button:hover {
+    .element button:hover {
       opacity: .7;
     }
 
-    #settings select {
+    .element select { 
       appearance: base-select;
       
       width: max-content;
@@ -82,19 +150,19 @@
       cursor: pointer;
     }
 
-    #settings select::picker(select) {
+    .element select::picker(select) {
       appearance: base-select;
 
       color: inherit;
       background-color: inherit;
     }
 
-    #settings span {
+    .element span {
       color: inherit;
       font-size: calc(8px + 1vmin);
     }
 
-    #settings input[type="range"] {
+    .element input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
       width: 6rem;
@@ -105,21 +173,21 @@
       cursor: pointer;
     }
 
-    #settings input[type="range"]::-webkit-slider-runnable-track {
+    .element input[type="range"]::-webkit-slider-runnable-track {
       height: .4rem;
       background-color: rgb(var(--c1));
       border: 1px solid rgb(var(--c2));
       border-radius: .3rem;
     }
 
-    #settings input[type="range"]::-moz-range-track {
+    .element input[type="range"]::-moz-range-track {
       height: .4rem;
       background-color: rgb(var(--c1));
       border: 1px solid rgb(var(--c2));
       border-radius: .3rem;
     }
 
-    #settings input[type="range"]::-webkit-slider-thumb {
+    .element input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 1rem;
       height: 1rem;
@@ -129,7 +197,7 @@
       border-radius: 50%;
     }
 
-    #settings input[type="range"]::-moz-range-thumb {
+    .element input[type="range"]::-moz-range-thumb {
       width: 1rem;
       height: 1rem;
       background-color: rgb(var(--c2));
@@ -137,11 +205,11 @@
       border-radius: 50%;
     }
 
-    #settings input[type="range"]:focus {
+    .element input[type="range"]:focus {
       outline: none;
     }
 
-    #settings input[type="text"] {
+    .element input[type="text"] {
       appearance: base-select;
       
       width: max-content;
@@ -156,36 +224,9 @@
       font-size: calc(8px + 1vmin);
     }
 
-    #settings input[type="text"]::placeholder {
+    .element input[type="text"]::placeholder {
       color: inherit;
       opacity: .7;
     }
-  }
-
-  #elements {
-    flex-grow: 1;
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-
-    padding: 1rem;
-    box-sizing: border-box;
-  }
-
-  #closeControls {
-    align-self: flex-end;
-    justify-self: stretch;
-    width: 100%;
-    
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-
-    padding: .5rem;
-    box-sizing: border-box;
-
-    background-color: rgb(var(--c1));
-    border-top: 1px solid rgb(var(--c2));
   }
 </style>

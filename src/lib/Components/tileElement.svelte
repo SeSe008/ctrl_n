@@ -3,6 +3,7 @@
   import { tileDefs } from '$lib/constants/tileDefs';
   import { toggleSettings } from '$lib/stores/settings/settings';
   import { editMode } from '$lib/stores/editMode';
+  import type { Tile } from '$lib/types/tiles';
   
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
@@ -14,21 +15,43 @@
   
   let { managerId, tileId }: Props = $props();
 
-  let selectedTile = $globalTiles[managerId]?.tiles[tileId]?.element;
-  let SelectedComponent = $state<Component>();
-  globalTiles.subscribe(tile => {
-    SelectedComponent = tileDefs[tile[managerId]?.tiles[tileId]?.element]?.component;
+  let tile = $state<Tile>();
+  let SelectedComponent = $state<Component | null>();
+  let cssVars = $state<Record<string, string>>();
+
+  globalTiles.subscribe(tiles => {
+    tile = tiles[managerId]?.tiles[tileId];
+    SelectedComponent = tile && tile.element != null ? tileDefs[tile.element]?.component : null;
+    cssVars = tile?.cssVars ?? {};
   });
+
+  function applyVars(
+    node: HTMLElement,
+    vars: Record<string, string> | undefined
+  ) {
+    if (!vars) return;
+
+    for (const [key, value] of Object.entries(vars)) {
+      node.style.setProperty(key, value);
+    }
+    return {
+      update(newVars: Record<string, string>) {
+        for (const [key, value] of Object.entries(newVars)) {
+          node.style.setProperty(key, value);
+        }
+      }
+    };
+  }
 </script>
 
-<div class="tile-element">
-  {#if selectedTile !== 0 && SelectedComponent }
+<div use:applyVars={cssVars} class="tile_element">
+  {#if SelectedComponent }
     <SelectedComponent />
   {:else}
     <div id="spacer"></div>
   {/if}
 
-  {#if $editMode && selectedTile !== -1}
+  {#if $editMode}
     <div id="inputs">
       <button onclick={() => toggleSettings(managerId, tileId)}><Icon icon="lucide:settings" /></button>
     </div>
@@ -36,7 +59,7 @@
 </div>
 
 <style>
-  .tile-element {
+  .tile_element {
     position: relative;
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;

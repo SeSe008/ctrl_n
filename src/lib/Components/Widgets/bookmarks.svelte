@@ -48,7 +48,7 @@
     max-height: 100%;
     width: 100%;
 
-    background-color: rgba(var(--c1), .3);
+    background-color: rgba(var(--c1), var(--o1));
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
     box-sizing: border-box;
@@ -72,7 +72,7 @@
     border-radius: 1vmin;
     
     color: rgb(var(--c2));
-    background-color: rgba(var(--c1), .7);
+    background-color: rgba(var(--c1), var(--o2));
   }
 
   #bookmark_list {
@@ -92,7 +92,7 @@
     width: calc(8px + 8vmin);
     overflow-x: hidden;
   }
-
+  
   .bookmark a {
     display: flex;
     flex-direction: column;
@@ -104,7 +104,7 @@
     padding: .25rem .5rem;
     border-radius: 1vmin;
 
-    background-color: rgba(var(--c1), .7);
+    background-color: rgba(var(--c1), var(--o2));
     color: rgb(var(--c2));
     
     text-decoration: none;
@@ -144,7 +144,7 @@
     align-items: center;
     outline: none;
     border: none;
-    background-color: rgba(var(--c1), .7);
+    background-color: rgba(var(--c1), var(--o2));
     color: rgb(var(--c2));
     padding: .25rem;
     border-radius: .25vmin;
