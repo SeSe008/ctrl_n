@@ -7,10 +7,11 @@
   }
   
   const { options }: Props = $props();
+  const { objects, layout } = options;
 </script>
 
-<div class={`settings_group ${options.layout === 'vert' || options.layout === 'vertical' ? 'vert' : 'hor'}`}>
-  {#each options.elements as element, i (i) }
+<div class={`settings_group ${layout === 'vert' || layout === 'vertical' ? 'vert' : 'hor'}`}>
+  {#each objects.elements as element, i (i) }
     {#if elementComponents[element.elementType]}
       {@const Comp = elementComponents[element.elementType]}
       <Comp options={element.elementOptions} /> 

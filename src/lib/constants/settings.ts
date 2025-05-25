@@ -1,4 +1,5 @@
-import type { Element, ElementComponents } from '$lib/types/settings/settings';
+import type { ElementComponents } from '$lib/types/settings/settings';
+import { SettingsSection } from '$lib/classes/settings';
 
 import { derived, get } from 'svelte/store';
 import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar } from '$lib/stores/tiles';
@@ -21,17 +22,17 @@ export const elementComponents: ElementComponents = {
   group: Group,
 };
 
-export const tileSettings: Element[] = [
-  {
-    elementType: 'text',
-    elementOptions: {
+export const tileSettings: SettingsSection = new SettingsSection()
+  .appendElement(
+    'text',
+    {
       text: 'Tile Settings',
       classes: ['large', 'center', 'strong']
     }
-  },
-  {
-    elementType: 'select',
-    elementOptions: {
+  )
+  .appendElement(
+    'select',
+    {
       selectOptions: tileMetadata.map(({ label, icon }) => { return { label, icon }; }),	
       onChange: (value: number) => changeTile(get(settings).selectedManager, get(settings).selectedTile, value),
       defaultValue: derived(
@@ -44,22 +45,22 @@ export const tileSettings: Element[] = [
       ),
       label: 'Widget Type:'
     },
-  },
-  {
-    elementType: 'group',
-    elementOptions: {
+  )
+  .appendElement(
+    'group',
+    {
       layout: 'vert',
-      elements: [
-	{
-	  elementType: 'text',
-	  elementOptions: {
+      objects: new SettingsSection()
+	.appendElement(
+	  'text',
+	  {
 	    text: 'Opacity',
 	    classes: ['big', 'left', 'margin-top'],
 	  },
-	},
-	{
-	  elementType: 'range',
-	  elementOptions: {
+	)
+	.appendElement(
+	  'range',
+	  {
 	    min: 0,
 	    max: 1,
 	    step: 0.1,
@@ -74,10 +75,10 @@ export const tileSettings: Element[] = [
 	    ),
 	    label: 'Primary opacity:'
 	  },
-	},
-	{
-	  elementType: 'range',
-	  elementOptions: {
+	)
+	.appendElement(
+	  'range',
+	  {
 	    min: 0,
 	    max: 1,
 	    step: 0.1,
@@ -92,23 +93,21 @@ export const tileSettings: Element[] = [
 	    ),
 	    label: 'Secondary opacity:'
 	  }
-	},
-      ],
+	),
     },
-  },
-];
+  );
 
-export const tileManagerSettings: Element[] = [
-  {
-    elementType: 'text',
-    elementOptions: {
+export const tileManagerSettings: SettingsSection = new SettingsSection()
+  .appendElement(
+    'text',
+    {
       text: 'Row Settings',
       classes: ['large', 'center', 'strong', 'margin_vert']
     }
-  },
-  {
-    elementType: 'buttons',
-    elementOptions: {
+  )
+  .appendElement(
+    'buttons',
+    {
       buttons: [
 	{
 	  text: 'Add Element',
@@ -122,17 +121,17 @@ export const tileManagerSettings: Element[] = [
 	}
       ]
     }
-  },
+  )
+  .appendElement(
+    'text',
     {
-    elementType: 'text',
-    elementOptions: {
       text: 'Row-Height:',
       classes: ['medium', 'left', 'margin_vert']
-      }
-  },
-  {
-    elementType: 'range',
-    elementOptions: {
+    }
+  )
+  .appendElement(
+    'range',
+    {
       min: 0,
       max: 5,
       step: 0.1,
@@ -150,10 +149,10 @@ export const tileManagerSettings: Element[] = [
       valueLabel: 'Preferred height:',
       unit: 'fr'
       }
-  },
-  {
-    elementType: 'buttons',
-    elementOptions: {
+  )
+  .appendElement(
+    'buttons',
+    {
       buttons: [
 	{
 	  onClick: () => changeManagerHeight((get(settings)).selectedManager, 1),
@@ -161,5 +160,4 @@ export const tileManagerSettings: Element[] = [
 	}
       ]
     }
-  }
-];
+  );

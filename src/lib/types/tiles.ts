@@ -1,5 +1,5 @@
 import type { Component } from "svelte";
-import type { TileSettings } from "$lib/classes/settings";
+import type { SettingsSection } from "$lib/classes/settings";
 
 export interface Tile {
   pos: number,
@@ -19,7 +19,7 @@ export interface TileDef {
   label: string;
   icon?: string;
   component?: Component;
-  tileProps: TileSettings
+  tileProps: SettingsSection
 }
 
 export interface TileMetadata {

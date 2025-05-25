@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 
 import type { TileDef } from '$lib/types/tiles';
 import { tileMetadata } from '$lib/constants/tileMetadata';
-import { createNewTileSettings } from '$lib/classes/settings';
+import { createNewSettingsGroup, createNewSettingsSection } from '$lib/utils/settings';
 
 import SearchBar from '$lib/Components/Widgets/searchBar.svelte';
 import Clock from '$lib/Components/Widgets/clock.svelte';
@@ -31,7 +31,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
       return {
         ...m,
         component: SearchBar,
-        tileProps: createNewTileSettings()
+        tileProps: createNewSettingsSection()
 	  .appendElement(
 	    'text',
 	    {
@@ -56,7 +56,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
       return {
         ...m,
         component: Clock,
-        tileProps: createNewTileSettings()
+        tileProps: createNewSettingsSection()
 	  .appendElement(
 	    'text',
             {
@@ -82,7 +82,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
       return {
 	...m,
 	component: RssFeed,
-	tileProps: createNewTileSettings()
+	tileProps: createNewSettingsSection()
 	  .appendElement(
             'text',
             {
@@ -93,18 +93,18 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	  .appendElement(
 	    'group',
 	    {
-	      elements: [
-		{
-		  elementType: 'textInput',
-		  elementOptions: {
+	      objects: createNewSettingsSection()
+	        .appendElement(
+		  'textInput',
+		  {
 		    placeholder: 'RSS-Url',
 		    store: newRssUrl,
 		    label: 'Set RSS Url:'
 		  }
-		},
-		{
-		  elementType: 'buttons',
-		  elementOptions: {
+		)
+		.appendElement(
+		  'buttons',
+		  {
 		    buttons: [
 		      {
 			text: 'Change',
@@ -112,8 +112,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 		      }
 		    ],
 		  },
-		},
-	      ],
+		),
 	    },
 	  ),
       };
@@ -122,29 +121,30 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
       return {
 	...m,
 	component: Weather,
-	tileProps: createNewTileSettings()
+	tileProps: createNewSettingsSection()
 	  .appendElement(
 	    'text',
             {
               text: 'Weather-Options',
               classes: ['big', 'center', 'strong', 'margin_vert'],
             }
-	  ).
-	  appendElement(
+	  )
+	  .appendElement(
 	    'group',
 	    {
-	      elements: [
-		{
-		  elementType: 'textInput',
-		  elementOptions: {
+	      layout: 'vert',
+	      objects: createNewSettingsGroup()
+		.appendElement(
+		  'textInput',
+		  {
 		    placeholder: 'Location',
 		    store: newWeatherLocation,
 		    label: 'Set Weather location:'
 		  }
-		},
-		{
-		  elementType: 'buttons',
-		  elementOptions: {
+		)
+		.appendElement(
+		  'buttons',
+		  {
 		    buttons: [
 		      {
 			text: 'Change',
@@ -152,20 +152,19 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 		      }
 		    ],
 		  },
-		},
-	      ],
+		),
 	    },
 	  ),
       };
 
     case 'calculator':
-      return { ...m, component: Calculator, tileProps: createNewTileSettings() };
+      return { ...m, component: Calculator, tileProps: createNewSettingsSection() };
 
     case 'bookmarks':
       return {
 	...m,
 	component: Bookmarks,
-	tileProps: createNewTileSettings()
+	tileProps: createNewSettingsSection()
 	  .appendElement(
             'text',
             {
@@ -176,30 +175,30 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	  .appendElement(
 	    'group',
 	    {
-	      elements: [
-		{
-		  elementType: 'text',
-		  elementOptions: {
+	      objects: createNewSettingsGroup()
+		.appendElement(
+		  'text',
+		  {
 		    text: 'Add new bookmark:'
 		  }
-		},
-		{
-		  elementType: 'textInput',
-		  elementOptions: {
+		)
+		.appendElement(
+		  'textInput',
+		  {
 		    placeholder: 'Name',
 		    store: newBookmarkName,
 		  }
-		},
-		{
-		  elementType: 'textInput',
-		  elementOptions: {
+		)
+		.appendElement(
+		  'textInput',
+		  {
 		    placeholder: 'Url',
 		    store: newBookmarkUrl,
 		  }
-		},
-		{
-		  elementType: 'buttons',
-		  elementOptions: {
+		)
+		.appendElement(
+		  'buttons',
+		  {
 		    buttons: [
 		      {
 			text: 'Add Bookmark',
@@ -211,13 +210,12 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 		      }
 		    ],
 		  },
-		},
-	      ],
+		),
 	    },
 	  ),
       };
 
     default:
-      return { ...m, tileProps: createNewTileSettings() };
+      return { ...m, tileProps: createNewSettingsSection() };
   }
 });

@@ -1,17 +1,13 @@
-import { tileManagerSettings, tileSettings } from "$lib/constants/settings";
 import type { Element, ElementProps } from "$lib/types/settings/settings";
 
-export class TileSettings {
+export class SettingsSection {
   #elements: Element[];
 
   constructor (
     elements?: Element[]
   ) {
-    this.#elements = [
-      ...tileSettings,
-      ...(elements ? elements : []),
-      ...tileManagerSettings
-    ];
+    this.#elements = elements || [];
+    return this;
   }
 
   public appendElement(
@@ -22,11 +18,11 @@ export class TileSettings {
     return this;
   }
 
-  public get elements() {
+  public get elements() : Element[] {
     return this.#elements;
   }
 
-  public getElement(id: number) {
+  public getElement(id: number) : Element {
     return this.#elements[id]
   }
 }
@@ -43,15 +39,11 @@ export class SettingsElement implements Element {
     this.#elementOptions = options;
   }
 
-  public get elementType() {
+  public get elementType() : string {
     return this.#elementType;
   }
 
-  public get elementOptions() {
+  public get elementOptions() : ElementProps {
     return this.#elementOptions;
   }
-}
-
-export function createNewTileSettings(elements?: Element[]) {
-  return new TileSettings(elements);
 }
