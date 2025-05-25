@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 
 import type { TileDef } from '$lib/types/tiles';
 import { tileMetadata } from '$lib/constants/tileMetadata';
-import { createNewTileSettings } from '$lib/utils/settings';
+import { createNewTileSettings } from '$lib/classes/settings';
 
 import SearchBar from '$lib/Components/Widgets/searchBar.svelte';
 import Clock from '$lib/Components/Widgets/clock.svelte';
@@ -31,43 +31,42 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
       return {
         ...m,
         component: SearchBar,
-        tileProps: createNewTileSettings([
-          {
-            elementType: 'text',
-            elementOptions: {
+        tileProps: createNewTileSettings()
+	  .appendElement(
+	    'text',
+	    {
               text: 'Search-Options',
               classes: ['big', 'center', 'strong', 'margin_vert'],
             },
-          },
-          {
-            elementType: 'select',
-            elementOptions: {
+          )
+	  .appendElement(
+	    'select',
+            {
               selectOptions: Object.entries(searchEngines as SearchEngines).map(
                 ([value, { name: label, icon }]) => ({ label, icon, value })
               ),
               store: searchEngineName,
               defaultValue: searchEngineName,
               label: 'Search Engine:',
-            },
-          },
-        ]),
+            }
+          )
       };
 
     case 'clock':
       return {
         ...m,
         component: Clock,
-        tileProps: createNewTileSettings([
-          {
-            elementType: 'text',
-            elementOptions: {
+        tileProps: createNewTileSettings()
+	  .appendElement(
+	    'text',
+            {
               text: 'Clock-Options',
               classes: ['big', 'center', 'strong', 'margin_vert'],
             },
-          },
-          {
-            elementType: 'select',
-            elementOptions: {
+          )
+	  .appendElement(
+	    'select',
+            {
               selectOptions: [
                 { label: 'Digital', value: 'digital' },
                 { label: 'Analog', value: 'analog' },
@@ -75,26 +74,25 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               store: clockType,
               defaultValue: clockType,
               label: 'Clock-Type:',
-            },
-          },
-        ]),
+            }
+	  ),
       };
 
     case 'rss_feed':
       return {
 	...m,
 	component: RssFeed,
-	tileProps: createNewTileSettings([
-	  {
-            elementType: 'text',
-            elementOptions: {
+	tileProps: createNewTileSettings()
+	  .appendElement(
+            'text',
+            {
               text: 'RSS-Options',
               classes: ['big', 'center', 'strong', 'margin_vert'],
-            },
-	  },
-	  {
-	    elementType: 'group',
-	    elementOptions: {
+            }
+	  )
+	  .appendElement(
+	    'group',
+	    {
 	      elements: [
 		{
 		  elementType: 'textInput',
@@ -117,25 +115,24 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 		},
 	      ],
 	    },
-	  },
-	]),
+	  ),
       };
 
     case 'weather':
       return {
 	...m,
 	component: Weather,
-	tileProps: createNewTileSettings([
-	  {
-            elementType: 'text',
-            elementOptions: {
+	tileProps: createNewTileSettings()
+	  .appendElement(
+	    'text',
+            {
               text: 'Weather-Options',
               classes: ['big', 'center', 'strong', 'margin_vert'],
-            },
-	  },
-	  {
-	    elementType: 'group',
-	    elementOptions: {
+            }
+	  ).
+	  appendElement(
+	    'group',
+	    {
 	      elements: [
 		{
 		  elementType: 'textInput',
@@ -158,8 +155,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 		},
 	      ],
 	    },
-	  },
-	]),
+	  ),
       };
 
     case 'calculator':
@@ -169,17 +165,17 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
       return {
 	...m,
 	component: Bookmarks,
-	tileProps: createNewTileSettings([
-	  {
-            elementType: 'text',
-            elementOptions: {
+	tileProps: createNewTileSettings()
+	  .appendElement(
+            'text',
+            {
               text: 'Bookmarks-Options',
               classes: ['big', 'center', 'strong', 'margin_vert'],
             },
-	  },
-	  {
-	    elementType: 'group',
-	    elementOptions: {
+	  )
+	  .appendElement(
+	    'group',
+	    {
 	      elements: [
 		{
 		  elementType: 'text',
@@ -218,8 +214,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 		},
 	      ],
 	    },
-	  },
-	]),
+	  ),
       };
 
     default:

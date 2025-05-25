@@ -10,7 +10,7 @@
   <aside id="settings">
     {#if $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
       <div id="elements">
-	{#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps as element, i (i)}
+	{#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
 	  {#if elementComponents[element.elementType]}
             {@const Comp = elementComponents[element.elementType]}
             <div class="element"><Comp options={element.elementOptions} /></div>
