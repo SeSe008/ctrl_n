@@ -49,7 +49,7 @@
 
   p {
     text-align: justify;
-    max-width: 50%;
+    max-width: 75%;
   }
 
   a {

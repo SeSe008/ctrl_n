@@ -94,6 +94,9 @@
   }
   
   .bookmark a {
+    position: relative;
+    display: inline-block;
+    
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -112,7 +115,7 @@
     text-overflow: ellipsis;
     font-size: calc(8px + 1vmin);
 
-    transition: transform .2s ease-in-out;
+    transition: transform .6s ease-in-out, color .6s ease-in-out;
   }
 
   .bookmark a span {
@@ -126,8 +129,28 @@
     font-size: calc(8px + 1vmin);
   }
 
+  .bookmark a::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    background: white;
+    clip-path: circle(0 at 50% 25%);
+
+    transition: clip-path .6s ease-out;
+    z-index: -1;
+  }
+
+  .bookmark a:hover::before {
+    clip-path: circle(150% at 50% 25%);
+  }
+
   .bookmark a:hover {
     transform: scale(1.01);
+    color: black;
   }
 
   .bookmark img {

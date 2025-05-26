@@ -31,7 +31,7 @@
   }
 
   function search(text: string) {
-    if (searchBar.value === '') return;
+    if (text === '') return;
 
     saveRecentSearch(text);
     
@@ -239,7 +239,7 @@
   </div>
   <div id="suggestions">
     {#each suggestions as suggestion, i (i)}
-      <span class="suggestion">{suggestion}</span>
+      <button onclick={() => search(suggestion)} class="suggestion">{suggestion}</button>
     {/each}
   </div>
 </div>
@@ -275,10 +275,10 @@
     background-color: rgba(var(--c1));
   }
 
-  #inputs > input::placeholder {
-    color: rgb(var(--c4));
+  #search:focus-within #suggestions {
+    display: flex;
   }
-
+  
   #inputs > button {
     border-radius: 0 .5rem .5rem 0;
     border: 1px solid rgb(var(--c2));
@@ -321,9 +321,18 @@
     height: min-content;
     padding: .5rem;
     box-sizing: border-box;
+
+    color: inherit;
+    background-color: rgb(var(--c3));
+
+    border: none;
+    outline: none;
+
+    font-size: inherit;
+    text-align: inherit;
   }
 
   :global(.selected_suggestion) {
-    background-color: rgba(var(--c1), var(--o1));
+    background-color: rgba(var(--c1), .3) !important;
   }
 </style>

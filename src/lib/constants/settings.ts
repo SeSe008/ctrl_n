@@ -12,6 +12,7 @@ import Buttons from '$lib/Components/Settings/Elements/buttons.svelte';
 import Range from '$lib/Components/Settings/Elements/range.svelte';
 import TextInput from '$lib/Components/Settings/Elements/textInput.svelte';
 import Group from '$lib/Components/Settings/Elements/group.svelte';
+import { imageCategory } from '$lib/stores/backgroundImage';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -161,3 +162,32 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
       ]
     }
   );
+
+export const globalSettings: SettingsSection = new SettingsSection()
+  .appendElement(
+    'text',
+    {
+      text: 'Global Settings',
+      classes: ['large', 'center', 'strong']
+    }
+  )
+  .appendElement(
+    'text',
+    {
+      text: 'Background Image',
+      classes: ['medium', 'left', 'strong', 'margin_top']
+    }
+  )
+  .appendElement(
+    'select',
+    {
+      selectOptions: [
+	{ label: 'Animals', icon: 'lucide:squirrel', value: 'backgrounds/animals' },
+	{ label: 'Space', icon: 'lucide:rocket', value: 'backgrounds/space' },
+      ],
+      defaultValue: imageCategory,
+      store: imageCategory,
+      label: 'Image Category: '
+    }
+  );
+

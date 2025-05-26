@@ -6,39 +6,29 @@
   import TileManager from '$lib/Components/tileManager.svelte';
   import Settings from '$lib/Components/Settings/settings.svelte';
   
-  import { fetchImages } from '$lib/utils/fetchImages';
-  import { useImage } from '$lib/utils/useImage';
   import { applyImage } from '$lib/utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
   import { editMode, toggleEditMode } from '$lib/stores/editMode';
   import { globalTiles, addManager, removeManager } from '$lib/stores/tiles';
+
+  import { backgroundImage, getBackgroundImage, getImages, initBgImages } from '$lib/stores/backgroundImage';
   
   let colorThief: ColorThief;
   
-  let images: string[] = [];
-  let path: string = 'backgrounds/animals'; // Default Dir-name for the image folder 
+  const defaultCategory = 'animals'; // Default category when none is set
+  const imageInterval = 5 * 60 * 1000; // When image changes - Make Customizable?
   const colors: number = 5; // Amount of colors for palette
-  const changeInterval: number = 5 * 60 * 1000; // Interval of change of bg-image
-  
-  let selectedImageCategory = $state<string>(path);
+
   const imageCategories: [string, string, string][] = [
     ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
     ['Space', 'material-symbols:planet-outline', 'backgrounds/space']
   ];
   
-  async function changeImageCategory() {
-    if (imageInterval) clearInterval(imageInterval);
-
-    images = await fetchImages(selectedImageCategory);
-    imageInterval = await useImage(images, changeInterval, colors, colorThief);
-    window.localStorage.setItem('imageCategory', selectedImageCategory);
-  }
-
   function nextImage() {
     applyImage(
-      images,
-      getComputedStyle(document.body).backgroundImage.match(/url\("(?:https?:\/\/[^/]+)?(\/.*)"\)/)?.[1] || '',
+      getImages(),
+      getBackgroundImage(),
       colors,
       colorThief
     );
@@ -54,19 +44,16 @@
     }
   });
 
-  let imageInterval: ReturnType<typeof setInterval>;
   onMount(async () => {
     colorThief = new ColorThief();
 
-    path = window.localStorage.getItem('imageCategory') || path;
-    selectedImageCategory = path;
-    images = await fetchImages(path);
-    imageInterval = await useImage(images, changeInterval, colors, colorThief);
+    initBgImages(defaultCategory, imageInterval, colors, colorThief);
 
     initializeTiles();
   });
 </script>
 
+<img id="bg_img" alt="bg img" src={$backgroundImage} />
 
 <div bind:this={tileGrid} id="tiles">
   {#each {length: $globalTiles.length} as _, i (i) }
@@ -81,7 +68,7 @@
   <button onclick={toggleEditMode}>
     <Icon icon="material-symbols:edit-outline" />
   </button>
-  <select bind:value={selectedImageCategory} onchange={changeImageCategory}>
+  <select>
     {#each imageCategories as category (category[2])}
       <option value={category[2]}>
 	<Icon icon={category[1]} />
@@ -98,7 +85,8 @@
     </button>
   {/if}    
 </div>
-<div id='credit'>
+
+<div id="credit">
   Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>
 </div>
@@ -141,27 +129,14 @@
       font-family: "Quicksand", sans-serif;
       
       background-color: rgb(var(--c1));
-      background-image: url(""); /* managed by TS */
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-position: center center;
-      background-size: cover;
-      
+  
       transition: background-image 1s ease-in-out, background-size 0s;
     }
 
     body * {
       transition: background-color .2s;
+      font-family: inherit;
     }
-
-    body > div > * {
-      justify-self: center;
-    }
-
-    input, button, select {
-      font-family: "Quicksand", sans-serif;
-    }
-
 
     ::-moz-selection {
       color: rgb(var(--c1));
@@ -189,7 +164,19 @@
       background-clip: content-box;
     }
   }
+  
+  #bg_img {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 
+    object-fit: cover;
+    object-position: center;
+    
+    z-index: -100;
+  }
+  
   #tiles {
     height: 100%;
     width: 100%;
@@ -208,19 +195,21 @@
   }
   
   #pageControl button {
-    outline: none;
-    font-size: .8rem;
-    justify-self: stretch;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: .3rem;
+
+    outline: none;
     border: 1px solid rgb(var(--c2));
+    border-radius: .3rem;
+
     background-color: rgb(var(--c1));
     color: rgb(var(--c2));
-    cursor: pointer;
-    justify-self: center;
+
     font-size: calc(5px + .75vmin);
+    aspect-ratio: 1 / 1;
+
+    cursor: pointer;
   }
 
   
@@ -249,9 +238,10 @@
   }
   
   #credit {
+    justify-self: center;
     color: rgb(var(--c1));
     padding: .25rem;
-    background-color: rgba(var(--c2), .7);
+    background-color: rgba(var(--c2), var(--o2));
     border-radius: .75rem;
     font-size: .75rem;
     text-align: center;

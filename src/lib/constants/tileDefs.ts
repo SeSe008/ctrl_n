@@ -116,7 +116,6 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	    },
 	  ),
       };
-
     case 'weather':
       return {
 	...m,

@@ -3,6 +3,9 @@ import { applyPalette } from './applyPalette';
 import { parseExif } from './getExif';
 
 import ColorThief from 'colorthief';
+import { setBackgroundImage } from '$lib/stores/backgroundImage';
+
+let imageInterval: NodeJS.Timeout;
 
 function pickImage(images: string[]) {
   return images[Math.floor(Math.random() * images.length)];
@@ -18,7 +21,7 @@ export function applyImage(images: string[], lastImage: string | undefined, colo
   imgElement.src = image;
 
   imgElement.onload = async () => {
-    document.body.style.backgroundImage = `url(${image})`;
+    setBackgroundImage(image);
 
     parseExif(image);
     
@@ -33,19 +36,20 @@ export function applyImage(images: string[], lastImage: string | undefined, colo
     if (!retry) {
       applyImage(images, lastImage, colors, colorThief, true);
     } else {
-      document.body.style.backgroundImage = `url(${image})`;
+      setBackgroundImage(image);
       return;
     }
   };
-
   return image;
 }
 
 export async function useImage(images: string[], changeInterval: number, colors: number, colorThief: ColorThief) {
-  // Pick a random image and set it as the pages background in intervals
+  // Pick a random image and set it as the page background in intervals
+  if (imageInterval) clearInterval(imageInterval);
+  
   let lastImage: string = applyImage(images, undefined, colors, colorThief);
 
-  return setInterval(
+  imageInterval = setInterval(
     () => {
       lastImage = applyImage(images, lastImage, colors, colorThief);
     },

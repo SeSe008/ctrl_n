@@ -17,7 +17,7 @@
 </script>
 
 <div class="settings_range">
-  {label}
+  <span>{label}</span>
   <input type="range" bind:value={rangeValue} min={min} max={max} step={step} oninput={() => onInput?.(rangeValue)} />
   <div>
     {valueLabel}
@@ -25,8 +25,8 @@
       {#if specialValues && specialValues[rangeValue]}
 	{specialValues[rangeValue]}
       {:else}
-	{rangeValue}
-        {unit}
+	  {rangeValue}
+          {unit}
       {/if}
     </span>
   </div>
@@ -37,6 +37,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    align-items: center;
     gap: .5rem;
   }
   

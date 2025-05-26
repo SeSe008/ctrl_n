@@ -1,27 +1,44 @@
 <script lang="ts">
-  import { elementComponents } from '$lib/constants/settings';
+  import { elementComponents, globalSettings } from '$lib/constants/settings';
   import { settings, toggleSettings } from '$lib/stores/settings/settings';
   import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
   import TileElement from '$lib/Components/tileElement.svelte';
+
+  let selectedTab = $state<number>(1);
 </script>
 
 {#if $settings.enabled}
   <aside id="settings">
-    {#if $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-      <div id="elements">
-	{#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
-	  {#if elementComponents[element.elementType]}
-            {@const Comp = elementComponents[element.elementType]}
-            <div class="element"><Comp options={element.elementOptions} /></div>
-	  {/if}
-	{/each}
-        <h2>Tile Preview</h2>
-	<div id="tile_preview" inert>
-	  <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
-	</div>
+    <div id="tab_cont">
+      <div id="tab_nav">
+	<button class={selectedTab === 0 ? 'active' : ''} onclick={() => selectedTab = 0}>Global Settings</button>
+	<button class={selectedTab === 1 ? 'active' : ''} onclick={() => selectedTab = 1}>Tile Settings</button>
       </div>
-    {/if}
+      <div id="tab_elements">
+	{#if selectedTab === 0}
+	  <div id="global_settings">
+	    {#each globalSettings.elements as element, i (i)}
+	      {@const Comp = elementComponents[element.elementType]}
+	      <div class="element"><Comp options={element.elementOptions} /></div>
+	    {/each}
+	  </div>
+	{:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+	  <div id="tile_settings">
+	    {#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
+	      {#if elementComponents[element.elementType]}
+		{@const Comp = elementComponents[element.elementType]}
+                <div class="element"><Comp options={element.elementOptions} /></div>
+	      {/if}
+	    {/each}
+	    <h2>Tile Preview</h2>
+	    <div id="tile_preview" inert>
+	      <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
+	    </div>
+	  </div>
+	{/if}
+      </div>
+    </div>
     <div id="close_controls">
       <button onclick={() => toggleSettings()}>
 	Close
@@ -50,7 +67,54 @@
     z-index: 100;
   }
 
-  #elements {
+  #tab_cont {
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    grid-template-columns: 1fr;
+    overflow: hidden;
+  }
+
+  #tab_nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .25rem;
+    
+    border-bottom: 1px solid rgb(var(--c2));
+
+    padding-top: .25rem;
+    padding-left: .5rem;
+  }
+
+  #tab_nav button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    border: 1px solid rgb(var(--c2));
+    border-bottom: none;
+    outline: none;
+
+    font-size: calc(8px + 1.5vmin);
+    padding: .25rem .5rem;
+    border-radius: .25rem .25rem 0 0;
+
+    color: rgb(var(--c2));
+    background-color: transparent;
+
+    cursor: pointer;
+  }
+
+  #tab_nav button.active {
+    color: rgb(var(--c1));
+    background-color: rgb(var(--c2));
+  }
+
+  #tab_elements {
+    overflow-y: scroll;
+  }
+
+  #tile_settings, #global_settings {
     flex-grow: 1;
     width: 100%;
 
@@ -60,11 +124,9 @@
 
     padding: 1rem;
     box-sizing: border-box;
-
-    overflow-y: auto;
   }
 
-  #elements h2 {
+  #tile_settings h2 {
     font-size: 2em;
     font-weight: bold;
     align-self: center;
@@ -157,9 +219,9 @@
       background-color: inherit;
     }
 
-    .element span {
+    .element span, .element div {
       color: inherit;
-      font-size: calc(8px + 1vmin);
+      font-size: calc(8px + 1.25\vmin);
     }
 
     .element input[type="range"] {

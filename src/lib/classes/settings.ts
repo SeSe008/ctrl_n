@@ -23,7 +23,7 @@ export class SettingsSection {
   }
 
   public getElement(id: number) : Element {
-    return this.#elements[id]
+    return this.#elements[id];
   }
 }
 
