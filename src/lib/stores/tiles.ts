@@ -32,9 +32,9 @@ export function addManager() {
   });
 }
 
-export function removeManager() {
+export function removeManager(id?: number) {
   globalTiles.update(current => {
-    const newGlobal = [...current.slice(0, -1)];
+    const newGlobal = id !== undefined ? current.filter((_, index) => index !== id) : current.slice(0, -1);
     return newGlobal;
   });
 }

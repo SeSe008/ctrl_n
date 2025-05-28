@@ -1,7 +1,7 @@
 interface ButtonOptions {
   text?: string;
   icon?: string;
-  onClick: (_value: any) => any;
+  onClick: () => any;
   value?: any;
 }
 

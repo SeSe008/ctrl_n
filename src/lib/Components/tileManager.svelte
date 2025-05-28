@@ -18,7 +18,7 @@
   });
 </script>
 
-<div class="tile-manager" bind:this={tileManager}>
+<div class="tile_manager" bind:this={tileManager}>
   
   {#if manager}
     {#each manager.tiles as _, i (i)}
@@ -28,7 +28,7 @@
 </div>
 
 <style>
-  .tile-manager {
+  .tile_manager {
     display: grid;
     grid-template-rows: 1fr;
     gap: 1rem;

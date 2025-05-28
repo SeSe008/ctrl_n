@@ -26,3 +26,10 @@ export function setSelectedTile(selectedTile: number) {
     return current;
   });
 }
+
+export function setSelectedManager(selectedManager: number) {
+  settings.update(current => {
+    current.selectedManager = selectedManager;
+    return current;
+  });
+}

@@ -9,8 +9,8 @@
   import { applyImage } from '$lib/utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
-  import { editMode, toggleEditMode } from '$lib/stores/editMode';
-  import { globalTiles, addManager, removeManager } from '$lib/stores/tiles';
+  import { toggleEditMode } from '$lib/stores/editMode';
+  import { globalTiles } from '$lib/stores/tiles';
 
   import { backgroundImage, getBackgroundImage, getImages, initBgImages } from '$lib/stores/backgroundImage';
   
@@ -20,11 +20,6 @@
   const imageInterval = 5 * 60 * 1000; // When image changes - Make Customizable?
   const colors: number = 5; // Amount of colors for palette
 
-  const imageCategories: [string, string, string][] = [
-    ['Animals', 'lucide:squirrel', 'backgrounds/animals'],
-    ['Space', 'material-symbols:planet-outline', 'backgrounds/space']
-  ];
-  
   function nextImage() {
     applyImage(
       getImages(),
@@ -68,22 +63,6 @@
   <button onclick={toggleEditMode}>
     <Icon icon="material-symbols:edit-outline" />
   </button>
-  <select>
-    {#each imageCategories as category (category[2])}
-      <option value={category[2]}>
-	<Icon icon={category[1]} />
-	{category[0]}
-      </option>
-    {/each}
-  </select>
-  {#if $editMode}
-    <button onclick={addManager}>
-      <Icon icon="gg:add" />
-    </button>
-    <button onclick={removeManager}>
-      <Icon icon="gg:remove" />
-    </button>
-  {/if}    
 </div>
 
 <div id="credit">
@@ -210,31 +189,6 @@
     aspect-ratio: 1 / 1;
 
     cursor: pointer;
-  }
-
-  
-  #pageControl select {
-    display: flex;
-    align-items: center;
-    min-width: 20vmin;
-    outline: none;
-    color: rgb(var(--c2));
-    border: 1px solid rgb(var(--c2));
-    background-color: rgb(var(--c1));
-    border-radius: .5rem;
-    padding: 0 .5rem;
-    font-size: calc(5px + .5vmin);
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  #pageControl select::picker(select) {
-    background-color: rgb(var(--c4));
-    color: rgb(var(--c1));
-  }
-
-  #pageControl select, select::picker(select) {
-    appearance: base-select;
   }
   
   #credit {

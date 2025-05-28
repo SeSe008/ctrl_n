@@ -2,17 +2,19 @@ import type { ElementComponents } from '$lib/types/settings/settings';
 import { SettingsSection } from '$lib/classes/settings';
 
 import { derived, get } from 'svelte/store';
-import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar } from '$lib/stores/tiles';
-import { settings } from '$lib/stores/settings/settings';
+import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar, addManager, removeManager } from '$lib/stores/tiles';
+import { setSelectedManager, settings } from '$lib/stores/settings/settings';
 import { tileMetadata } from '$lib/constants/tileMetadata';
+import { getImageCategory, imageCategory } from '$lib/stores/backgroundImage';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
 import Buttons from '$lib/Components/Settings/Elements/buttons.svelte';
 import Range from '$lib/Components/Settings/Elements/range.svelte';
 import TextInput from '$lib/Components/Settings/Elements/textInput.svelte';
+import ImageGrid from '$lib/Components/Settings/Elements/imageGrid.svelte';
 import Group from '$lib/Components/Settings/Elements/group.svelte';
-import { imageCategory } from '$lib/stores/backgroundImage';
+import { fetchImages } from '$lib/utils/fetchImages';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -20,7 +22,8 @@ export const elementComponents: ElementComponents = {
   buttons: Buttons,
   range: Range,
   textInput: TextInput,
-  group: Group,
+  imageGrid: ImageGrid,
+  group: Group
 };
 
 export const tileSettings: SettingsSection = new SettingsSection()
@@ -175,7 +178,7 @@ export const globalSettings: SettingsSection = new SettingsSection()
     'text',
     {
       text: 'Background Image',
-      classes: ['medium', 'left', 'strong', 'margin_top']
+      classes: ['big', 'left', 'strong', 'margin_top']
     }
   )
   .appendElement(
@@ -189,5 +192,36 @@ export const globalSettings: SettingsSection = new SettingsSection()
       store: imageCategory,
       label: 'Image Category: '
     }
+  )
+  .appendElement(
+    'imageGrid',
+    {
+      images: async () => await fetchImages(getImageCategory()),
+      columns: 4,
+      updater: imageCategory
+    }
+  )
+  .appendElement(
+    'text',
+    {
+      text: 'Rows',
+      classes: ['big', 'left', 'strong', 'margin_top']
+    }
+  )
+  .appendElement(
+    'buttons',
+    {
+      buttons: [
+	{
+	  text: 'Append Row',
+	  icon: 'gg:add',
+	  onClick: () => addManager()
+	},
+	{
+	  text: 'Remove Row',
+	  icon: 'gg:remove',
+	  onClick: () => { removeManager(get(settings).selectedManager); setSelectedManager(get(settings).selectedManager! - 1); }
+	}
+      ]
+    }
   );
-

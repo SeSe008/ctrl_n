@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { elementComponents, globalSettings } from '$lib/constants/settings';
+  import { elementComponents, globalSettings, tileManagerSettings } from '$lib/constants/settings';
   import { settings, toggleSettings } from '$lib/stores/settings/settings';
   import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
   import TileElement from '$lib/Components/tileElement.svelte';
+  import TileManager from '$lib/Components/tileManager.svelte';
 
-  let selectedTab = $state<number>(1);
+  let selectedTab = $state<number>(2);
 </script>
 
 {#if $settings.enabled}
@@ -13,18 +14,30 @@
     <div id="tab_cont">
       <div id="tab_nav">
 	<button class={selectedTab === 0 ? 'active' : ''} onclick={() => selectedTab = 0}>Global Settings</button>
-	<button class={selectedTab === 1 ? 'active' : ''} onclick={() => selectedTab = 1}>Tile Settings</button>
+	<button class={selectedTab === 1 ? 'active' : ''} onclick={() => selectedTab = 1}>Row Settings</button>
+	<button class={selectedTab === 2 ? 'active' : ''} onclick={() => selectedTab = 2}>Tile Settings</button>
       </div>
       <div id="tab_elements">
 	{#if selectedTab === 0}
-	  <div id="global_settings">
+	  <div class="settings_tab">
 	    {#each globalSettings.elements as element, i (i)}
 	      {@const Comp = elementComponents[element.elementType]}
 	      <div class="element"><Comp options={element.elementOptions} /></div>
 	    {/each}
 	  </div>
-	{:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-	  <div id="tile_settings">
+	{:else if selectedTab === 1 && $settings.selectedManager !== undefined}
+	  <div class="settings_tab">
+	    {#each tileManagerSettings.elements as element, i (i)}
+	      {@const Comp = elementComponents[element.elementType]}
+	      <div class="element"><Comp options={element.elementOptions} /></div>
+	    {/each}
+	    <h2>Row preview</h2>
+	    <div class="preview" inert>
+	      <TileManager id={$settings.selectedManager} />
+	    </div>
+	  </div>
+	{:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+	  <div class="settings_tab">
 	    {#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
 	      {#if elementComponents[element.elementType]}
 		{@const Comp = elementComponents[element.elementType]}
@@ -32,7 +45,7 @@
 	      {/if}
 	    {/each}
 	    <h2>Tile Preview</h2>
-	    <div id="tile_preview" inert>
+	    <div class="preview" inert>
 	      <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
 	    </div>
 	  </div>
@@ -114,7 +127,7 @@
     overflow-y: scroll;
   }
 
-  #tile_settings, #global_settings {
+  .settings_tab {
     flex-grow: 1;
     width: 100%;
 
@@ -126,32 +139,32 @@
     box-sizing: border-box;
   }
 
-  #tile_settings h2 {
+  .settings_tab h2 {
     font-size: 2em;
     font-weight: bold;
     align-self: center;
   }
 
-  #tile_preview {
+  .preview {
     display: flex;
     flex-direction: column;
     align-items: center;
 
     width: 100%;
-    min-height: 50%;
-    max-height: 50%;
+    min-height: 50vh;
+    max-height: 50vh;
 
     padding-bottom: 1rem;
   }
 
   :global {
-    #tile_preview .tile_element {
-      max-width: 75% !important;
+    .preview > * {
       pointer-events: none !important;
       cursor: not-allowed !important;
+      max-width: 90% !important;
     }
     
-    #tile_preview .tile_element > #inputs {
+    .preview .tile_element > #inputs {
       display: none;
     }
   }
