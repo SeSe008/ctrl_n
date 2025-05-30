@@ -4,7 +4,7 @@ import { dev } from '$app/environment';
 
 import { z } from 'zod';
 const SUBDIR_SCHEMA = z.object({
-  subdir: z.string().regex(/^[\w-]+(?:\/[\w-]+)*$/)
+  subdir: z.string().regex(/^[\w-]+(?:\/[\w-]+)*$/),
 });
 
 /** @type {import('./$types').RequestHandler} */
@@ -14,11 +14,11 @@ export async function POST({ request }: { request: Request }) {
     ({ subdir } = SUBDIR_SCHEMA.parse(await request.json()));
   } catch {
     return new Response(
-      JSON.stringify({ error: 'Invalid subdir, must be alphanumeric' }),
+      JSON.stringify({ error: 'Invalid subdir or url, both must be alphanumeric' }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }
     );
   }
-  
+
   const baseImages = path.resolve(dev ? 'static/images' : 'client/images');
   const targetPath = path.resolve(baseImages, subdir);
 

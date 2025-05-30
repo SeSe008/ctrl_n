@@ -1,9 +1,11 @@
+import type { Images } from "$lib/types/backgroundImage";
 import type { Readable } from "svelte/store";
 
 export interface Options {
-  images: () => string[] | Promise<string[]>;
+  images: () => Images | Promise<Images>;
   columns: number;
   updater?: Readable<any>;
   toggle?: boolean;
-  onToggle?: (_value: string) => any;
+  onToggle?: (_value: any) => any;
+  label?: string;
 }

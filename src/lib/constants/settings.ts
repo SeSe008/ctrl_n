@@ -5,7 +5,7 @@ import { derived, get } from 'svelte/store';
 import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar, addManager, removeManager } from '$lib/stores/tiles';
 import { setSelectedManager, settings } from '$lib/stores/settings/settings';
 import { tileMetadata } from '$lib/constants/tileMetadata';
-import { getImageCategory, imageCategory } from '$lib/stores/backgroundImage';
+import { getImageCategory, imageCategory, toggleImageInCategory } from '$lib/stores/backgroundImage';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
@@ -198,7 +198,10 @@ export const globalSettings: SettingsSection = new SettingsSection()
     {
       images: async () => await fetchImages(getImageCategory()),
       columns: 4,
-      updater: imageCategory
+      updater: imageCategory,
+      toggle: true,
+      onToggle: (value: number) => toggleImageInCategory(getImageCategory(), value),
+      label: 'Enabled'
     }
   )
   .appendElement(

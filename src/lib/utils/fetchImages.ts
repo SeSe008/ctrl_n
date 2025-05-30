@@ -1,8 +1,13 @@
-export async function fetchImages(path: string) : Promise<string[]> {
+import { getImageCategories } from "$lib/stores/backgroundImage";
+import type { Images } from "$lib/types/backgroundImage";
+
+export async function fetchImages(path: string) : Promise<Images> {
+  if (getImageCategories()[path]) return getImageCategories()[path];
+  
   const res = await fetch('/api/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subdir: path })
+    body: JSON.stringify({ subdir: path, url: window.location.href })
   });
 
   if (!res.ok) {
@@ -13,7 +18,7 @@ export async function fetchImages(path: string) : Promise<string[]> {
   const json = await res.json();
 
   if (Array.isArray(json) && json.every(item => typeof item === "string")) {
-    return json;
+    return json.map(img => [img, true]);
   } else {
     return [];
   }

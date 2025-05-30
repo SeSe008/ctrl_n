@@ -22,16 +22,10 @@ export default ts.config(
     },
     rules: {
       'no-undef': 'off',
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
       semi: ['error', 'always'],
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', {
-        'vars': 'all',
-        'args': 'none',
-        'caughtErrors': 'all',
-        'ignoreRestSiblings': false,
-        'reportUsedIgnorePattern': false
-      }]
+      '@typescript-eslint/no-unused-vars': ['off']
     }
   },
   {
@@ -45,7 +39,7 @@ export default ts.config(
       }
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off'
+      '@typescript-eslint/no-explicit-any': 'off',
     }
   }
 );

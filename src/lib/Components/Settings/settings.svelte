@@ -232,9 +232,13 @@
       background-color: inherit;
     }
 
-    .element span, .element div {
+    .element span, .element div, .element label {
       color: inherit;
       font-size: calc(8px + 1.25\vmin);
+    }
+
+    .element label {
+      user-select: none;
     }
 
     .element input[type="range"] {

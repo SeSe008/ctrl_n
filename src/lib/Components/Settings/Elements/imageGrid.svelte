@@ -1,15 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { Options } from '$lib/types/settings/elements/imageGrid';
+  import type { Images } from '$lib/types/backgroundImage';
 
   interface Props {
     options: Options;
   }
   
   const { options }: Props = $props();
-  const { images, columns, updater } = options;
+  const { images, columns, updater, toggle, onToggle, label } = options;
 
-  let imgs = $state<string[]>([]);
+  let imgs = $state<Images>([]);
 
   // when the component mounts, await the images and assign them
   onMount(async () => {
@@ -25,8 +26,18 @@
   id="settings_image_grid"
   style="--columns: {columns};"
   >
-  {#each imgs as src, i (i)}
-    <img src="{src}" alt="Background" />
+  {#each imgs as img, i (i)}
+    <div class="image">
+      <img src={typeof img === 'string' ? img : img[0]} alt="Background" />
+      {#if toggle}
+	<div>
+	  <input id='img_gri_{i}' type="checkbox" checked={typeof img === 'string' ? true : img[1]} onchange={() => onToggle?.(i)} />
+	  <label for='img_gri_{i}'>{label}</label>
+	</div>
+      {:else}
+	<div>{label}</div>
+      {/if}
+    </div>
   {/each}
 </div>
 
@@ -39,7 +50,13 @@
     margin: auto;
   }
 
-  #settings_image_grid img {
+  .image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image img {
     width: 100%;
     height: auto;
     display: block;

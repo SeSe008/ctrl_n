@@ -12,7 +12,7 @@
   import { toggleEditMode } from '$lib/stores/editMode';
   import { globalTiles } from '$lib/stores/tiles';
 
-  import { backgroundImage, getBackgroundImage, getImages, initBgImages } from '$lib/stores/backgroundImage';
+  import { backgroundImage, getBackgroundImage, getImageCategories, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
   
   let colorThief: ColorThief;
   
@@ -22,7 +22,7 @@
 
   function nextImage() {
     applyImage(
-      getImages(),
+      getImageCategories()[getImageCategory()],
       getBackgroundImage(),
       colors,
       colorThief
