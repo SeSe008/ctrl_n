@@ -13,16 +13,29 @@
   import { globalTiles } from '$lib/stores/tiles';
 
   import { backgroundImage, getBackgroundImage, getImageCategories, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
+  import type { BgImageCategory } from '$lib/types/backgroundImage';
   
   let colorThief: ColorThief;
   
-  const defaultCategory = 'animals'; // Default category when none is set
+  const defaultCategory = 0; // Default category when none is set
+  const defaultCategories: Array<BgImageCategory> = [
+    {
+      label: 'Animals',
+      icon: 'lucide:squirrel',
+      path: 'backgrounds/animals'
+    },
+    {
+      label: 'Space',
+      icon: 'lucide:rocket',
+      path: 'backgrounds/space'
+    }
+  ];
   const imageInterval = 5 * 60 * 1000; // When image changes - Make Customizable?
   const colors: number = 5; // Amount of colors for palette
 
   function nextImage() {
     applyImage(
-      getImageCategories()[getImageCategory()],
+      getImageCategories()[getImageCategory()].images,
       getBackgroundImage(),
       colors,
       colorThief
@@ -42,7 +55,7 @@
   onMount(async () => {
     colorThief = new ColorThief();
 
-    initBgImages(defaultCategory, imageInterval, colors, colorThief);
+    initBgImages(defaultCategory, defaultCategories, imageInterval, colors, colorThief);
 
     initializeTiles();
   });

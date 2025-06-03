@@ -5,7 +5,8 @@ import { derived, get } from 'svelte/store';
 import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar, addManager, removeManager } from '$lib/stores/tiles';
 import { setSelectedManager, settings } from '$lib/stores/settings/settings';
 import { tileMetadata } from '$lib/constants/tileMetadata';
-import { getImageCategory, imageCategory, toggleImageInCategory } from '$lib/stores/backgroundImage';
+import { addImageToCategoryInCategories, getImageCategories, getImageCategory, imageCategories, imageCategory, toggleImageInCategory } from '$lib/stores/backgroundImage';
+import { newImageUrl } from '$lib/stores/settings/elements/newBgImage';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
@@ -14,7 +15,6 @@ import Range from '$lib/Components/Settings/Elements/range.svelte';
 import TextInput from '$lib/Components/Settings/Elements/textInput.svelte';
 import ImageGrid from '$lib/Components/Settings/Elements/imageGrid.svelte';
 import Group from '$lib/Components/Settings/Elements/group.svelte';
-import { fetchImages } from '$lib/utils/fetchImages';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -184,21 +184,50 @@ export const globalSettings: SettingsSection = new SettingsSection()
   .appendElement(
     'select',
     {
-      selectOptions: [
-	{ label: 'Animals', icon: 'lucide:squirrel', value: 'backgrounds/animals' },
-	{ label: 'Space', icon: 'lucide:rocket', value: 'backgrounds/space' },
-      ],
+      selectOptions: () => getImageCategories(),
       defaultValue: imageCategory,
       store: imageCategory,
+      updater: imageCategories,
       label: 'Image Category: '
+    }
+  )
+  .appendElement(
+    'group',
+    {
+      objects: new SettingsSection()
+	.appendElement(
+	  'text',
+	  {
+	    text: 'Add Image:'
+	  }
+	)
+	.appendElement(
+	  'textInput',
+	  {
+	    store: newImageUrl,
+	    placeholder: 'Image Url'
+	  }
+	)
+	.appendElement(
+	  'buttons',
+	  {
+	    buttons: [
+	      {
+		text: 'Add',
+		icon: 'gg:add',
+		onClick: () => addImageToCategoryInCategories(getImageCategory(), get(newImageUrl))
+	      }
+	    ]
+	  }
+	)
     }
   )
   .appendElement(
     'imageGrid',
     {
-      images: async () => await fetchImages(getImageCategory()),
+      images: () => getImageCategories()[getImageCategory()].images || [],
       columns: 4,
-      updater: imageCategory,
+      updater: imageCategories,
       toggle: true,
       onToggle: (value: number) => toggleImageInCategory(getImageCategory(), value),
       label: 'Enabled'

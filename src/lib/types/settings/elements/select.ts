@@ -1,16 +1,16 @@
 import type { Readable, Writable } from "svelte/store";
 
-interface SelectOption {
+export interface SelectOption {
   label: string;
   icon?: string;
   value?: any;
 }
 
 export interface Options {
-  selectOptions: SelectOption[];
+  selectOptions: SelectOption[] | (() => SelectOption[]);
   store?: Writable<any>;
+  updater?: Readable<any> | Array<Readable<any>>;
   onChange?: (_value: any) => void;
   defaultValue?: Readable<any>;
   label?: string;
 }
-

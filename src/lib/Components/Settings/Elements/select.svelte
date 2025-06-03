@@ -1,19 +1,48 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import type { Options } from '$lib/types/settings/elements/select';
+  import type { Options, SelectOption } from '$lib/types/settings/elements/select';
   import { get } from 'svelte/store';
-  
+  import { onMount, onDestroy } from 'svelte';
+
   interface Props {
     options: Options;
   }
 
   const { options }: Props = $props();
-  const { selectOptions, store, onChange, defaultValue, label } = options;
+  const { selectOptions, store, updater, onChange, defaultValue, label } = options;
 
-  let selectValue: number = $state(defaultValue ? get(defaultValue) : 0);
+  function initOptions() {
+    if (typeof selectOptions === 'function') {
+      return selectOptions();
+    } else {
+      return selectOptions;
+    }
+  }
 
+  let optionsList: Array<SelectOption> = $state(initOptions());
+
+  let selectValue: any = $state(defaultValue ? get(defaultValue) : 0);
+  
   $effect(() => {
     if (store) store.update(() => selectValue);
+  });
+
+  let unsubscribes: Array<() => void> = [];
+  onMount(() => {
+    if (updater) {
+      const updaters = Array.isArray(updater) ? updater : [updater];
+
+      unsubscribes = updaters.map((u) =>
+        u.subscribe(async () => {
+	  optionsList = initOptions();
+	  if (defaultValue) selectValue = get(defaultValue);
+        })
+      );
+    }
+  });
+
+  onDestroy(() => {
+    unsubscribes?.forEach(unsub => unsub());
   });
 </script>
 
@@ -21,13 +50,14 @@
   {#if label}
     <span>{label}</span>
   {/if}
+
   <select bind:value={selectValue} onchange={() => onChange?.(selectValue)}>
-    {#each selectOptions as selectOption, i (i)}
-      <option value={(selectOption.value) ? selectOption.value : i}>
-	{#if selectOption.icon}
-	  <Icon icon={selectOption.icon} />
-	{/if}
-	{selectOption.label}
+    {#each optionsList as selectOption, i (i)}
+      <option value={(selectOption.value) ? selectOption.value : i}>	
+        {#if selectOption.icon}
+          <Icon icon={selectOption.icon} />
+        {/if}
+        {selectOption.label}
       </option>
     {/each}
   </select>

@@ -1,13 +1,20 @@
 import { getImageCategories } from "$lib/stores/backgroundImage";
 import type { Images } from "$lib/types/backgroundImage";
 
-export async function fetchImages(path: string) : Promise<Images> {
-  if (getImageCategories()[path]) return getImageCategories()[path];
+export async function fetchImages(categoryId: number) : Promise<Images> {
+  const category = getImageCategories()[categoryId];
+
+  if (!category) {
+    console.error('fetchImages: Category not found for ID', categoryId);
+    return [];
+  } else if (!category.path) {
+    return category.images || [];
+  }
   
   const res = await fetch('/api/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subdir: path, url: window.location.href })
+    body: JSON.stringify({ subdir: category.path, url: window.location.href })
   });
 
   if (!res.ok) {

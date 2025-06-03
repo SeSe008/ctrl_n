@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import type { Options } from '$lib/types/settings/elements/imageGrid';
   import type { Images } from '$lib/types/backgroundImage';
 
@@ -17,8 +17,22 @@
     imgs = await images();
   });
 
-  if (updater) updater.subscribe(async () => {
-    imgs = await images();
+  
+  let unsubscribes: Array<() => void> = [];
+  onMount(() => {
+    if (updater) {
+      const updaters = Array.isArray(updater) ? updater : [updater];
+
+      unsubscribes = updaters.map((u) =>
+        u.subscribe(async () => {
+          imgs = await images();
+        })
+      );
+    }
+  });
+
+  onDestroy(() => {
+    unsubscribes?.forEach(unsub => unsub());
   });
 </script>
 
@@ -31,7 +45,7 @@
       <img src={typeof img === 'string' ? img : img[0]} alt="Background" />
       {#if toggle}
 	<div>
-	  <input id='img_gri_{i}' type="checkbox" checked={typeof img === 'string' ? true : img[1]} onchange={() => onToggle?.(i)} />
+	  <input id='img_gri_{i}' type="checkbox" checked={typeof img === 'string' ? true : img[1]} onclick={() => onToggle?.(i)} />
 	  <label for='img_gri_{i}'>{label}</label>
 	</div>
       {:else}
@@ -54,6 +68,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: auto;
   }
 
   .image img {
@@ -61,5 +76,12 @@
     height: auto;
     display: block;
     box-sizing: border-box;
+    border-radius: .5rem;
+  }
+
+  .image div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 </style>

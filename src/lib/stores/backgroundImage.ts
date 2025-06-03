@@ -2,7 +2,7 @@ import { useImage } from "$lib/utils/useImage";
 import { writable, get } from "svelte/store";
 import type ColorThief from "colorthief";
 import { fetchImages } from "$lib/utils/fetchImages";
-import type { Images } from "$lib/types/backgroundImage";
+import type { BgImageCategory, Images } from "$lib/types/backgroundImage";
 
 export const backgroundImage = writable<string | undefined>(undefined);
 
@@ -14,91 +14,96 @@ export function getBackgroundImage() : string | undefined {
   return get(backgroundImage);
 }
 
-export const imageCategory = writable<string>();
+export const imageCategory = writable<number>();
 
-export function setImageCategory(category: string) {
+export function setImageCategory(category: number) {
   imageCategory.set(category);
 };
 
-export function getImageCategory() : string {
+export function getImageCategory() : number {
   return get(imageCategory);
 }
 
-function initImageCategory(defaultCategory: string) {
+function initImageCategory(defaultCategory: number) {
   const stored = window.localStorage.getItem('imageCategory');
-  
-  if (stored) {
-    imageCategory.set(stored);
+
+  if (stored && !isNaN(Number(stored))) {
+    setImageCategory(Number(stored));
   } else {
-    imageCategory.set(defaultCategory);
+    setImageCategory(defaultCategory);
   }
 }
 
-export const imageCategories = writable<Record<string, Images>>();
+export const imageCategories = writable<Array<BgImageCategory>>();
 
-export function setImageCategories(categories: Record<string, Images>) {
+export function setImageCategories(categories: Array<BgImageCategory>) {
   imageCategories.set(categories);
 }
 
-export function getImageCategories() : Record<string, Images> {
+export function getImageCategories() : Array<BgImageCategory> {
   return get(imageCategories);
 }
 
-export function addImageCategoryInCategories(category: string, images: Images) {
+export function addImageCategoryInCategories(label: string, icon?: string, images?: Images, path?: string) {  
   imageCategories.update(current => {
-    return { ...current, [category]: images };
+    current.push({
+      images: images,
+      path: path,
+      label: label,
+      icon: icon,
+    });
+    return current;
   });
 }
 
-export function deleteImageCategoryInCategories(category: string) {
+export function deleteImageCategoryInCategories(categoryId: number) {
   imageCategories.update(current => {
-    const { [category]: _, ...rest } = current;
+    const rest = current.filter((_, index) => index !== categoryId);
     return rest;
   });
 }
 
-export function setImageCategoryInCategories(category: string, images: Images) {
+export function setImageCategoryInCategories(categoryId: number, images: Images) {
   imageCategories.update(current => {
-    current[category] = images;
+    current[categoryId].images = images;
     return current;
   });
 }
 
-export function addImageToCategoryInCategories(category: string, image: string) {
+export function addImageToCategoryInCategories(categoryId: number, image: string) {
   imageCategories.update(current => {
-    if (current[category]) {
-      current[category].push([image, true]);
-    } else {
-      current[category] = [ [image, true] ];
+    if (current[categoryId] && current[categoryId].images) {
+      console.log('Adding image to category', categoryId, image);
+      current[categoryId].images.push([image, true]);
     }
     return current;
   });
 }
 
-export function removeImageFromCategoryInCategories(category: string, id: number) {
+export function removeImageFromCategoryInCategories(categoryId: number, imageId: number) {
   imageCategories.update(current => {
-    if (current[category]) {
-      current[category] = current[category].filter((_, index) => index !== id);
+    if (current[categoryId] && current[categoryId].images) {
+      current[categoryId].images = current[categoryId].images.filter((_, index) => index !== imageId);
     }
     return current;
   });
 }
 
-export function toggleImageInCategory(category: string, id: number) {
+export function toggleImageInCategory(categoryId: number, imageId: number) {
   imageCategories.update(current => {
-    if (current[category]) {
-      const item = current[category][id];
+    if (current[categoryId] && current[categoryId].images) {
+      const item = current[categoryId].images[imageId];
       
       if (Array.isArray(item)) {
 	const [ url, enabled ] = item;
-	current[category][id] = [ url, !enabled ];
+	current[categoryId].images[imageId] = [ url, !enabled ];
       }
     }
     return current;
   });
 }
 
-export function initImageCategories() {
+export function initImageCategories(defaultCategories: Array<BgImageCategory>) {
   const stored = window.localStorage.getItem('imageCategories');
   
   if (stored) {
@@ -109,7 +114,7 @@ export function initImageCategories() {
       console.error('Failed to parse stored image categories:', error);
     }
   } else {
-    imageCategories.set({});
+    imageCategories.set(defaultCategories);
   }
 
   imageCategories.subscribe((categories) => {
@@ -117,15 +122,15 @@ export function initImageCategories() {
   });
 }
 
-export function initBgImages(defaultCategory: string, imageInterval: number, colors: number, colorThief: ColorThief) {
+export function initBgImages(defaultCategory: number, defaultCategories: Array<BgImageCategory>, imageInterval: number, colors: number, colorThief: ColorThief) {
   initImageCategory(defaultCategory);
-  initImageCategories();
+  initImageCategories(defaultCategories);
 
   imageCategory.subscribe(async (category) => {
-    window.localStorage.setItem('imageCategory', category);
+    window.localStorage.setItem('imageCategory', category.toString());
 
-    setImageCategoryInCategories(category, await fetchImages(category));
+    if (!getImageCategories()[category].images) setImageCategoryInCategories(category, await fetchImages(category));
     
-    useImage(getImageCategories()[category], imageInterval, colors, colorThief);
+    useImage(getImageCategories()[category].images, imageInterval, colors, colorThief);
   });
 }

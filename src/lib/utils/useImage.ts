@@ -21,7 +21,9 @@ function pickImage(images: Images) : string | undefined {
   return toggledImages[randomIndex][0];
 }
 
-export function applyImage(images: Images, lastImage: string | undefined, colors: number, colorThief: ColorThief, retry: boolean = false) : string {
+export function applyImage(images: Images | undefined, lastImage: string | undefined, colors: number, colorThief: ColorThief, retry: boolean = false) : string {
+  if (!images) return lastImage || '';
+  
   let image: string | undefined = pickImage(images);
 
   while (images.length > 1 && lastImage === image && lastImage) {
@@ -56,7 +58,7 @@ export function applyImage(images: Images, lastImage: string | undefined, colors
   return image;
 }
 
-export async function useImage(images: Images, changeInterval: number, colors: number, colorThief: ColorThief) {
+export async function useImage(images: Images | undefined, changeInterval: number, colors: number, colorThief: ColorThief) {
   // Pick a random image and set it as the page background in intervals
   if (imageInterval) clearInterval(imageInterval);
   

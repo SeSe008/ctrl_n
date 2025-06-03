@@ -137,7 +137,7 @@
 
   .article:hover {
     transform: scale(1.01);
-    filter: drop-shadow(0 0 1rem rgb(var(--c2)));
+    filter: drop-shadow(0 0 .25rem rgb(var(--c2)));
   }
   
   .article > div {

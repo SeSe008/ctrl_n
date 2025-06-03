@@ -239,6 +239,7 @@
 
     .element label {
       user-select: none;
+      cursor: pointer;
     }
 
     .element input[type="range"] {
