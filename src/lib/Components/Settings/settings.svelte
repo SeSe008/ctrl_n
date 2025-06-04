@@ -5,79 +5,94 @@
   import { tileDefs } from '$lib/constants/tileDefs';
   import TileElement from '$lib/Components/tileElement.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
+  import { onMount } from 'svelte';
+  import { toggleEditMode } from '$lib/stores/editMode';
 
   let selectedTab = $state<number>(2);
+
+  onMount(() => {
+    toggleEditMode();
+  });
 </script>
 
-{#if $settings.enabled}
-  <aside id="settings">
-    <div id="tab_cont">
-      <div id="tab_nav">
-	<button class={selectedTab === 0 ? 'active' : ''} onclick={() => selectedTab = 0}>Global Settings</button>
-	<button class={selectedTab === 1 ? 'active' : ''} onclick={() => selectedTab = 1}>Row Settings</button>
-	<button class={selectedTab === 2 ? 'active' : ''} onclick={() => selectedTab = 2}>Tile Settings</button>
-      </div>
-      <div id="tab_elements">
-	{#if selectedTab === 0}
-	  <div class="settings_tab">
-	    {#each globalSettings.elements as element, i (i)}
-	      {@const Comp = elementComponents[element.elementType]}
-	      <div class="element"><Comp options={element.elementOptions} /></div>
-	    {/each}
-	  </div>
-	{:else if selectedTab === 1 && $settings.selectedManager !== undefined}
-	  <div class="settings_tab">
-	    {#each tileManagerSettings.elements as element, i (i)}
-	      {@const Comp = elementComponents[element.elementType]}
-	      <div class="element"><Comp options={element.elementOptions} /></div>
-	    {/each}
-	    <h2>Row preview</h2>
-	    <div class="preview" inert>
-	      <TileManager id={$settings.selectedManager} />
-	    </div>
-	  </div>
-	{:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-	  <div class="settings_tab">
-	    {#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
-	      {#if elementComponents[element.elementType]}
-		{@const Comp = elementComponents[element.elementType]}
-                <div class="element"><Comp options={element.elementOptions} /></div>
-	      {/if}
-	    {/each}
-	    <h2>Tile Preview</h2>
-	    <div class="preview" inert>
-	      <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
-	    </div>
-	  </div>
-	{/if}
-      </div>
+<aside id="settings">
+  <div id="tab_cont">
+    <div id="tab_nav">
+      <button class={selectedTab === 0 ? 'active' : ''} onclick={() => selectedTab = 0}>Global Settings</button>
+      <button class={selectedTab === 1 ? 'active' : ''} onclick={() => selectedTab = 1}>Row Settings</button>
+      <button class={selectedTab === 2 ? 'active' : ''} onclick={() => selectedTab = 2}>Tile Settings</button>
     </div>
-    <div id="close_controls">
-      <button onclick={() => toggleSettings()}>
-	Close
-      </button>
-    </div>
-  </aside>
-{/if}
+    <div id="tab_elements">
+      {#if selectedTab === 0}
+	<div class="settings_tab">
+	  {#each globalSettings.elements as element, i (i)}
+	    {@const Comp = elementComponents[element.elementType]}
+	  <div class="element"><Comp options={element.elementOptions} /></div>
+	{/each}
+      </div>
+    {:else if selectedTab === 1 && $settings.selectedManager !== undefined}
+      <div class="settings_tab">
+	{#each tileManagerSettings.elements as element, i (i)}
+	  {@const Comp = elementComponents[element.elementType]}
+          <div class="element"><Comp options={element.elementOptions} /></div>
+	{/each}
+	<h2>Row preview</h2>
+	<div class="preview" inert>
+	  <TileManager id={$settings.selectedManager} />
+	</div>
+      </div>
+    {:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+      <div class="settings_tab">
+	{#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
+	  {#if elementComponents[element.elementType]}
+	    {@const Comp = elementComponents[element.elementType]}
+            <div class="element"><Comp options={element.elementOptions} /></div>
+	  {/if}
+	{/each}
+	<h2>Tile Preview</h2>
+	<div class="preview" inert>
+	  <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
+	    </div>
+      </div>
+    {/if}
+  </div>
+  </div>
+  <div id="close_controls">
+    <button onclick={() => toggleSettings()}>
+      Close
+    </button>
+  </div>
+</aside>
   
 <style>
   #settings {
     position: fixed;
     overflow: hidden;
 
-    inset: 5%;
-    width: 90%;
-    height: 90%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: min(30rem, 100%);
 
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
     
     background-color: rgba(var(--c1), .9);
     color: rgb(var(--c2));
-    border: 1px solid rgb(var(--c2));
-    border-radius: 1rem;
+    border-right: 1px solid rgb(var(--c2));
     
     z-index: 100;
+
+    animation: settingsIn forwards .5s;
+  }
+
+  @keyframes settingsIn {
+    from {
+      width: 0;
+    }
+    to {
+      width: min(30rem, 100%);
+    }
   }
 
   #tab_cont {

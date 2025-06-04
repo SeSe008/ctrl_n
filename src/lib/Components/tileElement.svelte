@@ -4,6 +4,7 @@
   import { toggleSettings } from '$lib/stores/settings/settings';
   import { editMode } from '$lib/stores/editMode';
   import type { Tile } from '$lib/types/tiles';
+  import { settings } from '$lib/stores/settings/settings';
   
   import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
@@ -11,9 +12,10 @@
   interface Props {
     managerId: number;
     tileId: number;
+    inSettings?: boolean;
   }
   
-  let { managerId, tileId }: Props = $props();
+  let { managerId, tileId, inSettings }: Props = $props();
 
   let tile = $state<Tile>();
   let SelectedComponent = $state<Component | null>();
@@ -44,7 +46,7 @@
   }
 </script>
 
-<div use:applyVars={cssVars} class="tile_element">
+<div use:applyVars={cssVars} class="tile_element {(inSettings === false && $settings.enabled && $settings.selectedTile === tileId) ? 'settings_selected_tile' : ''}">
   {#if SelectedComponent }
     <SelectedComponent />
   {:else}
@@ -67,6 +69,10 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+  }
+
+  .settings_selected_tile {
+    border: 2px dotted white;
   }
   
   #inputs {

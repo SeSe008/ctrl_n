@@ -11,6 +11,7 @@
   import { initializeTiles } from '$lib/stores/tiles';
   import { toggleEditMode } from '$lib/stores/editMode';
   import { globalTiles } from '$lib/stores/tiles';
+  import { settings } from '$lib/stores/settings/settings';
 
   import { backgroundImage, getBackgroundImage, getImageCategories, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
   import type { BgImageCategory } from '$lib/types/backgroundImage';
@@ -63,7 +64,7 @@
 
 <img id="bg_img" alt="bg img" src={$backgroundImage} />
 
-<div bind:this={tileGrid} id="tiles">
+<div bind:this={tileGrid} id="tiles" {...($settings.enabled && { inert: true })}>
   {#each {length: $globalTiles.length} as _, i (i) }
     <TileManager id={i} />
   {/each}
@@ -82,7 +83,10 @@
   Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
   <a target="_blank" href="privacy">Privacy and Credit</a>
 </div>
-<Settings />
+
+{#if $settings.enabled}
+  <Settings />
+{/if}
 
 <style>
   :global {
