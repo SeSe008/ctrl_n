@@ -93,7 +93,8 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	  .appendElement(
 	    'group',
 	    {
-	      objects: createNewSettingsSection()
+	      layout: 'vert',
+	      objects: createNewSettingsGroup()
 	        .appendElement(
 		  'textInput',
 		  {
