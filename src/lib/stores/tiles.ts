@@ -1,6 +1,6 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 
-import type { GlobalTiles, TileManager } from '$lib/types/tiles';
+import type { GlobalTiles, Tile, TileManager } from '$lib/types/tiles';
 
 export const globalTiles = writable<GlobalTiles>([]);
 
@@ -39,6 +39,10 @@ export function removeManager(id?: number) {
   });
 }
 
+export function getManager(id: number) : TileManager | undefined {
+  return get(globalTiles)[id];
+}
+
 export function addTile(managerId: number | undefined) {
   if (managerId !== undefined) globalTiles.update(current => {
     if (current[managerId]) current[managerId].tiles = [
@@ -59,6 +63,16 @@ export function removeTile(managerId: number | undefined) {
     return current;
   });
 }
+
+export function getTile(managerId: number, tileId: number) : Tile | undefined {
+  const current = get(globalTiles);
+  if (current[managerId] && current[managerId].tiles[tileId]) {
+    return current[managerId].tiles[tileId];
+  } else {
+    return undefined;
+  }
+}
+  
 
 export function changeManagerHeight(managerId: number | undefined, height: number) {
   if (managerId !== undefined) globalTiles.update(current => {

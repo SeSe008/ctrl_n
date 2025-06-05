@@ -153,6 +153,10 @@
       box-shadow: none;
     }
 
+    *::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+
     *::-webkit-scrollbar-thumb {
       background-color: rgba(var(--c2), 0.5);
       border-radius: 4px;

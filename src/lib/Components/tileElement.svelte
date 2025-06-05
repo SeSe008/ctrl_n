@@ -46,7 +46,7 @@
   }
 </script>
 
-<div use:applyVars={cssVars} class="tile_element {(inSettings === false && $settings.enabled && $settings.selectedTile === tileId) ? 'settings_selected_tile' : ''}">
+<div use:applyVars={cssVars} class="tile_element {(inSettings !== true && $settings.enabled && $settings.selectedManager === managerId && $settings.selectedTile === tileId) ? 'settings_selected_tile' : ''}" id="tile_element_{managerId}{tileId}">
   {#if SelectedComponent }
     <SelectedComponent />
   {:else}

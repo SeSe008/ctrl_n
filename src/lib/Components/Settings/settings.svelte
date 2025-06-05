@@ -1,7 +1,7 @@
 <script lang="ts">
   import { elementComponents, globalSettings, tileManagerSettings } from '$lib/constants/settings';
-  import { settings, toggleSettings } from '$lib/stores/settings/settings';
-  import { globalTiles } from '$lib/stores/tiles';
+  import { getSelectedManagerId, getSelectedTileId, settings, toggleSettings } from '$lib/stores/settings/settings';
+  import { getManager, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
   import TileElement from '$lib/Components/tileElement.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
@@ -9,13 +9,46 @@
   import { toggleEditMode } from '$lib/stores/editMode';
 
   let selectedTab = $state<number>(2);
+  
+  let settingsContainer: HTMLElement;
+  const sideOptions: [string, string] = ["settingsLeft", "settingsRight"];
+  const defaultSide: number = 0;
+  
+  function checkOverlap() : number | undefined {
+    if (!settingsContainer) return;
 
+    const managerId = getSelectedManagerId();
+    const tileId = getSelectedTileId();
+    if (managerId === undefined || tileId === undefined) return;
+
+    const manager = getManager(managerId);
+    if (!manager || manager.tiles.length <= 1) return;
+
+    const selectedTile = document.getElementById(`tile_element_${managerId}${tileId}`);
+    if (!selectedTile) return;
+
+    const selectedTileRect = selectedTile.getBoundingClientRect();
+    const settingsContainerRect = settingsContainer.getBoundingClientRect();
+
+    if (selectedTileRect.left > settingsContainerRect.right) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+  
   onMount(() => {
     toggleEditMode();
+
+    settingsContainer.classList.add(sideOptions[checkOverlap() || defaultSide]);
+
+    window.addEventListener('resize', () => {
+      settingsContainer.classList.replace(sideOptions[((checkOverlap() || defaultSide) + 1) % 2], sideOptions[checkOverlap() || defaultSide]);
+    });
   });
 </script>
 
-<aside id="settings">
+<aside id="settings" bind:this={settingsContainer}>
   <div id="tab_cont">
     <div id="tab_nav">
       <button class={selectedTab === 0 ? 'active' : ''} onclick={() => selectedTab = 0}>Global Settings</button>
@@ -37,8 +70,8 @@
           <div class="element"><Comp options={element.elementOptions} /></div>
 	{/each}
 	<h2>Row preview</h2>
-	<div class="preview" inert>
-	  <TileManager id={$settings.selectedManager} />
+	<div class="preview" id="group_preview" inert>
+	  <TileManager id={$settings.selectedManager} inSettings={true} />
 	</div>
       </div>
     {:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
@@ -50,9 +83,9 @@
 	  {/if}
 	{/each}
 	<h2>Tile Preview</h2>
-	<div class="preview" inert>
-	  <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} />
-	    </div>
+	<div class="preview" id="tile_preview" inert>
+	  <TileElement managerId={$settings.selectedManager} tileId={$settings.selectedTile} inSettings={true} />
+	</div>
       </div>
     {/if}
   </div>
@@ -69,7 +102,6 @@
     position: fixed;
     overflow: hidden;
 
-    left: 0;
     top: 0;
     height: 100%;
     width: min(30rem, 100%);
@@ -79,19 +111,30 @@
     
     background-color: rgba(var(--c1), .9);
     color: rgb(var(--c2));
-    border-right: 1px solid rgb(var(--c2));
     
     z-index: 100;
 
     animation: settingsIn forwards .5s;
   }
 
+  :global {
+    #settings.settingsLeft {
+      left: 0;
+      border-right: 1px solid rgb(var(--c2));
+    }
+    
+    #settings.settingsRight {
+      right: 0;
+      border-left: 1px solid rgb(var(--c2));
+    }
+  }
+
   @keyframes settingsIn {
     from {
-      width: 0;
+      opacity: 0;
     }
     to {
-      width: min(30rem, 100%);
+      opacity: 1;
     }
   }
 
@@ -165,13 +208,20 @@
     flex-direction: column;
     align-items: center;
 
-    width: 100%;
     min-height: 50vh;
     max-height: 50vh;
 
     padding-bottom: 1rem;
   }
 
+  #group_preview {
+    width: 100vw;
+  }
+
+  #tile_preview {
+    width: 100%;
+  }
+  
   :global {
     .preview > * {
       pointer-events: none !important;

@@ -2,8 +2,13 @@
   import TileElement from "./tileElement.svelte";
   import { globalTiles } from "$lib/stores/tiles";
   import type { TileManager } from "$lib/types/tiles";
+
+  interface Props {
+    id: number,
+    inSettings?: boolean;
+  }
   
-  let { id } = $props();
+  let { id, inSettings }: Props = $props();
 
   let manager = $state<TileManager>();
 
@@ -22,7 +27,7 @@
   
   {#if manager}
     {#each manager.tiles as _, i (i)}
-      <TileElement managerId={id} tileId={i} />
+      <TileElement managerId={id} tileId={i} inSettings={inSettings} />
     {/each}
   {/if}
 </div>
