@@ -4,15 +4,13 @@
 
 ## Custom tilable page for a new tab in a browser
 
-## ** ⚠️ CTRL+N is currently in an early beta state ⚠️ **
+## ** ⚠️ CTRL+N is currently in an early beta state – Breaking changes may occur at any time ⚠️ **
 
-<center>
-	<div style="display: flex; flex-direction: row; justify-content: center; gap: 5%;">
-		<img width="40%" title="Screenshot_Bird_Light" src="screenshots/Bird_Light.png" />
-		<img width="40%" title="Screenshot_Space_Full" src="screenshots/Space_Full.png" />
-	</div>
-	<sub>Screenshots might not be fully up to date</sub>
-</center>
+<div style="display: flex; flex-direction: row; justify-content: center; gap: 5%;">
+	<img width="50%" title="Screenshot_Bird_Light" src="screenshots/Bird_Light.png" />
+	<img width="50%" title="Screenshot_Space_Full" src="screenshots/Space_Full.png" />
+</div>
+<center><sub>Screenshots might not be fully up to date</sub></center>
 
 ---
 
@@ -69,19 +67,18 @@ The full privacy statement is located [here](https://newtab.se-008.net/privacy).
 ## Roadmap
 
 Elements will not follow chronological order
-- [x] All Elements are Tilable
-- [x] Vertical Tiling
-- [x] Adaptable Settings-Component
-- [ ] Settings-creation helper-functions
-- [ ] CSS-Rework for compatibility purposes 
-- [x] Tile-Manager-Resizing
+- [ ] More Styling Control for Page/Widgets
+  - [x] Opacity
+  - [ ] Font
+  - [ ] Widget Resizing
+  - [ ] Widget Positioning
+  - [x] User Backgrounds
+  - [x] User Background-Categories
 - [ ] Custom Search Engines
-- [ ] User Backgrounds
-- [ ] More Styling Control for Site but also Individual Widgets (Font, Opacity, ...)
 - [ ] Custom Widgets
+- [ ] CSS-Rework for compatibility purposes 
 - [ ] Stable offline version
 - [ ] Native redirect extension
-- [x] Port to runes mode
 
 Future widget ideas:
 - Notes
@@ -90,6 +87,7 @@ Future widget ideas:
 - Calendar
 - Social-Media Feed (Reddit/X/BlueSky)
 - Daily Facts/Trivia
-- Custom Widgets
 - Give me ideas :)
 
+## Website Broken? Background gone?
+Breaking changes may occur at any time, but clearing local storage is helping almost anytime.
