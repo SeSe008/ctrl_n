@@ -23,6 +23,7 @@
   .settings_group {
     display: flex;
     gap: .5rem;
+    flex-wrap: wrap;
   }
 
   .vert {

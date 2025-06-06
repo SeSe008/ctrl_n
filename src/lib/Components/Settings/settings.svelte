@@ -253,6 +253,12 @@
     z-index: 200;
   }
 
+  .element {
+    max-width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+
   :global {
     .element button, #close_controls button {
       width: max-content;

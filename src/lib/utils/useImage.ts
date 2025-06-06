@@ -9,24 +9,22 @@ import type { Images } from '$lib/types/backgroundImage';
 let imageInterval: NodeJS.Timeout;
 
 function pickImage(images: Images) : string | undefined {
-  const toggledImages = images.filter(
-    (img): img is [string, boolean] => img[1] === true
-  );
-
-  if (toggledImages.length === 0) {
-    return undefined;
-  }
-
-  const randomIndex = Math.floor(Math.random() * toggledImages.length);
-  return toggledImages[randomIndex][0];
+  const randomIndex = Math.floor(Math.random() * images.length);
+  return images[randomIndex][0];
 }
 
 export function applyImage(images: Images | undefined, lastImage: string | undefined, colors: number, colorThief: ColorThief, retry: boolean = false) : string {
   if (!images) return lastImage || '';
-  
-  let image: string | undefined = pickImage(images);
 
-  while (images.length > 1 && lastImage === image && lastImage) {
+  const toggledImages = images.filter(
+    (img): img is [string, boolean] => img[1] === true
+  );
+
+  if (!toggledImages) return lastImage || '';
+  
+  let image: string | undefined = pickImage(toggledImages);
+  
+  while (toggledImages.length > 1 && lastImage === image && lastImage) {
     image = pickImage(images);
   }
 
