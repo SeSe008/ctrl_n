@@ -7,8 +7,8 @@
 ## ** ⚠️ CTRL+N is currently in an early beta state – Breaking changes may occur at any time ⚠️ **
 
 <div style="display: flex; flex-direction: row; justify-content: center; gap: 5%;">
-	<img width="50%" title="Screenshot_Bird_Light" src="screenshots/Bird_Light.png" />
-	<img width="50%" title="Screenshot_Space_Full" src="screenshots/Space_Full.png" />
+	<img width="40%" title="Screenshot_Bird_Light" src="screenshots/Bird_Light.png" />
+	<img width="40%" title="Screenshot_Space_Full" src="screenshots/Space_Full.png" />
 </div>
 <center><sub>Screenshots might not be fully up to date</sub></center>
 
@@ -90,4 +90,4 @@ Future widget ideas:
 - Give me ideas :)
 
 ## Website Broken? Background gone?
-Breaking changes may occur at any time, but clearing local storage is helping almost anytime.
+Breaking changes may occur at any time, but clearing local storage is helping almost everytime.

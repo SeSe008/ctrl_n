@@ -1,7 +1,7 @@
-export type Images = Array<string | [string, boolean?]>;
+export type Image = string | [string, boolean?];
 
 export interface BgImageCategory {
-  images?: Images;
+  images?: Array<Image>;
   path?: string;
   label: string;
   icon?: string;

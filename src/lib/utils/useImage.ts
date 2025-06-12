@@ -4,16 +4,16 @@ import { parseExif } from './getExif';
 
 import ColorThief from 'colorthief';
 import { setBackgroundImage } from '$lib/stores/backgroundImage';
-import type { Images } from '$lib/types/backgroundImage';
+import type { Image } from '$lib/types/backgroundImage';
 
 let imageInterval: NodeJS.Timeout;
 
-function pickImage(images: Images) : string | undefined {
+function pickImage(images: Array<Image>) : string | undefined {
   const randomIndex = Math.floor(Math.random() * images.length);
   return images[randomIndex][0];
 }
 
-export function applyImage(images: Images | undefined, lastImage: string | undefined, colors: number, colorThief: ColorThief, retry: boolean = false) : string {
+export function applyImage(images: Array<Image> | undefined, lastImage: string | undefined, colors: number, colorThief: ColorThief, retry: boolean = false) : string {
   if (!images) return lastImage || '';
 
   const toggledImages = images.filter(
@@ -56,7 +56,7 @@ export function applyImage(images: Images | undefined, lastImage: string | undef
   return image;
 }
 
-export async function useImage(images: Images | undefined, changeInterval: number, colors: number, colorThief: ColorThief) {
+export async function useImage(images: Array<Image> | undefined, changeInterval: number, colors: number, colorThief: ColorThief) {
   // Pick a random image and set it as the page background in intervals
   if (imageInterval) clearInterval(imageInterval);
   

@@ -1,5 +1,5 @@
 import type { ElementComponents } from '$lib/types/settings/settings';
-import { SettingsSection } from '$lib/classes/settings';
+import { SettingsElement, SettingsSection } from '$lib/classes/settings';
 
 import { derived, get } from 'svelte/store';
 import { addTile, removeTile, changeManagerHeight, changeTile, globalTiles, changeCssVar, addManager, removeManager } from '$lib/stores/tiles';
@@ -13,8 +13,9 @@ import Select from '$lib/Components/Settings/Elements/select.svelte';
 import Buttons from '$lib/Components/Settings/Elements/buttons.svelte';
 import Range from '$lib/Components/Settings/Elements/range.svelte';
 import TextInput from '$lib/Components/Settings/Elements/textInput.svelte';
-import ImageGrid from '$lib/Components/Settings/Elements/imageGrid.svelte';
+import Image from '$lib/Components/Settings/Elements/image.svelte';
 import Group from '$lib/Components/Settings/Elements/group.svelte';
+import Grid from '$lib/Components/Settings/Elements/grid.svelte';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -22,8 +23,9 @@ export const elementComponents: ElementComponents = {
   buttons: Buttons,
   range: Range,
   textInput: TextInput,
-  imageGrid: ImageGrid,
-  group: Group
+  image: Image,
+  group: Group,
+  grid: Grid,
 };
 
 export const tileSettings: SettingsSection = new SettingsSection()
@@ -223,14 +225,23 @@ export const globalSettings: SettingsSection = new SettingsSection()
     }
   )
   .appendElement(
-    'imageGrid',
+    'grid',
     {
-      images: () => getImageCategories()[getImageCategory()].images || [],
       columns: 4,
-      updater: imageCategories,
-      toggle: true,
-      onToggle: (value: number) => toggleImageInCategory(getImageCategory(), value),
-      label: 'Enabled'
+      rows: 4,
+      objects: () => new SettingsSection(
+	getImageCategories()[getImageCategory()].images?.map((img, i) => new SettingsElement(
+	  'image',
+	  {
+	    image: () =>  getImageCategories()[getImageCategory()].images?.[i] || img,
+	    toggle: true,
+	    onToggle: () => toggleImageInCategory(getImageCategory(), i),
+	    label: 'Enabled',
+	    updater: imageCategory
+	  }
+	))
+      ),
+      updater: [imageCategories, imageCategory]
     }
   )
   .appendElement(

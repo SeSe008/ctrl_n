@@ -1,7 +1,7 @@
 import { getImageCategories } from "$lib/stores/backgroundImage";
-import type { Images } from "$lib/types/backgroundImage";
+import type { Image } from "$lib/types/backgroundImage";
 
-export async function fetchImages(categoryId: number) : Promise<Images> {
+export async function fetchImages(categoryId: number) : Promise<Array<Image>> {
   const category = getImageCategories()[categoryId];
 
   if (!category) {

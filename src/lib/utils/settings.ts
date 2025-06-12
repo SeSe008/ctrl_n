@@ -9,6 +9,6 @@ export function createNewSettingsSection(elements?: Element[]) : SettingsSection
   ]);
 }
 
-export function createNewSettingsGroup(elements?: Element[]) : SettingsSection {
+export function createNewSettingsSlice(elements?: Element[]) : SettingsSection {
   return new SettingsSection(elements);
 }

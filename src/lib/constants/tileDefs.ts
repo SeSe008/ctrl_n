@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 
 import type { TileDef } from '$lib/types/tiles';
 import { tileMetadata } from '$lib/constants/tileMetadata';
-import { createNewSettingsGroup, createNewSettingsSection } from '$lib/utils/settings';
+import { createNewSettingsSlice, createNewSettingsSection } from '$lib/utils/settings';
 
 import SearchBar from '$lib/Components/Widgets/searchBar.svelte';
 import Clock from '$lib/Components/Widgets/clock.svelte';
@@ -94,7 +94,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	    'group',
 	    {
 	      layout: 'vert',
-	      objects: createNewSettingsGroup()
+	      objects: createNewSettingsSlice()
 	        .appendElement(
 		  'textInput',
 		  {
@@ -133,7 +133,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	    'group',
 	    {
 	      layout: 'vert',
-	      objects: createNewSettingsGroup()
+	      objects: createNewSettingsSlice()
 		.appendElement(
 		  'textInput',
 		  {
@@ -175,7 +175,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 	  .appendElement(
 	    'group',
 	    {
-	      objects: createNewSettingsGroup()
+	      objects: createNewSettingsSlice()
 		.appendElement(
 		  'text',
 		  {
