@@ -1,5 +1,5 @@
-import { SettingsSection } from "$lib/classes/settings";
-import type { Readable } from "svelte/store";
+import { SettingsSection } from '$lib/classes/settings';
+import type { Readable } from 'svelte/store';
 
 export interface Options {
   columns?: number;

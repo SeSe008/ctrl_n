@@ -7,5 +7,5 @@ export const tileMetadata: TileMetadata[] = [
   { name: 'rss_feed', label: 'RSS-Feed', icon: 'material-symbols:news' },
   { name: 'weather', label: 'Weather', icon: 'ph:cloud-sun-fill' },
   { name: 'calculator', label: 'Calculator', icon: 'iconamoon:calculator' },
-  { name: 'bookmarks', label: 'Bookmarks', icon: 'material-symbols:bookmarks' },
+  { name: 'bookmarks', label: 'Bookmarks', icon: 'material-symbols:bookmarks' }
 ];

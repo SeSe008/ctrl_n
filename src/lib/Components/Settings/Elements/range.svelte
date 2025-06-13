@@ -5,11 +5,22 @@
   interface Props {
     options: Options;
   }
-  
-  const { options }: Props = $props();
-  const { min, max, step, store, onInput, defaultValue, specialValues, valueLabel, unit, label } = options;
 
-  let rangeValue: number = $state(defaultValue ? get(defaultValue) : 0);
+  const { options }: Props = $props();
+  const { min, max, step, store, onInput, defaultValue, specialValues, valueLabel, unit, label } =
+    options;
+
+  function getDefault(): number {
+    if (defaultValue === undefined) return 0;
+
+    if (typeof defaultValue === 'function') {
+      return defaultValue();
+    } else {
+      return get(defaultValue);
+    }
+  }
+
+  let rangeValue: number = $state(getDefault());
 
   $effect(() => {
     if (store) store.update(() => rangeValue);
@@ -18,15 +29,22 @@
 
 <div class="settings_range">
   <span>{label}</span>
-  <input type="range" bind:value={rangeValue} min={min} max={max} step={step} oninput={() => onInput?.(rangeValue)} />
+  <input
+    type="range"
+    bind:value={rangeValue}
+    {min}
+    {max}
+    {step}
+    oninput={() => onInput?.(rangeValue)}
+  />
   <div>
     {valueLabel}
     <span>
       {#if specialValues && specialValues[rangeValue]}
-	{specialValues[rangeValue]}
+        {specialValues[rangeValue]}
       {:else}
-	  {rangeValue}
-          {unit}
+        {rangeValue}
+        {unit}
       {/if}
     </span>
   </div>
@@ -38,9 +56,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
   }
-  
+
   span {
     gap: 0;
   }

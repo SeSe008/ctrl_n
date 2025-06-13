@@ -1,16 +1,16 @@
-import type { Component } from "svelte";
-import type { SettingsSection } from "$lib/classes/settings";
+import type { Component } from 'svelte';
+import type { SettingsSection } from '$lib/classes/settings';
 
 export interface Tile {
-  pos: number,
-  element: number,
-  cssVars: Record<string, string>,
-};
+  pos: number;
+  element: number;
+  cssVars: Record<string, string>;
+}
 
 export interface TileManager {
-  tiles: Tile[],
-  height: number
-};
+  tiles: Tile[];
+  height: number;
+}
 
 export type GlobalTiles = TileManager[];
 
@@ -19,7 +19,7 @@ export interface TileDef {
   label: string;
   icon?: string;
   component?: Component;
-  tileProps: SettingsSection
+  tileProps: SettingsSection;
 }
 
 export interface TileMetadata {

@@ -1,7 +1,6 @@
-import type { SettingsSection } from "$lib/classes/settings";
+import type { SettingsSection } from '$lib/classes/settings';
 
 export interface Options {
   layout?: string;
   objects: SettingsSection;
 }
-

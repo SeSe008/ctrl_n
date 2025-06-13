@@ -1,25 +1,26 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import Icon from "@iconify/svelte";
+  import Icon from '@iconify/svelte';
   import { parse } from 'mathjs';
 
   import { searchEngines } from '$lib/constants/searchEngines';
   import { initSearchEngineName, searchEngineName } from '$lib/stores/widgets/searchEngine';
-  
+
   import type { SearchEngine, SuggestionEndpoint } from '$lib/types/widgets/searchEngines';
-  
+
   interface RecentlySearched {
     query: string;
     amount: number;
   }
 
   type Suggestion = [string, string[]];
-  
+
   const defaultSearchEngine: string = 'ecosia';
 
   function isUrl(str: string) {
-    const urlRe = /^(?:https?:\/\/)?(?:localhost:\d{1,5}|(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?:\/\S*)?$/;    
+    const urlRe =
+      /^(?:https?:\/\/)?(?:localhost:\d{1,5}|(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?:\/\S*)?$/;
     return urlRe.test(str);
   }
 
@@ -34,18 +35,18 @@
     if (text === '') return;
 
     saveRecentSearch(text);
-    
+
     if (isUrl(text)) {
       window.location.href = makeExternal(text);
       return;
     }
 
     const searchEngine: SearchEngine = searchEngines[$searchEngineName];
-    
+
     const query: string = `${searchEngine.searchParam}${encodeURIComponent(text)}`;
-   
+
     const extras: string = searchEngine.extras.join('&');
-    
+
     window.location.href = `${searchEngine.url}?${query}&${extras}`;
   }
 
@@ -60,10 +61,10 @@
       suggestions = [];
       return;
     }
-    
+
     const searchEngine: SearchEngine = searchEngines[defaultSearchEngine];
     const suggestionEndpoint: SuggestionEndpoint = searchEngine.suggestions;
-    
+
     const response = await fetch('/api/suggestions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,7 +75,7 @@
     });
 
     if (response.status === 500) return;
-    
+
     const result: Suggestion = await response.json();
 
     suggestions = result[1];
@@ -85,7 +86,7 @@
       const node = parse(expression);
 
       if (node.type == 'ConstantNode') return;
-      
+
       const result = node.evaluate();
       return result;
     } catch {
@@ -98,10 +99,7 @@
     const res: number | undefined = testExpression(text);
 
     if (res) {
-      suggestions = [
-	`${text} = ${res}`,
-	...suggestions.splice(-1)
-      ];
+      suggestions = [`${text} = ${res}`, ...suggestions.splice(-1)];
     }
   }
 
@@ -113,37 +111,32 @@
       recentCache.set(text, searchEntry);
     } else {
       if (recentCache.size >= MAX_RECENT) {
-	const oldestEntry = recentCache.keys().next().value!;
-	recentCache.delete(oldestEntry);
+        const oldestEntry = recentCache.keys().next().value!;
+        recentCache.delete(oldestEntry);
       }
 
-      recentCache.set(text, {query: text, amount: 1});
+      recentCache.set(text, { query: text, amount: 1 });
     }
 
-    window.localStorage.setItem(
-      'recentSearches',
-      JSON.stringify(Array.from(recentCache.values()))
-    );
+    window.localStorage.setItem('recentSearches', JSON.stringify(Array.from(recentCache.values())));
   }
-
 
   function getRecentSearches() {
     if (searchBar.value === '') return;
 
     // Get array from map
     const recentSearches = Array.from(recentCache.values());
-    
-    // Find search having max amound and starting with query
-    const recentSearch: RecentlySearched | undefined = recentSearches.reduce<RecentlySearched | undefined>(
-      (max, curr) => {
-	return curr.query.startsWith(searchBar.value) && (max === undefined || curr.amount > max.amount)
-	  ? curr
-	  : max;
-      },
-      undefined
-    );
 
-    
+    // Find search having max amound and starting with query
+    const recentSearch: RecentlySearched | undefined = recentSearches.reduce<
+      RecentlySearched | undefined
+    >((max, curr) => {
+      return curr.query.startsWith(searchBar.value) &&
+        (max === undefined || curr.amount > max.amount)
+        ? curr
+        : max;
+    }, undefined);
+
     if (recentSearch) {
       suggestions.pop();
       suggestions.unshift(recentSearch.query);
@@ -155,14 +148,18 @@
       searchBar.value = suggestions[selectedSuggestion];
       searchBar.focus();
       searchBar.setSelectionRange(originalText.length, searchBar.value.length);
-      
+
       changeSuggestionStyle();
     }
   }
 
   function changeSuggestionStyle() {
-    document.getElementsByClassName('selected_suggestion')[0]?.classList.remove('selected_suggestion');
-    document.getElementsByClassName('suggestion')[selectedSuggestion]?.classList.add('selected_suggestion');
+    document
+      .getElementsByClassName('selected_suggestion')[0]
+      ?.classList.remove('selected_suggestion');
+    document
+      .getElementsByClassName('suggestion')
+      [selectedSuggestion]?.classList.add('selected_suggestion');
   }
 
   function selectSuggestion(e: KeyboardEvent) {
@@ -172,15 +169,15 @@
       selectedSuggestion--;
 
       if (selectedSuggestion > -1) {
-	searchBar.value = suggestions[selectedSuggestion];
+        searchBar.value = suggestions[selectedSuggestion];
 
-	changeSuggestionStyle();
+        changeSuggestionStyle();
       } else if (selectedSuggestion == -1) {
-	searchBar.value = originalText;
-	changeSuggestionStyle();
+        searchBar.value = originalText;
+        changeSuggestionStyle();
       } else if (selectedSuggestion < -1) {
-	suggestions = [];
-	selectedSuggestion = -1;
+        suggestions = [];
+        selectedSuggestion = -1;
       }
     } else if (key === 'ArrowDown' && selectedSuggestion < suggestions.length - 1) {
       e.preventDefault();
@@ -195,7 +192,7 @@
 
   function handleKeydown(e: KeyboardEvent) {
     lastKey = e.key;
-    
+
     if (e.key === 'Enter') {
       search(searchBar.value);
     } else {
@@ -213,20 +210,20 @@
     if (!isControlKey(lastKey)) {
       getRecentSearches();
       evalMathSuggestion();
-    };
+    }
   }
 
   let searchBar: HTMLInputElement;
-  
+
   onMount(() => {
     document.body.focus();
     searchBar.focus();
 
     initSearchEngineName();
 
-    const recentEntries: [string, RecentlySearched][] =
-	  JSON.parse(window.localStorage.getItem('recentSearches') || '[]')
-	  .map((item: RecentlySearched) => [ item.query, item ]);
+    const recentEntries: [string, RecentlySearched][] = JSON.parse(
+      window.localStorage.getItem('recentSearches') || '[]'
+    ).map((item: RecentlySearched) => [item.query, item]);
 
     recentCache = new Map<string, RecentlySearched>(recentEntries);
   });
@@ -234,8 +231,18 @@
 
 <div id="search">
   <div id="inputs">
-    <input onkeydown={handleKeydown} oninput={handleInput} type="text" placeholder="Search" bind:this={searchBar} />
-    <button onclick={() => {search(searchBar.value);}}><Icon icon="line-md:search-twotone" /></button>
+    <input
+      onkeydown={handleKeydown}
+      oninput={handleInput}
+      type="text"
+      placeholder="Search"
+      bind:this={searchBar}
+    />
+    <button
+      onclick={() => {
+        search(searchBar.value);
+      }}><Icon icon="line-md:search-twotone" /></button
+    >
   </div>
   <div id="suggestions">
     {#each suggestions as suggestion, i (i)}
@@ -260,14 +267,14 @@
 
   #inputs > input {
     outline: none;
-    padding: .5rem;
+    padding: 0.5rem;
     font-size: calc(10px + 1vmin);
-    border-radius: .5rem 0 0 .5rem;
+    border-radius: 0.5rem 0 0 0.5rem;
     border: 1px solid rgb(var(--c2));
     border-right: none;
     color: rgb(var(--c2));
     background-color: rgba(var(--c1), var(--o1));
-    transition: background-color .2s;
+    transition: background-color 0.2s;
     flex-grow: 1;
   }
 
@@ -278,9 +285,9 @@
   #search:focus-within #suggestions {
     display: flex;
   }
-  
+
   #inputs > button {
-    border-radius: 0 .5rem .5rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
     border: 1px solid rgb(var(--c2));
     border-left: none;
     outline: none;
@@ -307,7 +314,7 @@
 
     color: rgb(var(--c1));
     background-color: rgb(var(--c3));
-    border-radius: 0 0 .5rem .5rem;
+    border-radius: 0 0 0.5rem 0.5rem;
 
     z-index: 10;
   }
@@ -319,7 +326,7 @@
   .suggestion {
     width: 100%;
     height: min-content;
-    padding: .5rem;
+    padding: 0.5rem;
     box-sizing: border-box;
 
     color: inherit;
@@ -333,6 +340,6 @@
   }
 
   :global(.selected_suggestion) {
-    background-color: rgba(var(--c1), .3) !important;
+    background-color: rgba(var(--c1), 0.3) !important;
   }
 </style>

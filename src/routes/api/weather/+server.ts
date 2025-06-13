@@ -10,7 +10,11 @@ const LIMITER = new RateLimiter({
 });
 
 const CITY_SCHEMA = z.object({
-  city: z.string().min(1).max(100).regex(/^[\w\s\-,]+$/),
+  city: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[\w\s\-,]+$/)
 });
 
 export const POST: RequestHandler = async (event) => {
@@ -23,10 +27,10 @@ export const POST: RequestHandler = async (event) => {
   try {
     ({ city } = CITY_SCHEMA.parse(await request.json()));
   } catch {
-    return new Response(
-      JSON.stringify({ error: 'Invalid city parameter' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'Invalid city parameter' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   const encoded = encodeURIComponent(city);
@@ -44,12 +48,16 @@ export const POST: RequestHandler = async (event) => {
 
     const weather = await res.json();
 
-    return new Response(
-      JSON.stringify(weather), { status: 200, headers: { 'Content-Type': 'application/json' }
+    return new Response(JSON.stringify(weather), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {
     console.error('Weather fetch failed:', err);
-    return new Response(JSON.stringify({ error: 'Unable to retrieve weather data' }), { status: 502, headers: { 'Content-Type': 'application/json' }});
+    return new Response(JSON.stringify({ error: 'Unable to retrieve weather data' }), {
+      status: 502,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } finally {
     clearTimeout(timeoutId);
   }

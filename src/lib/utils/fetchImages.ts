@@ -1,7 +1,7 @@
-import { getImageCategories } from "$lib/stores/backgroundImage";
-import type { Image } from "$lib/types/backgroundImage";
+import { getImageCategories } from '$lib/stores/backgroundImage';
+import type { Image } from '$lib/types/backgroundImage';
 
-export async function fetchImages(categoryId: number) : Promise<Array<Image>> {
+export async function fetchImages(categoryId: number): Promise<Array<Image>> {
   const category = getImageCategories()[categoryId];
 
   if (!category) {
@@ -10,7 +10,7 @@ export async function fetchImages(categoryId: number) : Promise<Array<Image>> {
   } else if (!category.path) {
     return category.images || [];
   }
-  
+
   const res = await fetch('/api/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -24,8 +24,8 @@ export async function fetchImages(categoryId: number) : Promise<Array<Image>> {
 
   const json = await res.json();
 
-  if (Array.isArray(json) && json.every(item => typeof item === "string")) {
-    return json.map(img => [img, true]);
+  if (Array.isArray(json) && json.every((item) => typeof item === 'string')) {
+    return json.map((img) => [img, true]);
   } else {
     return [];
   }

@@ -5,4 +5,3 @@ export function applyPalette(palette: number[][]) {
     root.style.setProperty(`--c${i + 1}`, color.join(', '));
   });
 }
-

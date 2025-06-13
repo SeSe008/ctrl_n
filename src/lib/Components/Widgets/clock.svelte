@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
 
   import { clockType, initClockType } from '$lib/stores/widgets/clockType';
- 
+
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
@@ -14,41 +14,40 @@
   }, 1000);
 
   let clock: HTMLDivElement;
-  
+
   function initAnalog() {
     const date: Date = new Date();
-    
+
     if (clock) {
       const hour: number = date.getHours() % 12;
       const minute: number = date.getMinutes();
       const second: number = date.getSeconds();
-      
+
       clock.style.setProperty('--hour', (hour + minute / 60).toString());
       clock.style.setProperty('--minute', (minute + second / 60).toString());
       clock.style.setProperty('--second', second.toString());
     }
   }
-  
-  clockType.subscribe(newType => {
-    if (newType === "analog") initAnalog();
+
+  clockType.subscribe((newType) => {
+    if (newType === 'analog') initAnalog();
   });
-  
+
   onMount(() => {
     initClockType();
 
-    if ($clockType === "analog") {
+    if ($clockType === 'analog') {
       initAnalog();
     }
   });
 </script>
 
-
 <div bind:this={clock} id="clock">
-  {#if $clockType === "digital"}
+  {#if $clockType === 'digital'}
     <h1>
       {time}
     </h1>
-  {:else if $clockType === "analog"}
+  {:else if $clockType === 'analog'}
     <div id="analog">
       <div id="hand_hour"></div>
       <div id="hand_minute"></div>
@@ -66,10 +65,10 @@
     overflow: hidden;
     box-sizing: border-box;
     align-items: center;
-    gap: .25rem;
+    gap: 0.25rem;
     justify-content: center;
   }
-  
+
   /* Digital Clock */
   h1 {
     display: flex;
@@ -82,32 +81,31 @@
     background-color: rgb(var(--c2));
     padding: 1rem;
     margin: 0;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     border: 1px solid rgb(var(--c1));
     font-variant-numeric: tabular-nums;
     font-family: Roboto !important;
   }
 
-
   /* Analog clock */
   @property --hour {
-    syntax: "<number>";
+    syntax: '<number>';
     inherits: true;
     initial-value: 0;
   }
 
   @property --minute {
-    syntax: "<number>";
+    syntax: '<number>';
     inherits: true;
     initial-value: 0;
   }
 
   @property --second {
-    syntax: "<number>";
+    syntax: '<number>';
     inherits: true;
     initial-value: 0;
   }
-  
+
   #analog {
     position: relative;
     height: 100%;
@@ -116,29 +114,29 @@
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     clip-path: polygon(
-      50.00% 0.00%,
+      50% 0%,
       61.65% 6.53%,
-      75.00% 6.70%,
+      75% 6.7%,
       81.82% 18.18%,
-      93.30% 25.00%,
+      93.3% 25%,
       93.47% 38.35%,
-      100.00% 50.00%,
+      100% 50%,
       93.47% 61.65%,
-      93.30% 75.00%,
+      93.3% 75%,
       81.82% 81.82%,
-      75.00% 93.30%,
+      75% 93.3%,
       61.65% 93.47%,
-      50.00% 100.00%,
+      50% 100%,
       38.35% 93.47%,
-      25.00% 93.30%,
+      25% 93.3%,
       18.18% 81.82%,
-      6.70% 75.00%,
+      6.7% 75%,
       6.53% 61.65%,
-      0.00% 50.00%,
+      0% 50%,
       6.53% 38.35%,
-      6.70% 25.00%,
+      6.7% 25%,
       18.18% 18.18%,
-      25.00% 6.70%,
+      25% 6.7%,
       38.35% 6.53%
     );
   }
@@ -164,7 +162,7 @@
   }
 
   #hand_hour::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -191,7 +189,7 @@
   }
 
   #hand_minute::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -218,7 +216,7 @@
   }
 
   #hand_second::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;

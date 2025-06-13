@@ -19,10 +19,20 @@
     }
   }
 
+  function getDefault(): any {
+    if (defaultValue === undefined) return 0;
+
+    if (typeof defaultValue === 'function') {
+      return defaultValue();
+    } else {
+      return get(defaultValue);
+    }
+  }
+
   let optionsList: Array<SelectOption> = $state(initOptions());
 
-  let selectValue: any = $state(defaultValue ? get(defaultValue) : 0);
-  
+  let selectValue: any = $state(getDefault());
+
   $effect(() => {
     if (store) store.update(() => selectValue);
   });
@@ -34,15 +44,15 @@
 
       unsubscribes = updaters.map((u) =>
         u.subscribe(async () => {
-	  optionsList = initOptions();
-	  if (defaultValue) selectValue = get(defaultValue);
+          optionsList = initOptions();
+          if (defaultValue) selectValue = getDefault();
         })
       );
     }
   });
 
   onDestroy(() => {
-    unsubscribes?.forEach(unsub => unsub());
+    unsubscribes?.forEach((unsub) => unsub());
   });
 </script>
 
@@ -53,7 +63,7 @@
 
   <select bind:value={selectValue} onchange={() => onChange?.(selectValue)}>
     {#each optionsList as selectOption, i (i)}
-      <option value={(selectOption.value) ? selectOption.value : i}>	
+      <option value={selectOption.value ? selectOption.value : i}>
         {#if selectOption.icon}
           <Icon icon={selectOption.icon} />
         {/if}
@@ -68,7 +78,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
 
     stroke-width: 3px;
   }

@@ -1,11 +1,11 @@
-<script lang="ts"> 
+<script lang="ts">
   import ColorThief from 'colorthief';
   import Icon from '@iconify/svelte';
   import { onMount } from 'svelte';
-  
+
   import TileManager from '$lib/Components/tileManager.svelte';
   import Settings from '$lib/Components/Settings/settings.svelte';
-  
+
   import { applyImage } from '$lib/utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
@@ -13,11 +13,17 @@
   import { globalTiles } from '$lib/stores/tiles';
   import { settings } from '$lib/stores/settings/settings';
 
-  import { backgroundImage, getBackgroundImage, getImageCategories, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
+  import {
+    backgroundImage,
+    getBackgroundImage,
+    getImageCategories,
+    getImageCategory,
+    initBgImages
+  } from '$lib/stores/backgroundImage';
   import type { BgImageCategory } from '$lib/types/backgroundImage';
-  
+
   let colorThief: ColorThief;
-  
+
   const defaultCategory = 0; // Default category when none is set
   const defaultCategories: Array<BgImageCategory> = [
     {
@@ -44,11 +50,11 @@
   }
 
   let tileGrid: HTMLDivElement;
-  globalTiles.subscribe(managers => {
+  globalTiles.subscribe((managers) => {
     if (tileGrid) {
       const rows = managers
-	    .map(m => m.height === 0 ? 'max-content' : `${m.height}fr`)
-	    .join(' ');
+        .map((m) => (m.height === 0 ? 'max-content' : `${m.height}fr`))
+        .join(' ');
       tileGrid.style.gridTemplateRows = rows;
     }
   });
@@ -64,8 +70,8 @@
 
 <img id="bg_img" alt="bg img" src={$backgroundImage} />
 
-<div bind:this={tileGrid} id="tiles" {...($settings.enabled && { inert: true })}>
-  {#each {length: $globalTiles.length} as _, i (i) }
+<div bind:this={tileGrid} id="tiles" {...$settings.enabled && { inert: true }}>
+  {#each { length: $globalTiles.length } as _, i (i)}
     <TileManager id={i} />
   {/each}
 </div>
@@ -80,7 +86,9 @@
 </div>
 
 <div id="credit">
-  Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>, <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br/>
+  Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed
+  under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>,
+  <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br />
   <a target="_blank" href="privacy">Privacy and Credit</a>
 </div>
 
@@ -96,11 +104,12 @@
       --c3: 150, 150, 150;
       --c4: 100, 100, 100;
       --c5: 50, 50, 50, 50;
-      --o1: .3;
-      --o2: .7;
+      --o1: 0.3;
+      --o2: 0.7;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       width: 100%;
       margin: 0;
@@ -116,21 +125,23 @@
       align-items: center;
       position: absolute;
       inset: 0;
-      
+
       margin: 0;
       padding: 1rem;
       box-sizing: border-box;
       overflow: hidden;
-      
-      font-family: "Quicksand", sans-serif;
-      
+
+      font-family: 'Quicksand', sans-serif;
+
       background-color: rgb(var(--c1));
-  
-      transition: background-image 1s ease-in-out, background-size 0s;
+
+      transition:
+        background-image 1s ease-in-out,
+        background-size 0s;
     }
 
     body * {
-      transition: background-color .2s;
+      transition: background-color 0.2s;
       font-family: inherit;
     }
 
@@ -143,7 +154,7 @@
       color: rgb(var(--c1));
       background-color: rgb(var(--c4));
     }
-    
+
     *::-webkit-scrollbar {
       width: 8px;
     }
@@ -164,7 +175,7 @@
       background-clip: content-box;
     }
   }
-  
+
   #bg_img {
     position: fixed;
     inset: 0;
@@ -173,16 +184,16 @@
 
     object-fit: cover;
     object-position: center;
-    
+
     z-index: -100;
   }
-  
+
   #tiles {
     height: 100%;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    gap: .5rem;
+    gap: 0.5rem;
     overflow-x: hidden;
     overflow-y: visible;
   }
@@ -190,10 +201,10 @@
   #pageControl {
     display: flex;
     flex-direction: row;
-    gap: .25rem;
+    gap: 0.25rem;
     width: 100%;
   }
-  
+
   #pageControl button {
     display: flex;
     align-items: center;
@@ -201,24 +212,24 @@
 
     outline: none;
     border: 1px solid rgb(var(--c2));
-    border-radius: .3rem;
+    border-radius: 0.3rem;
 
     background-color: rgb(var(--c1));
     color: rgb(var(--c2));
 
-    font-size: calc(5px + .75vmin);
+    font-size: calc(5px + 0.75vmin);
     aspect-ratio: 1 / 1;
 
     cursor: pointer;
   }
-  
+
   #credit {
     justify-self: center;
     color: rgb(var(--c1));
-    padding: .25rem;
+    padding: 0.25rem;
     background-color: rgba(var(--c2), var(--o2));
-    border-radius: .75rem;
-    font-size: .75rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
     text-align: center;
   }
 

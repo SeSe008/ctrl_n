@@ -32,14 +32,14 @@ export default ts.config(
     files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
     languageOptions: {
       parserOptions: {
-	projectService: true,
-	extraFileExtensions: ['.svelte'],
-	parser: ts.parser,
-	svelteConfig
+        projectService: true,
+        extraFileExtensions: ['.svelte'],
+        parser: ts.parser,
+        svelteConfig
       }
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-explicit-any': 'off'
     }
   }
 );

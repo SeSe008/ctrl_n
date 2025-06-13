@@ -18,7 +18,7 @@
 
   let weather = $state<Weather>();
   let error = $state<string>();
-  
+
   async function fetchWeather(location: string) {
     const resp = await fetch('/api/weather', {
       method: 'POST',
@@ -37,28 +37,31 @@
   function capitalizeWords(sentence: string): string {
     return sentence
       .split(' ')
-      .map(word =>
-	word.length > 0
-          ? word[0].toUpperCase() + word.slice(1).toLowerCase()
-          : ''
-      )
+      .map((word) => (word.length > 0 ? word[0].toUpperCase() + word.slice(1).toLowerCase() : ''))
       .join(' ');
   }
 
   onMount(initWeatherLoaction);
 
-  weatherLocation.subscribe(loc => { if (loc ) fetchWeather(loc); });
+  weatherLocation.subscribe((loc) => {
+    if (loc) fetchWeather(loc);
+  });
 </script>
 
 <div id="weather">
   {#if weather && !error}
     <div id="properties">
-      <img alt="Weather Icon" src={`https://openweathermap.org/img/wn/${weather.weather[0]?.icon}@2x.png`} />
+      <img
+        alt="Weather Icon"
+        src={`https://openweathermap.org/img/wn/${weather.weather[0]?.icon}@2x.png`}
+      />
       <span id="location">{weather.name}</span>
       <div id="values">
-	<span id="description">{capitalizeWords(weather.weather[0].description)}</span>
-	<span id="temp"><Icon icon="mdi:temperature" />{weather.main.temp}°C ({weather.main.feels_like}°C)</span>
-	<span id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
+        <span id="description">{capitalizeWords(weather.weather[0].description)}</span>
+        <span id="temp"
+          ><Icon icon="mdi:temperature" />{weather.main.temp}°C ({weather.main.feels_like}°C)</span
+        >
+        <span id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
       </div>
     </div>
   {:else}
@@ -67,7 +70,7 @@
     </div>
   {/if}
 </div>
-  
+
 <style>
   #weather {
     justify-self: center;
@@ -82,7 +85,7 @@
     border-radius: 1rem;
     box-sizing: border-box;
     padding: 1rem;
-    gap: .5rem;
+    gap: 0.5rem;
     max-width: 100%;
   }
 
@@ -93,7 +96,7 @@
     box-sizing: border-box;
     width: max-content;
     align-self: center;
-    gap: .25rem;
+    gap: 0.25rem;
     color: rgb(var(--c2));
     max-width: 100%;
   }
@@ -132,7 +135,8 @@
     font-weight: bold;
   }
 
-  #temp, #humidity {
+  #temp,
+  #humidity {
     display: flex;
     align-self: center;
     align-items: center;
@@ -145,17 +149,16 @@
     font-size: calc(8px + 3vh);
     height: min-content;
   }
-  
+
   #info {
     flex-grow: 1;
     box-sizing: border-box;
-    padding: .5rem;
+    padding: 0.5rem;
     font-size: calc(8px + 1vmin);
     text-align: center;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     border: 1px solid rgb(var(--c2));
     color: rgb(var(--c2));
     background-color: rgb(var(--c1));
   }
 </style>
-

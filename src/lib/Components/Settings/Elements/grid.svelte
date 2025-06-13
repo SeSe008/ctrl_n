@@ -6,12 +6,12 @@
   interface Props {
     options: Options;
   }
-  
+
   const { options }: Props = $props();
   const { columns, rows, objects, updater } = options;
 
-  let elements = $state((typeof objects === 'function') ? objects().elements : objects.elements);
-  
+  let elements = $state(typeof objects === 'function' ? objects().elements : objects.elements);
+
   let unsubscribes: Array<() => void> = [];
   onMount(() => {
     if (updater && typeof objects === 'function') {
@@ -26,18 +26,15 @@
   });
 
   onDestroy(() => {
-    unsubscribes?.forEach(unsub => unsub());
+    unsubscribes?.forEach((unsub) => unsub());
   });
 </script>
 
-<div
-  class="settings_grid"
-  style="--columns: {columns}; --rows: {rows};"
-  >
-  {#each elements  as element, i (i) }
+<div class="settings_grid" style="--columns: {columns}; --rows: {rows};">
+  {#each elements as element, i (i)}
     {#if elementComponents[element.elementType]}
       {@const Comp = elementComponents[element.elementType]}
-      <Comp options={element.elementOptions} /> 
+      <Comp options={element.elementOptions} />
     {/if}
   {/each}
 </div>
@@ -47,8 +44,8 @@
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     grid-template-rows: repeat(var(--rows), 1fr);
-    gap: .5rem;
-    max-width: 75%;
-    margin: auto;
+    gap: 0.5rem;
+    max-width: 100%;
+    overflow: hidden;
   }
 </style>

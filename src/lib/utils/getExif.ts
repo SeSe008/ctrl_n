@@ -18,7 +18,7 @@ export function toExifData(input: RawData): ExifData {
   return {
     artist: JSON.parse(input.Artist),
     copyright: JSON.parse(input.Copyright),
-    description: JSON.parse(input.ImageDescription),
+    description: JSON.parse(input.ImageDescription)
   };
 }
 

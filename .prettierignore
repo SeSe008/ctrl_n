@@ -4,3 +4,9 @@ pnpm-lock.yaml
 yarn.lock
 bun.lock
 bun.lockb
+
+#emacs
+.emacs*
+
+# ignore all markdown
+*.md

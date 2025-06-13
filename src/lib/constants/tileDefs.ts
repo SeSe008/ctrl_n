@@ -32,24 +32,18 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
         ...m,
         component: SearchBar,
         tileProps: createNewSettingsSection()
-	  .appendElement(
-	    'text',
-	    {
-              text: 'Search-Options',
-              classes: ['big', 'center', 'strong', 'margin_vert'],
-            },
-          )
-	  .appendElement(
-	    'select',
-            {
-              selectOptions: Object.entries(searchEngines as SearchEngines).map(
-                ([value, { name: label, icon }]) => ({ label, icon, value })
-              ),
-              store: searchEngineName,
-              defaultValue: searchEngineName,
-              label: 'Search Engine:',
-            }
-          )
+          .appendElement('text', {
+            text: 'Search-Options',
+            classes: ['big', 'center', 'strong', 'margin_vert']
+          })
+          .appendElement('select', {
+            selectOptions: Object.entries(searchEngines as SearchEngines).map(
+              ([value, { name: label, icon }]) => ({ label, icon, value })
+            ),
+            store: searchEngineName,
+            defaultValue: searchEngineName,
+            label: 'Search Engine:'
+          })
       };
 
     case 'clock':
@@ -57,104 +51,74 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
         ...m,
         component: Clock,
         tileProps: createNewSettingsSection()
-	  .appendElement(
-	    'text',
-            {
-              text: 'Clock-Options',
-              classes: ['big', 'center', 'strong', 'margin_vert'],
-            },
-          )
-	  .appendElement(
-	    'select',
-            {
-              selectOptions: [
-                { label: 'Digital', value: 'digital' },
-                { label: 'Analog', value: 'analog' },
-              ],
-              store: clockType,
-              defaultValue: clockType,
-              label: 'Clock-Type:',
-            }
-	  ),
+          .appendElement('text', {
+            text: 'Clock-Options',
+            classes: ['big', 'center', 'strong', 'margin_vert']
+          })
+          .appendElement('select', {
+            selectOptions: [
+              { label: 'Digital', value: 'digital' },
+              { label: 'Analog', value: 'analog' }
+            ],
+            store: clockType,
+            defaultValue: clockType,
+            label: 'Clock-Type:'
+          })
       };
 
     case 'rss_feed':
       return {
-	...m,
-	component: RssFeed,
-	tileProps: createNewSettingsSection()
-	  .appendElement(
-            'text',
-            {
-              text: 'RSS-Options',
-              classes: ['big', 'center', 'strong', 'margin_vert'],
-            }
-	  )
-	  .appendElement(
-	    'group',
-	    {
-	      layout: 'vert',
-	      objects: createNewSettingsSlice()
-	        .appendElement(
-		  'textInput',
-		  {
-		    placeholder: 'RSS-Url',
-		    store: newRssUrl,
-		    label: 'Set RSS Url:'
-		  }
-		)
-		.appendElement(
-		  'buttons',
-		  {
-		    buttons: [
-		      {
-			text: 'Change',
-			onClick: () => setRssUrl(get(newRssUrl))
-		      }
-		    ],
-		  },
-		),
-	    },
-	  ),
+        ...m,
+        component: RssFeed,
+        tileProps: createNewSettingsSection()
+          .appendElement('text', {
+            text: 'RSS-Options',
+            classes: ['big', 'center', 'strong', 'margin_vert']
+          })
+          .appendElement('group', {
+            layout: 'vert',
+            objects: createNewSettingsSlice()
+              .appendElement('textInput', {
+                placeholder: 'RSS-Url',
+                store: newRssUrl,
+                label: 'Set RSS Url:'
+              })
+              .appendElement('buttons', {
+                buttons: [
+                  {
+                    text: 'Change',
+                    onClick: () => setRssUrl(get(newRssUrl))
+                  }
+                ]
+              })
+          })
       };
     case 'weather':
       return {
-	...m,
-	component: Weather,
-	tileProps: createNewSettingsSection()
-	  .appendElement(
-	    'text',
-            {
-              text: 'Weather-Options',
-              classes: ['big', 'center', 'strong', 'margin_vert'],
-            }
-	  )
-	  .appendElement(
-	    'group',
-	    {
-	      layout: 'vert',
-	      objects: createNewSettingsSlice()
-		.appendElement(
-		  'textInput',
-		  {
-		    placeholder: 'Location',
-		    store: newWeatherLocation,
-		    label: 'Set Weather location:'
-		  }
-		)
-		.appendElement(
-		  'buttons',
-		  {
-		    buttons: [
-		      {
-			text: 'Change',
-			onClick: () => setWeatherLocation(get(newWeatherLocation))
-		      }
-		    ],
-		  },
-		),
-	    },
-	  ),
+        ...m,
+        component: Weather,
+        tileProps: createNewSettingsSection()
+          .appendElement('text', {
+            text: 'Weather-Options',
+            classes: ['big', 'center', 'strong', 'margin_vert']
+          })
+          .appendElement('group', {
+            layout: 'vert',
+            objects: createNewSettingsSlice()
+              .appendElement('textInput', {
+                placeholder: 'Location',
+                store: newWeatherLocation,
+                label: 'Set Weather location:'
+              })
+              .appendElement('buttons', {
+                buttons: [
+                  {
+                    text: 'Change',
+                    onClick: () => setWeatherLocation(get(newWeatherLocation))
+                  }
+                ]
+              })
+          })
       };
 
     case 'calculator':
@@ -162,57 +126,39 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
 
     case 'bookmarks':
       return {
-	...m,
-	component: Bookmarks,
-	tileProps: createNewSettingsSection()
-	  .appendElement(
-            'text',
-            {
-              text: 'Bookmarks-Options',
-              classes: ['big', 'center', 'strong', 'margin_vert'],
-            },
-	  )
-	  .appendElement(
-	    'group',
-	    {
-	      objects: createNewSettingsSlice()
-		.appendElement(
-		  'text',
-		  {
-		    text: 'Add new bookmark:'
-		  }
-		)
-		.appendElement(
-		  'textInput',
-		  {
-		    placeholder: 'Name',
-		    store: newBookmarkName,
-		  }
-		)
-		.appendElement(
-		  'textInput',
-		  {
-		    placeholder: 'Url',
-		    store: newBookmarkUrl,
-		  }
-		)
-		.appendElement(
-		  'buttons',
-		  {
-		    buttons: [
-		      {
-			text: 'Add Bookmark',
-			onClick: () => {
-			  addBookmark(get(newBookmarkName), get(newBookmarkUrl));
-			  newBookmarkName.set('');
-			  newBookmarkUrl.set('');
-			},
-		      }
-		    ],
-		  },
-		),
-	    },
-	  ),
+        ...m,
+        component: Bookmarks,
+        tileProps: createNewSettingsSection()
+          .appendElement('text', {
+            text: 'Bookmarks-Options',
+            classes: ['big', 'center', 'strong', 'margin_vert']
+          })
+          .appendElement('group', {
+            objects: createNewSettingsSlice()
+              .appendElement('text', {
+                text: 'Add new bookmark:'
+              })
+              .appendElement('textInput', {
+                placeholder: 'Name',
+                store: newBookmarkName
+              })
+              .appendElement('textInput', {
+                placeholder: 'Url',
+                store: newBookmarkUrl
+              })
+              .appendElement('buttons', {
+                buttons: [
+                  {
+                    text: 'Add Bookmark',
+                    onClick: () => {
+                      addBookmark(get(newBookmarkName), get(newBookmarkUrl));
+                      newBookmarkName.set('');
+                      newBookmarkUrl.set('');
+                    }
+                  }
+                ]
+              })
+          })
       };
 
     default:

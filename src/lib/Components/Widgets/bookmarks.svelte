@@ -9,10 +9,10 @@
   function deleteBookmark(id: number) {
     removeBookmark(id);
   }
-  
+
   onMount(() => {
     parseBookmarks();
-  }); 
+  });
 </script>
 
 <div id="bookmarks">
@@ -20,27 +20,27 @@
 
   {#if $bookmarks}
     <div id="bookmark_list">
-      {#each $bookmarks as { name, url }, i (i) }
-	<div class="bookmark">
-	  <a href={url} target="_blank" rel="noopener noreferrer">
-	    <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
-	    <span>{name}</span>
-	  </a>
-	  {#if $editMode}
-	    <button onclick={() => deleteBookmark(i)}><Icon icon="mdi:delete" /></button>
-	  {/if}
-	</div>
+      {#each $bookmarks as { name, url }, i (i)}
+        <div class="bookmark">
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
+            <span>{name}</span>
+          </a>
+          {#if $editMode}
+            <button onclick={() => deleteBookmark(i)}><Icon icon="mdi:delete" /></button>
+          {/if}
+        </div>
       {/each}
     </div>
   {/if}
 </div>
-    
+
 <style>
   #bookmarks {
     display: grid;
     grid-template-rows: min-content 1fr;
     grid-template-columns: 1fr;
-    gap: .5rem;
+    gap: 0.5rem;
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -60,17 +60,17 @@
     margin: 0;
     margin-bottom: 1vmin;
     grid-column: 1 / -1;
-    
+
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
 
     width: max-content;
-    padding: .5rem;
+    padding: 0.5rem;
     box-sizing: border-box;
     border-radius: 1vmin;
-    
+
     color: rgb(var(--c2));
     background-color: rgba(var(--c1), var(--o2));
   }
@@ -88,34 +88,36 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: .5rem;
+    gap: 0.5rem;
     width: calc(8px + 8vmin);
     overflow-x: hidden;
   }
-  
+
   .bookmark a {
     position: relative;
     display: inline-block;
-    
+
     display: flex;
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    
+
     overflow: hidden;
     box-sizing: border-box;
-    padding: .25rem .5rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 1vmin;
 
     background-color: rgba(var(--c1), var(--o2));
     color: rgb(var(--c2));
-    
+
     text-decoration: none;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: calc(8px + 1vmin);
 
-    transition: transform .6s ease-in-out, color .6s ease-in-out;
+    transition:
+      transform 0.6s ease-in-out,
+      color 0.6s ease-in-out;
   }
 
   .bookmark a span {
@@ -130,7 +132,7 @@
   }
 
   .bookmark a::before {
-    content: "";
+    content: '';
 
     position: absolute;
     inset: 0;
@@ -140,7 +142,7 @@
     background: white;
     clip-path: circle(0 at 50% 25%);
 
-    transition: clip-path .6s ease-out;
+    transition: clip-path 0.6s ease-out;
     z-index: -1;
   }
 
@@ -156,7 +158,7 @@
   .bookmark img {
     box-sizing: border-box;
     background-color: white;
-    padding: .5rem;
+    padding: 0.5rem;
     border-radius: 10%;
     width: 100%;
   }
@@ -169,8 +171,8 @@
     border: none;
     background-color: rgba(var(--c1), var(--o2));
     color: rgb(var(--c2));
-    padding: .25rem;
-    border-radius: .25vmin;
+    padding: 0.25rem;
+    border-radius: 0.25vmin;
     font-size: inherit;
     cursor: pointer;
   }

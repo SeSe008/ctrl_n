@@ -5,7 +5,7 @@
   interface Props {
     options: Options;
   }
-  
+
   const { options }: Props = $props();
   const { placeholder, store, onInput, defaultValue, label } = options;
 
@@ -18,7 +18,7 @@
 
 <div class="settings_text_input">
   {label}
-  <input type="text" placeholder={placeholder} bind:value={textValue} oninput={() => onInput??(textValue)} />
+  <input type="text" {placeholder} bind:value={textValue} oninput={() => onInput ?? textValue} />
 </div>
 
 <style>
@@ -26,7 +26,7 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    gap: .5rem;
+    gap: 0.5rem;
     width: max-content;
   }
 </style>

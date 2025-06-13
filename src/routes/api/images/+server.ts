@@ -4,7 +4,7 @@ import { dev } from '$app/environment';
 
 import { z } from 'zod';
 const SUBDIR_SCHEMA = z.object({
-  subdir: z.string().regex(/^[\w-]+(?:\/[\w-]+)*$/),
+  subdir: z.string().regex(/^[\w-]+(?:\/[\w-]+)*$/)
 });
 
 /** @type {import('./$types').RequestHandler} */
@@ -22,8 +22,9 @@ export async function POST({ request }: { request: Request }) {
   const baseImages = path.resolve(dev ? 'static/images' : 'client/images');
   const targetPath = path.resolve(baseImages, subdir);
 
-  if (!targetPath.startsWith(baseImages + path.sep)) return new Response(JSON.stringify({ error: 'Forbidden path' }), { status: 403 });
-  
+  if (!targetPath.startsWith(baseImages + path.sep))
+    return new Response(JSON.stringify({ error: 'Forbidden path' }), { status: 403 });
+
   let dirents;
   try {
     dirents = await fs.readdir(targetPath, { withFileTypes: true });
@@ -40,8 +41,8 @@ export async function POST({ request }: { request: Request }) {
     .filter((d) => d.isFile() && /\.(jpe?g|png|gif|webp|svg)$/i.test(d.name))
     .map((d) => `/images/${subdir}/${encodeURIComponent(d.name)}`);
 
-  return new Response(
-    JSON.stringify(images),
-    { status: 200, headers: { 'Content-Type': 'application/json' }
+  return new Response(JSON.stringify(images), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
   });
 }

@@ -2,7 +2,7 @@ export interface SuggestionEndpoint {
   endpoint: string;
   searchParam: string;
   extras: string[];
-};
+}
 
 export interface SearchEngine {
   name: string;
@@ -15,4 +15,4 @@ export interface SearchEngine {
 
 export type SearchEngines = {
   [key: string]: SearchEngine;
-}
+};

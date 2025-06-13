@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { Options } from "$lib/types/settings/elements/text";
-  
+  import type { Options } from '$lib/types/settings/elements/text';
+
   interface Props {
     options: Options;
   }
-  
+
   const { options }: Props = $props();
 </script>
 
-<div class={`settings_text ${options.classes?.join(" ")}`}>
+<div class={`settings_text ${options.classes?.join(' ')}`}>
   {options.text}
 </div>
 
@@ -16,7 +16,7 @@
   div {
     color: inherit;
   }
-  
+
   .center {
     text-align: center;
   }
@@ -54,7 +54,7 @@
   }
 
   .small {
-    font-size: .75em;
+    font-size: 0.75em;
   }
 
   .margin_vert {

@@ -1,20 +1,14 @@
-import { JSDOM } from "jsdom";
+import { JSDOM } from 'jsdom';
 import RSS from 'rss-to-json';
 const { parse } = RSS;
-import type { RawRssItem, Article } from "$lib/types/widgets/rss";
+import type { RawRssItem, Article } from '$lib/types/widgets/rss';
 
 function normalizeItem(item: RawRssItem): Article {
   // Get title
-  const title = item.title
-    || item.id
-    || item.link
-    || "No Title";
+  const title = item.title || item.id || item.link || 'No Title';
 
   // Get content
-  const htmlText = item.content
-    ?? item.description
-    ?? item.content_encoded
-    ?? "";
+  const htmlText = item.content ?? item.description ?? item.content_encoded ?? '';
 
   // Create dom
   const dom = new JSDOM(htmlText);
@@ -36,9 +30,9 @@ function normalizeItem(item: RawRssItem): Article {
   }
 
   // Fallback
-  const firstImg = doc.querySelector("img");
-  if (!imageUrl && firstImg?.getAttribute("src")) {
-    imageUrl = firstImg.getAttribute("src");
+  const firstImg = doc.querySelector('img');
+  if (!imageUrl && firstImg?.getAttribute('src')) {
+    imageUrl = firstImg.getAttribute('src');
   }
   if (firstImg) firstImg.remove();
 
@@ -51,7 +45,6 @@ function normalizeItem(item: RawRssItem): Article {
     imageUrl
   };
 }
-
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }: { request: Request }) {
@@ -77,34 +70,31 @@ export async function POST({ request }: { request: Request }) {
   let rss;
 
   try {
-    rss = await parse(
-      feedUrl,
-      {
-	signal: controller.signal,
-	size: 1024 * 1024 * 2,
-	maxRedirects: 3
-      }
-    );
+    rss = await parse(feedUrl, {
+      signal: controller.signal,
+      size: 1024 * 1024 * 2,
+      maxRedirects: 3
+    });
   } catch {
-    return new Response(
-      JSON.stringify({error: 'Failed to fetch feed'}),
-      { status: 502, headers: { 'ContentType': 'application/json'} }
-    );
+    return new Response(JSON.stringify({ error: 'Failed to fetch feed' }), {
+      status: 502,
+      headers: { ContentType: 'application/json' }
+    });
   } finally {
     clearTimeout(timeout);
   }
 
   try {
     const articles: Article[] = rss.items.map(normalizeItem);
-    
-    return new Response(
-      JSON.stringify(articles),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+
+    return new Response(JSON.stringify(articles), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch {
-    return new Response(
-      JSON.stringify({error: 'Failed to parse article'}),
-      { status: 500, headers: {'Content-Type': 'application/json'} }
-    );
+    return new Response(JSON.stringify({ error: 'Failed to parse article' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

@@ -15,10 +15,10 @@
   <div class="buttons">
     {#each buttons as button, i (i)}
       <button onclick={() => button.onClick(button.value || i)}>
-	{#if button.icon}
-	  <Icon icon={button.icon} />
-	{/if}
-	{button.text}
+        {#if button.icon}
+          <Icon icon={button.icon} />
+        {/if}
+        {button.text}
       </button>
     {/each}
   </div>
@@ -28,7 +28,7 @@
   .settings_button {
     display: flex;
     width: 100%;
-    gap: .5rem;
+    gap: 0.5rem;
     flex-wrap: wrap;
     align-items: center;
   }
@@ -36,12 +36,12 @@
   .buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: .5rem;
+    gap: 0.5rem;
   }
 
   button {
     display: flex;
     align-items: center;
-    gap: .25rem;
+    gap: 0.25rem;
   }
 </style>

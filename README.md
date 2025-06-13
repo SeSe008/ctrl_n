@@ -18,11 +18,12 @@
 
 - Vertical and horizontal tiling
 - An always-growing list of widgets to choose
-- A long list of preset search engines *(custom ones will come soon)*
+- A long list of preset search engines _(custom ones will come soon)_
 
 ## How to use?
 
 There are 2 ways of using CTRL+N:
+
 1. Use the public website, located at [newtab.se-008.net](https://newtab.se-008.net)
    - Pros:
 	 - Stable version - Bugs should happen less frequently
@@ -48,10 +49,13 @@ In the future, there might be an automatic installation script that guides you t
 To automatically load the page when opening a new tab:
 
 ### Firefox
+
 In Firefox-based browsers, you could use [New Tab Override](https://addons.mozilla.org/en-US/firefox/addon/new-tab-override/)
 
 ### Chrome/Chromium
+
 In Chromium-based browsers, you could use [New Tab Redirect](https://chromewebstore.google.com/detail/new-tab-redirect/)
+
 ### Ungoogled-Chromium
 
 In ungoogled-chromium, you can set the [custom-ntp](chrome://flags/#custom-ntp) flag
@@ -61,12 +65,12 @@ In ungoogled-chromium, you can set the [custom-ntp](chrome://flags/#custom-ntp) 
 Tl;DR: No data is ever stored on the server side nor shared to third parties. Some data, currently the Weather Location and the RSS-URL, is routed through the server, mainly to avoid `CORS` issues. All data is stored in the browsers local storage. <br/>
 The full privacy statement is located [here](https://newtab.se-008.net/privacy).
 
-
 ---
 
 ## Roadmap
 
 Elements will not follow chronological order
+
 - [ ] More Styling Control for Page/Widgets
   - [x] Opacity
   - [ ] Font
@@ -76,11 +80,12 @@ Elements will not follow chronological order
   - [x] User Background-Categories
 - [ ] Custom Search Engines
 - [ ] Custom Widgets
-- [ ] CSS-Rework for compatibility purposes 
+- [ ] CSS-Rework for compatibility purposes
 - [ ] Stable offline version
 - [ ] Native redirect extension
 
 Future widget ideas:
+
 - Notes
 - ToDo
 - Music Controller with Spotify/YouTube integration
@@ -90,4 +95,5 @@ Future widget ideas:
 - Give me ideas :)
 
 ## Website Broken? Background gone?
+
 Breaking changes may occur at any time, but clearing local storage is helping almost everytime.

@@ -1,7 +1,7 @@
 import type { SearchEngines } from '$lib/types/widgets/searchEngines';
 
 export const searchEngines: SearchEngines = {
-  'ecosia': {
+  ecosia: {
     name: 'Ecosia',
     url: 'https://ecosia.org/search',
     searchParam: 'q=',
@@ -13,7 +13,7 @@ export const searchEngines: SearchEngines = {
     extras: ['addon=opensearch'],
     icon: 'arcticons:ecosia'
   },
-  'oceanhero': {
+  oceanhero: {
     name: 'OceanHero',
     url: 'https://oceanhero.today/web',
     searchParam: 'q=',
@@ -22,9 +22,9 @@ export const searchEngines: SearchEngines = {
       searchParam: 'q=',
       extras: []
     },
-    extras: [],
+    extras: []
   },
-  'searxng': {
+  searxng: {
     name: 'SearXNG (local)',
     url: 'http://localhost:8888/search',
     searchParam: 'q=',
@@ -36,7 +36,7 @@ export const searchEngines: SearchEngines = {
     extras: [],
     icon: 'simple-icons:searxng'
   },
-  'searxng_pub': {
+  searxng_pub: {
     name: 'SearXNG (public)',
     url: 'https://searx.tiekoetter.com/search',
     searchParam: 'q=',
@@ -48,7 +48,7 @@ export const searchEngines: SearchEngines = {
     extras: [],
     icon: 'simple-icons:searxng'
   },
-  'duckduckgo': {
+  duckduckgo: {
     name: 'DuckDuckGo',
     url: 'https://duckduckgo.com/',
     searchParam: 'q=',
@@ -60,7 +60,7 @@ export const searchEngines: SearchEngines = {
     extras: [],
     icon: 'arcticons:duckduckgo'
   },
-  'startpage': {
+  startpage: {
     name: 'Startpage',
     url: 'https://www.startpage.com/sp/search',
     searchParam: 'query=',
@@ -72,7 +72,7 @@ export const searchEngines: SearchEngines = {
     extras: [],
     icon: 'arcticons:startpage'
   },
-  'google': {
+  google: {
     name: 'Google',
     url: 'https://www.google.com/search',
     searchParam: 'q=',

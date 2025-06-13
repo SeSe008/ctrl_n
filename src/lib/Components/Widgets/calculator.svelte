@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "@iconify/svelte";
+  import Icon from '@iconify/svelte';
 
   interface Operation {
     icon: string;
@@ -10,11 +10,11 @@
     plus: { icon: 'mdi:plus', calculation: (a: number, b: number) => a + b },
     minus: { icon: 'mdi:minus', calculation: (a: number, b: number) => a - b },
     divide: { icon: 'mdi:division', calculation: (a: number, b: number) => a / b },
-    multiply: { icon: 'mdi:multiply', calculation: (a: number, b: number) => a * b },
+    multiply: { icon: 'mdi:multiply', calculation: (a: number, b: number) => a * b }
   } as const satisfies Record<string, Operation>;
 
   type Equation = [number, Operation | null][];
-  
+
   let history = $state<[number, Equation][]>([]);
   let currentEquation = $state<Equation>([]);
 
@@ -24,12 +24,9 @@
     } else {
       const last = currentEquation[currentEquation.length - 1];
       if (last[1] === null) {
-       currentEquation = [
-        ...currentEquation.slice(0, -1),
-        [last[0] * 10 + digit, null]
-      ];
-     } else {
-	currentEquation = [...currentEquation, [digit, null]];
+        currentEquation = [...currentEquation.slice(0, -1), [last[0] * 10 + digit, null]];
+      } else {
+        currentEquation = [...currentEquation, [digit, null]];
       }
     }
   }
@@ -37,10 +34,7 @@
   function addOperation(operation: Operation) {
     const last = currentEquation[currentEquation.length - 1];
     if (last) {
-      currentEquation= [
-	...currentEquation.slice(0, -1),
-	[last[0], operation]
-      ];
+      currentEquation = [...currentEquation.slice(0, -1), [last[0], operation]];
     }
   }
 
@@ -52,8 +46,8 @@
     if (currentEquation.length === 0) return;
 
     // Create token list
-    const tokens: Array<number | Operation> = currentEquation.flatMap(
-      ([value, op]) => (op ? [value, op] : [value])
+    const tokens: Array<number | Operation> = currentEquation.flatMap(([value, op]) =>
+      op ? [value, op] : [value]
     );
 
     // Pass 1, multiply and divide
@@ -62,12 +56,9 @@
     // Pass 2, plus and minus
     const pass2 = collapsePrecedence(pass1, [Operations.plus, Operations.minus]);
 
-    const result: number = Math.round(pass2[0] as number * 1000) / 1000;
+    const result: number = Math.round((pass2[0] as number) * 1000) / 1000;
 
-    history = [
-      [ result, currentEquation ],
-      ...history
-    ];
+    history = [[result, currentEquation], ...history];
     clearCalculation();
   }
 
@@ -82,15 +73,15 @@
       const token = tokens[i];
 
       if (typeof token === 'object' && ops.includes(token)) {
-	const op = token;
-	const left = out.pop()! as number;
-	const right = tokens[i + 1] as number;
-	const combined = op.calculation(left, right);
-	out.push(combined);
-	i += 2;
+        const op = token;
+        const left = out.pop()! as number;
+        const right = tokens[i + 1] as number;
+        const combined = op.calculation(left, right);
+        out.push(combined);
+        i += 2;
       } else {
-	out.push(token);
-	i++;
+        out.push(token);
+        i++;
       }
     }
 
@@ -102,33 +93,33 @@
   <div id="history">
     <div>
       {#if currentEquation.length > 0}
-	{#each currentEquation as [digit, operation], i (i)}
-	  <span>{digit}</span>
-	  {#if operation}
-	    <Icon icon={operation.icon} />
-	  {/if}
-	{/each}
+        {#each currentEquation as [digit, operation], i (i)}
+          <span>{digit}</span>
+          {#if operation}
+            <Icon icon={operation.icon} />
+          {/if}
+        {/each}
       {:else}
-	<span>0</span>
+        <span>0</span>
       {/if}
     </div>
     {#each history as [result, equation], i (i)}
       <div>
-	{#each equation as [digit, operation], i (i)}
-	  <span>{digit}</span>
-	  {#if operation}
-	    <Icon icon={operation.icon} />
-	  {/if}
-	{/each}
-	<Icon icon="mdi:equal" />
-	{result}
+        {#each equation as [digit, operation], i (i)}
+          <span>{digit}</span>
+          {#if operation}
+            <Icon icon={operation.icon} />
+          {/if}
+        {/each}
+        <Icon icon="mdi:equal" />
+        {result}
       </div>
     {/each}
   </div>
-  
+
   <div id="numbers">
     <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-    {#each {length: 10} as _, i (i)}
+    {#each { length: 10 } as _, i (i)}
       <button onclick={() => addNumber((i + 1) % 10)}>{(i + 1) % 10}</button>
     {/each}
   </div>
@@ -146,7 +137,7 @@
   #calculator {
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 33% 1fr .33fr;
+    grid-template-columns: 33% 1fr 0.33fr;
     height: 100%;
     max-height: 100%;
     width: 100%;
@@ -161,11 +152,11 @@
   #history {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0.5rem;
 
-    padding: .5rem;
+    padding: 0.5rem;
     box-sizing: border-box;
-    
+
     max-height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -182,13 +173,13 @@
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
-    
+
     max-width: 100%;
 
     font-size: 2vmin;
     word-break: break-all;
 
-    padding: .25rem;
+    padding: 0.25rem;
     border: 1px solid rgb(var(--c2));
     border-radius: 1vmin;
   }
@@ -196,10 +187,10 @@
   #numbers {
     display: flex;
     flex-wrap: wrap;
-    gap: .25rem;
+    gap: 0.25rem;
     height: 100%;
     max-height: 100%;
-    padding: .25rem;
+    padding: 0.25rem;
     box-sizing: border-box;
     font-size: 2.5vmin;
     justify-content: center;
@@ -207,10 +198,10 @@
   }
 
   #numbers button {
-    flex: 1 1 calc(33.333% - .25rem);
+    flex: 1 1 calc(33.333% - 0.25rem);
     flex-grow: 0;
   }
-  
+
   #numbers button:last-child {
     grid-column: 2;
   }
@@ -219,18 +210,18 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    gap: .25rem;
+    gap: 0.25rem;
 
     height: 100%;
-    padding: .25rem;
-    box-sizing: border-box;    
+    padding: 0.25rem;
+    box-sizing: border-box;
     overflow: hidden;
 
     font-size: 2.5vmin;
   }
 
   #operations button {
-    flex: 1 1 calc(16.66% - .25rem);
+    flex: 1 1 calc(16.66% - 0.25rem);
     flex-grow: 0;
   }
 
@@ -250,12 +241,14 @@
 
     font-size: inherit;
     font-weight: inherit;
-    
-    transition: transform .2s, filter .5s;
+
+    transition:
+      transform 0.2s,
+      filter 0.5s;
   }
-  
+
   #calculator button:hover {
     transform: scale(1.01);
-    filter: drop-shadow(0 0 .125rem rgb(var(--c2)));
+    filter: drop-shadow(0 0 0.125rem rgb(var(--c2)));
   }
 </style>
