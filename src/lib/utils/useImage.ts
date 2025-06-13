@@ -29,7 +29,7 @@ export function applyImage(
   let image: string | undefined = pickImage(toggledImages);
 
   while (toggledImages.length > 1 && lastImage === image && lastImage) {
-    image = pickImage(images);
+    image = pickImage(toggledImages);
   }
 
   if (!image) return lastImage || '';
