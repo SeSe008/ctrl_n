@@ -62,7 +62,7 @@
   {#if $editMode}
     <div id="inputs">
       <button onclick={() => toggleSettings(managerId, tileId)}
-        ><Icon icon="lucide:settings" /></button
+        ><Icon icon="mdi:settings-outline" /></button
       >
     </div>
   {/if}

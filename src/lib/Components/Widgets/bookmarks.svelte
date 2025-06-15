@@ -16,7 +16,7 @@
 </script>
 
 <div id="bookmarks">
-  <h2><Icon icon="material-symbols:bookmarks" /> Bookmarks</h2>
+  <h2><Icon icon="mdi:bookmark-multiple" /> Bookmarks</h2>
 
   {#if $bookmarks}
     <div id="bookmark_list">

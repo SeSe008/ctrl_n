@@ -241,7 +241,7 @@
     <button
       onclick={() => {
         search(searchBar.value);
-      }}><Icon icon="line-md:search-twotone" /></button
+      }}><Icon icon="mdi:search" /></button
     >
   </div>
   <div id="suggestions">

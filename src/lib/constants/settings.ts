@@ -126,12 +126,12 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
     buttons: [
       {
         text: 'Add Element',
-        icon: 'gg:add',
+        icon: 'mdi:add-circle-outline',
         onClick: () => addTile(get(settings).selectedManager)
       },
       {
         text: 'Remove Element',
-        icon: 'gg:remove',
+        icon: 'mdi:remove-circle-outline',
         onClick: () => removeTile(get(settings).selectedManager)
       }
     ]
@@ -193,7 +193,7 @@ export const globalSettings: SettingsSection = new SettingsSection()
         buttons: [
           {
             text: 'Add',
-            icon: 'gg:add',
+            icon: 'mdi:add-circle-outline',
             onClick: () => addImageToCategoryInCategories(getImageCategory(), get(newImageUrl))
           }
         ]
@@ -231,12 +231,12 @@ export const globalSettings: SettingsSection = new SettingsSection()
     buttons: [
       {
         text: 'Append Row',
-        icon: 'gg:add',
+        icon: 'mdi:add-circle-outline',
         onClick: () => addManager()
       },
       {
         text: 'Remove Row',
-        icon: 'gg:remove',
+        icon: 'mdi:remove-circle-outline',
         onClick: () => {
           removeManager(get(settings).selectedManager);
           setSelectedManager(get(settings).selectedManager! - 1);

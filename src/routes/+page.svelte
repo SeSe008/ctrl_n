@@ -78,10 +78,10 @@
 
 <div id="pageControl">
   <button onclick={nextImage}>
-    <Icon icon="gg:image" />
+    <Icon icon="mdi:image-outline" />
   </button>
   <button onclick={toggleEditMode}>
-    <Icon icon="material-symbols:edit-outline" />
+    <Icon icon="mdi:edit-outline" />
   </button>
 </div>
 

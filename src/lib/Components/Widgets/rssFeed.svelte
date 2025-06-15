@@ -1,6 +1,7 @@
 <script lang="ts">
   import DOMPurify from 'dompurify';
   import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
 
   import type { Article } from '$lib/types/widgets/rss';
   import { initRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
@@ -31,7 +32,7 @@
 
 <div id="rss-feed">
   <div id="articles">
-    <h2>Rss Feed</h2>
+    <h2><Icon icon="mdi:newspaper-variant-multiple" />Rss Feed</h2>
     {#each articles as article (article)}
       <a href={article.link} target="_blank">
         <div class="article">
