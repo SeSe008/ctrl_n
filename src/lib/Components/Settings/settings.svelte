@@ -120,7 +120,7 @@
 
     top: 0;
     height: 100%;
-    width: min(30rem, 100%);
+    width: min(40vw, 100%);
 
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
@@ -273,6 +273,8 @@
     max-width: 100%;
     height: auto;
     overflow: hidden;
+
+    font-size: 1vw;
   }
 
   :global {

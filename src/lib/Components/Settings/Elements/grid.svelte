@@ -8,7 +8,7 @@
   }
 
   const { options }: Props = $props();
-  const { columns, rows, objects, updater } = options;
+  const { columns, objects, updater } = options;
 
   let elements = $state(typeof objects === 'function' ? objects().elements : objects.elements);
 
@@ -30,7 +30,7 @@
   });
 </script>
 
-<div class="settings_grid" style="--columns: {columns}; --rows: {rows};">
+<div class="settings_grid" style="--columns: {columns};">
   {#each elements as element, i (i)}
     {#if elementComponents[element.elementType]}
       {@const Comp = elementComponents[element.elementType]}
@@ -41,11 +41,15 @@
 
 <style>
   .settings_grid {
-    display: grid;
-    grid-template-columns: repeat(var(--columns), 1fr);
-    grid-template-rows: repeat(var(--rows), 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     max-width: 100%;
     overflow: hidden;
+  }
+
+  :global(.settings_grid > *) {
+    flex-basis: calc(100% / var(--columns));
+    flex-grow: 0;
   }
 </style>

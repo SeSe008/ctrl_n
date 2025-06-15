@@ -20,6 +20,7 @@ import {
   getImageCategory,
   imageCategories,
   imageCategory,
+  removeImageFromCategoryInCategories,
   toggleImageInCategory
 } from '$lib/stores/backgroundImage';
 import { newImageUrl } from '$lib/stores/settings/elements/newBgImage';
@@ -206,17 +207,35 @@ export const globalSettings: SettingsSection = new SettingsSection()
         getImageCategories()[getImageCategory()].images?.map(
           (img, i) =>
             new SettingsElement('group', {
-              layout: 'vertical',
+              layout: 'vert',
               objects: new SettingsSection()
                 .appendElement('image', {
                   image: () => getImageCategories()[getImageCategory()].images?.[i] || img,
-                  updater: imageCategory
+                  updater: [imageCategory, imageCategories]
                 })
-                .appendElement('checkbox', {
-                  onChange: () => toggleImageInCategory(getImageCategory(), i),
-                  defaultValue: () =>
-                    (getImageCategories()[getImageCategory()].images?.[i][1] || img[1]) as boolean,
-                  label: 'Enabled'
+                .appendElement('group', {
+                  wrap: false,
+                  center: true,
+                  objects: new SettingsSection()
+                    .appendElement('checkbox', {
+                      onChange: () => toggleImageInCategory(getImageCategory(), i),
+                      defaultValue: () =>
+                        (getImageCategories()[getImageCategory()].images?.[i][1] ||
+                          img[1]) as boolean,
+                      label: 'Enabled'
+                    })
+                    .appendElement('buttons', {
+                      buttons: [
+                        {
+                          icon: 'mdi:delete',
+                          onClick: () => {
+                            // Force ok here - for deleting an image, you need an image
+                            if (getImageCategories()[getImageCategory()].images!.length > 1)
+                              removeImageFromCategoryInCategories(getImageCategory(), i);
+                          }
+                        }
+                      ]
+                    })
                 })
             })
         )

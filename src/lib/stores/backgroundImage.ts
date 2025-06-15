@@ -88,9 +88,7 @@ export function addImageToCategoryInCategories(categoryId: number, image: string
 export function removeImageFromCategoryInCategories(categoryId: number, imageId: number) {
   imageCategories.update((current) => {
     if (current[categoryId] && current[categoryId].images) {
-      current[categoryId].images = current[categoryId].images.filter(
-        (_, index) => index !== imageId
-      );
+      current[categoryId].images.splice(imageId, 1);
     }
     return current;
   });

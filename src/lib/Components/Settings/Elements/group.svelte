@@ -7,10 +7,17 @@
   }
 
   const { options }: Props = $props();
-  const { objects, layout } = options;
+  const { objects, layout, wrap, center } = options;
+
+  let flexWrap = $state(true);
+  if (wrap !== undefined && !wrap) flexWrap = false;
 </script>
 
-<div class={`settings_group ${layout === 'vert' || layout === 'vertical' ? 'vert' : 'hor'}`}>
+<div class={`settings_group ${layout === 'vert' || layout === 'vertical' ? 'vert' : 'hor'}`}
+     style="
+	    --wrap: {flexWrap ? 'wrap' : 'nowrap'};
+	    --center: {center ? 'center' : 'flex-start'};
+	    ">
   {#each objects.elements as element, i (i)}
     {#if elementComponents[element.elementType]}
       {@const Comp = elementComponents[element.elementType]}
@@ -22,8 +29,11 @@
 <style>
   .settings_group {
     display: flex;
+    width: 100%;
     gap: 0.5rem;
-    flex-wrap: wrap;
+
+    flex-wrap: var(--wrap);
+    justify-content: var(--center);
   }
 
   .vert {
@@ -32,7 +42,6 @@
 
   .hor {
     flex-direction: row;
-    align-items: center;
   }
 
   :global(.hor > *) {
