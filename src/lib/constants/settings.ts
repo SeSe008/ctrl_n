@@ -35,7 +35,7 @@ import { newImageUrl } from '$lib/stores/settings/elements/newBgImage';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
-import Buttons from '$lib/Components/Settings/Elements/buttons.svelte';
+import Button from '$lib/Components/Settings/Elements/button.svelte';
 import Range from '$lib/Components/Settings/Elements/range.svelte';
 import TextInput from '$lib/Components/Settings/Elements/textInput.svelte';
 import Checkbox from '$lib/Components/Settings/Elements/checkbox.svelte';
@@ -46,7 +46,7 @@ import Grid from '$lib/Components/Settings/Elements/grid.svelte';
 export const elementComponents: ElementComponents = {
   text: Text,
   select: Select,
-  buttons: Buttons,
+  button: Button,
   range: Range,
   textInput: TextInput,
   checkbox: Checkbox,
@@ -74,22 +74,21 @@ export const tileSettings: SettingsSection = new SettingsSection()
       updater: [globalTiles, settings]
     })
   })
-  .appendElement('buttons', {
-    buttons: [
-      {
+  .appendElement('group', {
+    objects: new SettingsSection()
+      .appendElement('button', {
         text: 'Append Tile',
         icon: 'mdi:add-circle-outline',
         onClick: () => addTile(getSelectedManagerId())
-      },
-      {
+      })
+      .appendElement('button', {
         text: 'Remove Tile',
         icon: 'mdi:remove-circle-outline',
         onClick: () => {
           removeTile(getSelectedManagerId(), getSelectedTileId());
           setSelectedTile(0);
         }
-      }
-    ]
+      })
   })
   .appendElement('select', {
     selectOptions: tileMetadata.map(({ label, icon }) => {
@@ -196,13 +195,9 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
     valueLabel: 'Preferred height:',
     unit: 'fr'
   })
-  .appendElement('buttons', {
-    buttons: [
-      {
-        onClick: () => changeManagerHeight(get(settings).selectedManager, 1),
-        text: 'Reset Height'
-      }
-    ]
+  .appendElement('button', {
+    onClick: () => changeManagerHeight(get(settings).selectedManager, 1),
+    text: 'Reset Height'
   });
 
 export const globalSettings: SettingsSection = new SettingsSection()
@@ -230,14 +225,10 @@ export const globalSettings: SettingsSection = new SettingsSection()
         store: newImageUrl,
         placeholder: 'Image Url'
       })
-      .appendElement('buttons', {
-        buttons: [
-          {
-            text: 'Add',
-            icon: 'mdi:add-circle-outline',
-            onClick: () => addImageToCategoryInCategories(getImageCategory(), get(newImageUrl))
-          }
-        ]
+      .appendElement('button', {
+        text: 'Add',
+        icon: 'mdi:add-circle-outline',
+        onClick: () => addImageToCategoryInCategories(getImageCategory(), get(newImageUrl))
       })
   })
   .appendElement('grid', {
@@ -264,17 +255,13 @@ export const globalSettings: SettingsSection = new SettingsSection()
                           img[1]) as boolean,
                       label: 'Enabled'
                     })
-                    .appendElement('buttons', {
-                      buttons: [
-                        {
-                          icon: 'mdi:delete',
-                          onClick: () => {
-                            // Force ok here - for deleting an image, you need an image
-                            if (getImageCategories()[getImageCategory()].images!.length > 1)
-                              removeImageFromCategoryInCategories(getImageCategory(), i);
-                          }
-                        }
-                      ]
+                    .appendElement('button', {
+                      icon: 'mdi:delete',
+                      onClick: () => {
+                        // Force ok here - for deleting an image, you need an image
+                        if (getImageCategories()[getImageCategory()].images!.length > 1)
+                          removeImageFromCategoryInCategories(getImageCategory(), i);
+                      }
                     })
                 })
             })
@@ -286,20 +273,19 @@ export const globalSettings: SettingsSection = new SettingsSection()
     text: 'Rows',
     classes: ['big', 'left', 'strong', 'margin_top']
   })
-  .appendElement('buttons', {
-    buttons: [
-      {
+  .appendElement('group', {
+    objects: new SettingsSection()
+      .appendElement('button', {
         text: 'Append Row',
         icon: 'mdi:add-circle-outline',
         onClick: () => addManager()
-      },
-      {
+      })
+      .appendElement('button', {
         text: 'Remove Row',
         icon: 'mdi:remove-circle-outline',
         onClick: () => {
           removeManager(get(settings).selectedManager);
           setSelectedManager(get(settings).selectedManager! - 1);
         }
-      }
-    ]
+      })
   });

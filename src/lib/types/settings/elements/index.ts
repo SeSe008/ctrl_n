@@ -1,6 +1,6 @@
 export type { Options as TextProps } from './text';
 export type { Options as SelectProps } from './select';
-export type { Options as ButtonsProps } from './buttons';
+export type { Options as ButtonProps } from './button';
 export type { Options as RangeProps } from './range';
 export type { Options as TextInputProps } from './textInput';
 export type { Options as CheckboxProps } from './checkbox';

@@ -83,13 +83,9 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                 store: newRssUrl,
                 label: 'Set RSS Url:'
               })
-              .appendElement('buttons', {
-                buttons: [
-                  {
-                    text: 'Change',
-                    onClick: () => setRssUrl(get(newRssUrl))
-                  }
-                ]
+              .appendElement('button', {
+                text: 'Change',
+                onClick: () => setRssUrl(get(newRssUrl))
               })
           })
       };
@@ -110,13 +106,9 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                 store: newWeatherLocation,
                 label: 'Set Weather location:'
               })
-              .appendElement('buttons', {
-                buttons: [
-                  {
-                    text: 'Change',
-                    onClick: () => setWeatherLocation(get(newWeatherLocation))
-                  }
-                ]
+              .appendElement('button', {
+                text: 'Change',
+                onClick: () => setWeatherLocation(get(newWeatherLocation))
               })
           })
       };
@@ -146,17 +138,13 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                 placeholder: 'Url',
                 store: newBookmarkUrl
               })
-              .appendElement('buttons', {
-                buttons: [
-                  {
-                    text: 'Add Bookmark',
-                    onClick: () => {
-                      addBookmark(get(newBookmarkName), get(newBookmarkUrl));
-                      newBookmarkName.set('');
-                      newBookmarkUrl.set('');
-                    }
-                  }
-                ]
+              .appendElement('button', {
+                text: 'Add Bookmark',
+                onClick: () => {
+                  addBookmark(get(newBookmarkName), get(newBookmarkUrl));
+                  newBookmarkName.set('');
+                  newBookmarkUrl.set('');
+                }
               })
           })
       };

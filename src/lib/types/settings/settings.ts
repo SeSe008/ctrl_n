@@ -1,7 +1,7 @@
 import type {
   TextProps,
   SelectProps,
-  ButtonsProps,
+  ButtonProps,
   RangeProps,
   TextInputProps,
   CheckboxProps,
@@ -21,7 +21,7 @@ export interface Settings {
 export type ElementProps =
   | TextProps
   | SelectProps
-  | ButtonsProps
+  | ButtonProps
   | RangeProps
   | TextInputProps
   | ImageProps
