@@ -7,18 +7,17 @@
   }
 
   const { options }: Props = $props();
-  const { objects, layout, wrap, center } = options;
-
-  let flexWrap = $state(true);
-  if (wrap !== undefined && !wrap) flexWrap = false;
 </script>
 
-<div class={`settings_group ${layout === 'vert' || layout === 'vertical' ? 'vert' : 'hor'}`}
-     style="
-	    --wrap: {flexWrap ? 'wrap' : 'nowrap'};
-	    --center: {center ? 'center' : 'flex-start'};
-	    ">
-  {#each objects.elements as element, i (i)}
+<div
+  class="settings_group {options.layout === 'vert' || options.layout === 'vertical'
+    ? 'vert'
+    : 'hor'}"
+  style="--wrap: {options.wrap === false ? 'nowrap' : 'wrap'}; --center: {options.center
+    ? 'center'
+    : 'flex-start'};"
+>
+  {#each options.objects.elements as element, i (i)}
     {#if elementComponents[element.elementType]}
       {@const Comp = elementComponents[element.elementType]}
       <Comp options={element.elementOptions} />

@@ -6,15 +6,25 @@
     settings,
     toggleSettings
   } from '$lib/stores/settings/settings';
-  import { getManager, globalTiles } from '$lib/stores/tiles';
+  import { getManager, getTile, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
   import TileElement from '$lib/Components/tileElement.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
   import { onMount } from 'svelte';
   import { toggleEditMode } from '$lib/stores/editMode';
+  import type { Element } from '$lib/types/settings/settings';
 
   let selectedTab = $state<number>(2);
 
+  let settingsElements: Element[] = $state([]);
+
+  settings.subscribe(() => {
+    const mgr = getSelectedManagerId() ?? 0;
+    const tle = getSelectedTileId() ?? 0;
+    const def = tileDefs[getTile(mgr, tle)?.element ?? 0];
+    settingsElements = def.tileProps.elements;
+  });
+  
   let settingsContainer: HTMLElement;
   const sideOptions: [string, string] = ['settingsLeft', 'settingsRight'];
   const defaultSide: number = 0;
@@ -42,17 +52,21 @@
     }
   }
 
+  function setSide() {
+      settingsContainer.classList.replace(
+        sideOptions[((checkOverlap() || defaultSide) + 1) % 2],
+        sideOptions[checkOverlap() || defaultSide]
+      );
+  }
+
   onMount(() => {
     toggleEditMode();
 
     settingsContainer.classList.add(sideOptions[checkOverlap() || defaultSide]);
 
-    window.addEventListener('resize', () => {
-      settingsContainer.classList.replace(
-        sideOptions[((checkOverlap() || defaultSide) + 1) % 2],
-        sideOptions[checkOverlap() || defaultSide]
-      );
-    });
+    window.addEventListener('resize', setSide);
+
+    settings.subscribe(() => setSide);
   });
 </script>
 
@@ -90,7 +104,7 @@
         </div>
       {:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
         <div class="settings_tab">
-          {#each tileDefs[$globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element].tileProps.elements as element, i (i)}
+          {#each settingsElements as element, i (i)}
             {#if elementComponents[element.elementType]}
               {@const Comp = elementComponents[element.elementType]}
               <div class="element"><Comp options={element.elementOptions} /></div>
@@ -120,7 +134,7 @@
 
     top: 0;
     height: 100%;
-    width: min(40vw, 100%);
+    width: min(30rem, 100%);
 
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
@@ -273,8 +287,6 @@
     max-width: 100%;
     height: auto;
     overflow: hidden;
-
-    font-size: 1vw;
   }
 
   :global {

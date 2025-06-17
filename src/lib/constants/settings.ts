@@ -10,9 +10,17 @@ import {
   globalTiles,
   changeCssVar,
   addManager,
-  removeManager
+  removeManager,
+  getTiles,
+  getManager
 } from '$lib/stores/tiles';
-import { setSelectedManager, settings } from '$lib/stores/settings/settings';
+import {
+  getSelectedManagerId,
+  getSelectedTileId,
+  setSelectedManager,
+  setSelectedTile,
+  settings
+} from '$lib/stores/settings/settings';
 import { tileMetadata } from '$lib/constants/tileMetadata';
 import {
   addImageToCategoryInCategories,
@@ -51,6 +59,37 @@ export const tileSettings: SettingsSection = new SettingsSection()
   .appendElement('text', {
     text: 'Tile Settings',
     classes: ['large', 'center', 'strong']
+  })
+  .appendElement('group', {
+    center: true,
+    objects: new SettingsSection().appendElement('select', {
+      label: 'Select Widget:',
+      selectOptions: () =>
+        getManager(getSelectedManagerId() || 0)?.tiles.map((tle, i) => ({
+          label: `Tile ${i + 1} (${tileMetadata[tle.element].label})`,
+          icon: tileMetadata[tle.element].icon
+        })) || [],
+      defaultValue: () => getSelectedTileId(),
+      onChange: (value: number) => setSelectedTile(value),
+      updater: [globalTiles, settings]
+    })
+  })
+  .appendElement('buttons', {
+    buttons: [
+      {
+        text: 'Append Tile',
+        icon: 'mdi:add-circle-outline',
+        onClick: () => addTile(getSelectedManagerId())
+      },
+      {
+        text: 'Remove Tile',
+        icon: 'mdi:remove-circle-outline',
+        onClick: () => {
+          removeTile(getSelectedManagerId(), getSelectedTileId());
+          setSelectedTile(0);
+        }
+      }
+    ]
   })
   .appendElement('select', {
     selectOptions: tileMetadata.map(({ label, icon }) => {
@@ -121,21 +160,22 @@ export const tileSettings: SettingsSection = new SettingsSection()
 export const tileManagerSettings: SettingsSection = new SettingsSection()
   .appendElement('text', {
     text: 'Row Settings',
-    classes: ['large', 'center', 'strong', 'margin_vert']
+    classes: ['large', 'center', 'strong', 'margin_top']
   })
-  .appendElement('buttons', {
-    buttons: [
-      {
-        text: 'Add Element',
-        icon: 'mdi:add-circle-outline',
-        onClick: () => addTile(get(settings).selectedManager)
+  .appendElement('group', {
+    center: true,
+    objects: new SettingsSection().appendElement('select', {
+      label: 'Select Row:',
+      selectOptions: () =>
+        getTiles().map((_, i) => ({
+          label: `Row ${i + 1}`
+        })),
+      onChange: (value: number) => {
+        setSelectedTile(0);
+        setSelectedManager(value);
       },
-      {
-        text: 'Remove Element',
-        icon: 'mdi:remove-circle-outline',
-        onClick: () => removeTile(get(settings).selectedManager)
-      }
-    ]
+      defaultValue: derived(settings, ($settings) => $settings.selectedManager || 0)
+    })
   })
   .appendElement('text', {
     text: 'Row-Height:',

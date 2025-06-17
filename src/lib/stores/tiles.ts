@@ -4,6 +4,10 @@ import type { GlobalTiles, Tile, TileManager } from '$lib/types/tiles';
 
 export const globalTiles = writable<GlobalTiles>([]);
 
+export function getTiles(): GlobalTiles {
+  return get(globalTiles);
+}
+
 export function updateManager(manager: TileManager, id: number) {
   globalTiles.update((current) => {
     const newGlobal = [...current];
@@ -66,11 +70,11 @@ export function addTile(managerId: number | undefined) {
     });
 }
 
-export function removeTile(managerId: number | undefined) {
+export function removeTile(managerId: number | undefined, tileId?: number) {
   if (managerId !== undefined)
     globalTiles.update((current) => {
       if (current[managerId] && current[managerId].tiles.length > 1)
-        current[managerId].tiles = [...current[managerId].tiles.slice(0, -1)];
+        current[managerId].tiles = [...current[managerId].tiles.slice(0, tileId || 0), ...current[managerId].tiles.slice((tileId || 0) + 1)];
       return current;
     });
 }
