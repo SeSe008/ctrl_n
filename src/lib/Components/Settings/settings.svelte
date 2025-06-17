@@ -6,7 +6,7 @@
     settings,
     toggleSettings
   } from '$lib/stores/settings/settings';
-  import { getManager, getTile, globalTiles } from '$lib/stores/tiles';
+  import { getTile, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
   import TileElement from '$lib/Components/tileElement.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
@@ -24,53 +24,13 @@
     const def = tileDefs[getTile(mgr, tle)?.element ?? 0];
     settingsElements = def.tileProps.elements;
   });
-  
-  let settingsContainer: HTMLElement;
-  const sideOptions: [string, string] = ['settingsLeft', 'settingsRight'];
-  const defaultSide: number = 0;
-
-  function checkOverlap(): number | undefined {
-    if (!settingsContainer) return;
-
-    const managerId = getSelectedManagerId();
-    const tileId = getSelectedTileId();
-    if (managerId === undefined || tileId === undefined) return;
-
-    const manager = getManager(managerId);
-    if (!manager || manager.tiles.length <= 1) return;
-
-    const selectedTile = document.getElementById(`tile_element_${managerId}${tileId}`);
-    if (!selectedTile) return;
-
-    const selectedTileRect = selectedTile.getBoundingClientRect();
-    const settingsContainerRect = settingsContainer.getBoundingClientRect();
-
-    if (selectedTileRect.left > settingsContainerRect.right) {
-      return 0;
-    } else {
-      return 1;
-    }
-  }
-
-  function setSide() {
-      settingsContainer.classList.replace(
-        sideOptions[((checkOverlap() || defaultSide) + 1) % 2],
-        sideOptions[checkOverlap() || defaultSide]
-      );
-  }
 
   onMount(() => {
     toggleEditMode();
-
-    settingsContainer.classList.add(sideOptions[checkOverlap() || defaultSide]);
-
-    window.addEventListener('resize', setSide);
-
-    settings.subscribe(() => setSide);
   });
 </script>
 
-<aside id="settings" bind:this={settingsContainer}>
+<aside id="settings">
   <div id="tab_cont">
     <div id="tab_nav">
       <button class={selectedTab === 0 ? 'active' : ''} onclick={() => (selectedTab = 0)}
@@ -129,33 +89,29 @@
 
 <style>
   #settings {
-    position: fixed;
     overflow: hidden;
 
     top: 0;
     height: 100%;
-    width: min(30rem, 100%);
+    width: 800px;
 
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
 
     background-color: rgba(var(--c1), 0.9);
     color: rgb(var(--c2));
+    border-left: 1px solid rgb(var(--c2));
 
     z-index: 100;
 
     animation: settingsIn forwards 0.5s;
   }
 
-  :global {
-    #settings.settingsLeft {
-      left: 0;
-      border-right: 1px solid rgb(var(--c2));
-    }
-
-    #settings.settingsRight {
+  @media only screen and (max-width: 1200px) {
+    #settings {
+      position: fixed;
+      width: min(600px, 100%);
       right: 0;
-      border-left: 1px solid rgb(var(--c2));
     }
   }
 
@@ -297,18 +253,21 @@
 
       outline: none;
       border: 1px solid rgb(var(--c2));
-      border-radius: 0.5vmin;
+      border-radius: 0.25em;
       background-color: rgb(var(--c1));
       color: inherit;
 
       font-size: calc(8px + 1vmin);
       cursor: pointer;
 
-      transition: 0.2s opacity;
+      transition:
+        background-color 0.2s linear,
+        color 0.2s linear;
     }
 
     .element button:hover {
-      opacity: 0.7;
+      background-color: rgb(var(--c2));
+      color: rgb(var(--c1));
     }
 
     .element select {
@@ -400,17 +359,25 @@
       height: min-content;
 
       outline: none;
-      border: 1px solid rgb(var(--c2));
-      border-radius: 0.5vmin;
-      background-color: rgb(var(--c1));
+      border: none;
+      border-bottom: 1px solid rgb(var(--c2));
+      border-radius: 0.25em 0.25em 0 0;
+
+      background-color: transparent;
       color: inherit;
 
       font-size: calc(8px + 1vmin);
+
+      transition: background-color 0.2s linear;
     }
 
     .element input[type='text']::placeholder {
       color: inherit;
       opacity: 0.7;
+    }
+
+    .element input[type='text']:focus {
+      background-color: rgb(var(--c1));
     }
 
     .element input[type='checkbox'] {

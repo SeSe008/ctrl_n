@@ -35,6 +35,7 @@ export async function parseExif(url: string) {
     setExifFromRaw(exifData);
   } catch (err) {
     console.error('EXIF parse failed', err);
+    setExifFromRaw(undefined);
     return;
   }
 }

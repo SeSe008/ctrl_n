@@ -68,29 +68,36 @@
   });
 </script>
 
-<img id="bg_img" alt="bg img" src={$backgroundImage} />
+<main>
+  <img id="bg_img" alt="bg img" src={$backgroundImage} />
 
-<div bind:this={tileGrid} id="tiles" {...$settings.enabled && { inert: true }}>
-  {#each { length: $globalTiles.length } as _, i (i)}
+  <div bind:this={tileGrid} id="tiles" {...$settings.enabled && { inert: true }}>
+    {#each { length: $globalTiles.length } as _, i (i)}
     <TileManager id={i} />
   {/each}
-</div>
-
-<div id="pageControl">
-  <button onclick={nextImage}>
-    <Icon icon="mdi:image-outline" />
-  </button>
-  <button onclick={toggleEditMode}>
-    <Icon icon="mdi:edit-outline" />
-  </button>
-</div>
-
-<div id="credit">
-  Picture taken by <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>, Licensed
-  under <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>,
-  <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a><br />
-  <a target="_blank" href="privacy">Privacy and Credit</a>
-</div>
+  </div>
+  
+  <div id="pageControl">
+    <button onclick={nextImage}>
+      <Icon icon="mdi:image-outline" />
+    </button>
+    <button onclick={toggleEditMode}>
+      <Icon icon="mdi:edit-outline" />
+    </button>
+  </div>
+  
+  <div id="credit">
+    {#if $exifData}
+      <div>
+	<a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>,
+	<a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>,
+	<a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a>
+      </div>
+    {/if}
+    <span></span>
+    <div><a target="_blank" href="privacy">Privacy and Credit</a></div>
+  </div>
+</main>
 
 {#if $settings.enabled}
   <Settings />
@@ -117,17 +124,13 @@
     }
 
     body {
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr repeat(2, min-content);
-      gap: 1rem;
-      justify-content: center;
-      align-items: center;
+      display: flex;
+      flex-direction: row;
       position: absolute;
       inset: 0;
 
       margin: 0;
-      padding: 1rem;
+      padding: 0;
       box-sizing: border-box;
       overflow: hidden;
 
@@ -140,8 +143,11 @@
         background-size 0s;
     }
 
+    body > * {
+      flex-grow: 1;
+    }
+
     body * {
-      transition: background-color 0.2s;
       font-family: inherit;
     }
 
@@ -174,6 +180,18 @@
       border: 2px solid transparent;
       background-clip: content-box;
     }
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0.5rem 1rem;
+    box-sizing: border-box;
   }
 
   #bg_img {
@@ -224,13 +242,21 @@
   }
 
   #credit {
-    justify-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: .25rem;
+
+    font-size: 0.75em;
+    font-weight: bold;
+  }
+
+  #credit div {
     color: rgb(var(--c1));
     padding: 0.25rem;
+
     background-color: rgba(var(--c2), var(--o2));
-    border-radius: 0.75rem;
-    font-size: 0.75rem;
-    text-align: center;
+    border-radius: 0.25rem;
   }
 
   #credit a {
