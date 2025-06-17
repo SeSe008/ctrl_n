@@ -27,14 +27,18 @@
   <li>
     <a target="_blank" href="https://iconify.design/">Iconify</a> is providing all icons on the page
   </li>
+  <li>
+    <a target="_blank" href="https://nocookieanalytics.com/newtab.se-008.net">No Cookie Analytics</a
+    > for site usage analytics.
+  </li>
 </ul>
 <h2>Privacy</h2>
 <p>
   No data is ever stored on the server side. Your data, not including location (shared to
   OpenWeatherMap for weather-fetching) and search query (shared to local instance of SearXNG for
   search suggestions), will never be shared to third parties.<br />
-  All request from the server to third parties are made anonimously and with noassociation to you. The
-  reason for doing them is to avoid CORS-policy blocks<br />
+  All request from the server to third parties are made anonimously and with no association to you.<br
+  />
   Search suggestions are fetched on the server with SearXNG.<br />
   Weather data is resolved from
   <a target="_blank" href="https://openweathermap.org/">OpenWeatherMaps's Api</a>
