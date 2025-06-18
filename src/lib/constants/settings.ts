@@ -244,6 +244,7 @@ export const globalSettings: SettingsSection = new SettingsSection()
               objects: new SettingsSection()
                 .appendElement('image', {
                   image: () => getImageCategories()[getImageCategory()].images?.[i] || img,
+                  alt: 'Background-Image',
                   updater: [imageCategory, imageCategories]
                 })
                 .appendElement('group', {

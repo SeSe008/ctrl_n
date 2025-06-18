@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import type { Bookmarks } from '$lib/types/widgets/bookmarks';
 
 export const bookmarks = writable<Bookmarks>([]);
@@ -21,6 +21,10 @@ export function removeBookmark(index: number) {
   bookmarks.update((current) => {
     return [...current.slice(0, index).concat(current.slice(index + 1))];
   });
+}
+
+export function getBookmarks() {
+  return get(bookmarks);
 }
 
 export function parseBookmarks() {

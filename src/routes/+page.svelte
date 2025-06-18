@@ -73,8 +73,8 @@
 
   <div bind:this={tileGrid} id="tiles" {...$settings.enabled && { inert: true }}>
     {#each { length: $globalTiles.length } as _, i (i)}
-    <TileManager id={i} />
-  {/each}
+      <TileManager id={i} />
+    {/each}
   </div>
   
   <div id="pageControl">

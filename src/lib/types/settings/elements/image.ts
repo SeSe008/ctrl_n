@@ -5,4 +5,7 @@ export interface Options {
   image: () => Image | Promise<Image>;
   updater?: Readable<any> | Array<Readable<any>>;
   label?: string;
+  alt?: string;
+  width?: string;
+  height?: string;
 }

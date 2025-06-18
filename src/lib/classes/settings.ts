@@ -4,7 +4,7 @@ import type { Readable } from 'svelte/store';
 export class SettingsSection {
   #elements: Element[];
 
-  constructor(elements?: Element[]) {
+  constructor(elements?: (Element)[]) {
     this.#elements = elements || [];
     return this;
   }

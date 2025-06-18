@@ -9,9 +9,13 @@
     options: Options;
   }
 
-  const { options }: Props = $props();
+  let { options }: Props = $props();
 
-  let elements = $state(typeof options.objects === 'function' ? options.objects().elements : options.objects.elements);
+  let elements = $derived(
+    typeof options.objects === 'function'
+      ? options.objects().elements
+      : options.objects.elements
+  );
 
   let unsubscribes: Array<() => void> = [];
   onMount(() => {

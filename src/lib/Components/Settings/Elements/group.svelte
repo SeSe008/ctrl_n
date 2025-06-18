@@ -1,12 +1,36 @@
 <script lang="ts">
   import type { Options } from '$lib/types/settings/elements/group';
   import SettingsElement from '$lib/Components/Settings/settingsElement.svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import type { SettingsSection } from '$lib/classes/settings';
 
   interface Props {
     options: Options;
   }
 
-  const { options }: Props = $props();
+  let { options }: Props = $props();
+
+  let elements = $derived(
+    typeof options.objects === 'function' ? options.objects().elements : options.objects.elements
+  );
+
+  let unsubscribes: Array<() => void> = [];
+
+  onMount(() => {
+    if (options.updater && typeof options.objects === 'function') {
+      const updaters = Array.isArray(options.updater) ? options.updater : [options.updater];
+
+      unsubscribes = updaters.map((u) =>
+        u.subscribe(() => {
+          elements = (options.objects as () => SettingsSection)().elements;
+        })
+      );
+    }
+  });
+
+  onDestroy(() => {
+    unsubscribes?.forEach((unsub) => unsub());
+  });
 </script>
 
 <div
@@ -17,7 +41,7 @@
     ? 'center'
     : 'flex-start'};"
 >
-  {#each options.objects.elements as element, i (i)}
+  {#each elements as element, i (i)}
     <SettingsElement {element} />
   {/each}
 </div>
@@ -30,6 +54,12 @@
 
     flex-wrap: var(--wrap);
     justify-content: var(--center);
+    align-items: var(--center);
+  }
+
+  :global(.settings_group > *) {
+    justify-content: var(--center);
+    align-items: var(--center);
   }
 
   .vert {

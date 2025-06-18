@@ -8,7 +8,7 @@
   }
 
   const { options }: Props = $props();
-  const { image, updater, label } = options;
+  const { image, updater, label, alt, width, height } = options;
 
   let img = $state<Image>('');
 
@@ -37,7 +37,11 @@
 
 <div class="settings_image">
   {label}
-  <img src={typeof img === 'string' ? img : img[0]} alt="Background" />
+  <img
+    src={typeof img === 'string' ? img : img[0]}
+    alt={alt ?? 'settings-image'}
+    style="--width: {width ?? '100%'}; --height: {height ?? 'auto'}"
+    />
 </div>
 
 <style>
@@ -46,12 +50,14 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+
     width: auto;
   }
 
   .settings_image img {
-    width: 100%;
-    height: auto;
+    width: var(--width);
+    height: var(--height);
+
     display: block;
     box-sizing: border-box;
     border-radius: 0.5rem;

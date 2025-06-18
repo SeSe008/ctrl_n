@@ -2,13 +2,7 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
 
-  import { bookmarks, parseBookmarks, removeBookmark } from '$lib/stores/widgets/bookmarks';
-
-  import { editMode } from '$lib/stores/editMode';
-
-  function deleteBookmark(id: number) {
-    removeBookmark(id);
-  }
+  import { bookmarks, parseBookmarks } from '$lib/stores/widgets/bookmarks';
 
   onMount(() => {
     parseBookmarks();
@@ -26,9 +20,6 @@
             <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
             <span>{name}</span>
           </a>
-          {#if $editMode}
-            <button onclick={() => deleteBookmark(i)}><Icon icon="mdi:delete" /></button>
-          {/if}
         </div>
       {/each}
     </div>
@@ -161,19 +152,5 @@
     padding: 0.5rem;
     border-radius: 10%;
     width: 100%;
-  }
-
-  .bookmark button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    outline: none;
-    border: none;
-    background-color: rgba(var(--c1), var(--o2));
-    color: rgb(var(--c2));
-    padding: 0.25rem;
-    border-radius: 0.25vmin;
-    font-size: inherit;
-    cursor: pointer;
   }
 </style>

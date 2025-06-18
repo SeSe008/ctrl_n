@@ -1,4 +1,4 @@
-import { get } from 'svelte/store';
+import { derived, get } from 'svelte/store';
 
 import type { TileDef } from '$lib/types/tiles';
 import { tileMetadata } from '$lib/constants/tileMetadata';
@@ -22,8 +22,14 @@ import { setRssUrl } from '$lib/stores/widgets/rssUrl';
 
 import { newWeatherLocation } from '$lib/stores/settings/elements/newWeatherLocation';
 import { setWeatherLocation } from '$lib/stores/widgets/weatherLocation';
+
 import { newBookmarkName, newBookmarkUrl } from '$lib/stores/settings/elements/newBookmark';
-import { addBookmark } from '$lib/stores/widgets/bookmarks';
+import {
+  addBookmark,
+  bookmarks,
+  getBookmarks,
+  removeBookmark
+} from '$lib/stores/widgets/bookmarks';
 
 export const tileDefs: TileDef[] = tileMetadata.map((m) => {
   switch (m.name) {
@@ -89,6 +95,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               })
           })
       };
+
     case 'weather':
       return {
         ...m,
@@ -146,6 +153,43 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                   newBookmarkUrl.set('');
                 }
               })
+          })
+          .appendElement(
+            'text',
+            {
+              text: 'Bookmarks:',
+              classes: ['center', 'big', 'margin_top']
+            },
+            derived(bookmarks, ($bookmarks) => $bookmarks.length > 0)
+          )
+          .appendElement('group', {
+            center: true,
+            objects: () =>
+              createNewSettingsSlice(
+                getBookmarks().map((bookmark, i) => ({
+                  elementType: 'group',
+                  elementOptions: {
+                    layout: 'vert',
+                    center: true,
+                    objects: () =>
+                      createNewSettingsSlice()
+                        .appendElement('image', {
+                          image: () =>
+                            `https://icons.duckduckgo.com/ip3/${getBookmarks()[i].url.split('/')[2]}.ico`,
+                          width: '2.5em',
+                          updater: bookmarks
+                        })
+                        .appendElement('text', {
+                          text: bookmark.name
+                        })
+                        .appendElement('button', {
+                          icon: 'mdi:delete',
+                          onClick: () => removeBookmark(i)
+                        })
+                  }
+                }))
+              ),
+            updater: bookmarks
           })
       };
 
