@@ -27,8 +27,10 @@ import { newBookmarkName, newBookmarkUrl } from '$lib/stores/settings/elements/n
 import {
   addBookmark,
   bookmarks,
+  bookmarksLinkTarget,
   getBookmarks,
-  removeBookmark
+  removeBookmark,
+  toggleBookmarksLinkTarget
 } from '$lib/stores/widgets/bookmarks';
 
 export const tileDefs: TileDef[] = tileMetadata.map((m) => {
@@ -153,6 +155,11 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                   newBookmarkUrl.set('');
                 }
               })
+          })
+          .appendElement('checkbox', {
+            label: 'Open bookmarks in a new tab',
+            onChange: () => toggleBookmarksLinkTarget(),
+            defaultValue: bookmarksLinkTarget
           })
           .appendElement(
             'text',

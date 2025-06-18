@@ -2,10 +2,20 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
 
-  import { bookmarks, parseBookmarks } from '$lib/stores/widgets/bookmarks';
+  import {
+    bookmarks,
+    bookmarksLinkTarget,
+    parseBookmarks,
+    parseBookmarksLinkTarget
+  } from '$lib/stores/widgets/bookmarks';
+
+  let newTab = $state<boolean>(true);
+
+  bookmarksLinkTarget.subscribe((target) => (newTab = target));
 
   onMount(() => {
     parseBookmarks();
+    parseBookmarksLinkTarget();
   });
 </script>
 
@@ -16,7 +26,7 @@
     <div id="bookmark_list">
       {#each $bookmarks as { name, url }, i (i)}
         <div class="bookmark">
-          <a href={url} target="_blank" rel="noopener noreferrer">
+          <a href={url} target={newTab ? '_blank' : '_self'} rel="noopener noreferrer">
             <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
             <span>{name}</span>
           </a>

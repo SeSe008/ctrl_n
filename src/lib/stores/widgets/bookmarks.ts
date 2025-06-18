@@ -38,3 +38,20 @@ export function parseBookmarks() {
     window.localStorage.setItem('bookmarks', JSON.stringify(current));
   });
 }
+
+export const bookmarksLinkTarget = writable<boolean>(true);
+
+export function toggleBookmarksLinkTarget() {
+  bookmarksLinkTarget.update(current => !current);
+}
+
+export function parseBookmarksLinkTarget() {
+  const stored = window.localStorage.getItem('bookmarksTarget');
+
+  const parsed = stored !== 'false';
+  bookmarksLinkTarget.set(parsed);
+
+  bookmarks.subscribe((current) => {
+    window.localStorage.setItem('bookmarksTarget', current.toString());
+  });
+}
