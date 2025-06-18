@@ -9,9 +9,8 @@
   import { applyImage } from '$lib/utils/useImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
-  import { toggleEditMode } from '$lib/stores/editMode';
   import { globalTiles } from '$lib/stores/tiles';
-  import { settings } from '$lib/stores/settings/settings';
+  import { settings, toggleSettings } from '$lib/stores/settings/settings';
 
   import {
     backgroundImage,
@@ -81,8 +80,8 @@
     <button onclick={nextImage}>
       <Icon icon="mdi:image-outline" />
     </button>
-    <button onclick={toggleEditMode}>
-      <Icon icon="mdi:edit-outline" />
+    <button onclick={() => toggleSettings(0, 0)}>
+      <Icon icon="mdi:settings-outline" />
     </button>
   </div>
   
@@ -235,7 +234,8 @@
     background-color: rgb(var(--c1));
     color: rgb(var(--c2));
 
-    font-size: calc(5px + 0.75vmin);
+    font-size: calc(8px + .75vmin);
+    padding: .25em;
     aspect-ratio: 1 / 1;
 
     cursor: pointer;

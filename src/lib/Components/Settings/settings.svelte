@@ -9,15 +9,12 @@
 
   import { getTile, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
-  import { toggleEditMode } from '$lib/stores/editMode';
 
   import TileElement from '$lib/Components/tileElement.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
 
   import type { Element } from '$lib/types/settings/settings';
   import SettingsElement from './settingsElement.svelte';
-
-  import { onMount } from 'svelte';
 
   let selectedTab = $state<number>(2);
 
@@ -28,10 +25,6 @@
     const tle = getSelectedTileId() ?? 0;
     const def = tileDefs[getTile(mgr, tle)?.element ?? 0];
     settingsElements = def.tileProps.elements;
-  });
-
-  onMount(() => {
-    toggleEditMode();
   });
 </script>
 

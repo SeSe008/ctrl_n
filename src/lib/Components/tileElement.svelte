@@ -1,12 +1,9 @@
 <script lang="ts">
   import { globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
-  import { toggleSettings } from '$lib/stores/settings/settings';
-  import { editMode } from '$lib/stores/editMode';
   import type { Tile } from '$lib/types/tiles';
   import { settings } from '$lib/stores/settings/settings';
 
-  import Icon from '@iconify/svelte';
   import type { Component } from 'svelte';
 
   interface Props {
@@ -58,14 +55,6 @@
   {:else}
     <div id="spacer"></div>
   {/if}
-
-  {#if $editMode}
-    <div id="inputs">
-      <button onclick={() => toggleSettings(managerId, tileId)}
-        ><Icon icon="mdi:settings-outline" /></button
-      >
-    </div>
-  {/if}
 </div>
 
 <style>
@@ -89,19 +78,5 @@
     flex-direction: row;
     margin: 0.25rem;
     height: 2rem;
-  }
-
-  #inputs button {
-    outline: none;
-    justify-self: flex-end;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.3rem;
-    border: 1px solid rgb(var(--c2));
-    background-color: rgb(var(--c1));
-    color: rgb(var(--c2));
-    cursor: pointer;
   }
 </style>
