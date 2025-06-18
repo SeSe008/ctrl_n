@@ -28,8 +28,7 @@
     <a target="_blank" href="https://iconify.design/">Iconify</a> is providing all icons on the page
   </li>
   <li>
-    <a target="_blank" href="https://nocookieanalytics.com/newtab.se-008.net">No Cookie Analytics</a
-    > for site usage analytics.
+    <a target="_blank" href="https://nocookieanalytics.com/">No Cookie Analytics</a> for site usage analytics.
   </li>
 </ul>
 <h2>Privacy</h2>

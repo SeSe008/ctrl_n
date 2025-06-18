@@ -6,13 +6,18 @@
     settings,
     toggleSettings
   } from '$lib/stores/settings/settings';
+
   import { getTile, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
+  import { toggleEditMode } from '$lib/stores/editMode';
+
   import TileElement from '$lib/Components/tileElement.svelte';
   import TileManager from '$lib/Components/tileManager.svelte';
-  import { onMount } from 'svelte';
-  import { toggleEditMode } from '$lib/stores/editMode';
+
   import type { Element } from '$lib/types/settings/settings';
+  import SettingsElement from './settingsElement.svelte';
+
+  import { onMount } from 'svelte';
 
   let selectedTab = $state<number>(2);
 
@@ -65,10 +70,7 @@
       {:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
         <div class="settings_tab">
           {#each settingsElements as element, i (i)}
-            {#if elementComponents[element.elementType]}
-              {@const Comp = elementComponents[element.elementType]}
-              <div class="element"><Comp options={element.elementOptions} /></div>
-            {/if}
+            <div class="element"><SettingsElement {element} /></div>
           {/each}
           <h2>Tile Preview</h2>
           <div class="preview" id="tile_preview" inert>

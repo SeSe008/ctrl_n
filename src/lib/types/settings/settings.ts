@@ -7,10 +7,12 @@ import type {
   CheckboxProps,
   ImageProps,
   GroupProps,
-  GridProps
+  GridProps,
+  CustomHTMLProps
 } from '$lib/types/settings/elements';
 
 import type { Component } from 'svelte';
+import type { Readable } from 'svelte/store';
 
 export interface Settings {
   enabled: boolean;
@@ -27,11 +29,13 @@ export type ElementProps =
   | ImageProps
   | CheckboxProps
   | GroupProps
-  | GridProps;
+  | GridProps
+  | CustomHTMLProps;
 
 export interface Element {
   elementType: string;
   elementOptions: ElementProps;
+  condition?: Readable<boolean> | (() => boolean);
 }
 
 export interface ElementComponents {

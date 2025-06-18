@@ -42,6 +42,7 @@ import Checkbox from '$lib/Components/Settings/Elements/checkbox.svelte';
 import Image from '$lib/Components/Settings/Elements/image.svelte';
 import Group from '$lib/Components/Settings/Elements/group.svelte';
 import Grid from '$lib/Components/Settings/Elements/grid.svelte';
+import CustomHTML from '$lib/Components/Settings/Elements/customHTML.svelte';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -52,7 +53,8 @@ export const elementComponents: ElementComponents = {
   checkbox: Checkbox,
   image: Image,
   group: Group,
-  grid: Grid
+  grid: Grid,
+  customHTML: CustomHTML
 };
 
 export const tileSettings: SettingsSection = new SettingsSection()

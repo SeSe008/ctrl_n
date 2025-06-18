@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Options } from '$lib/types/settings/elements/grid';
-  import { elementComponents } from '$lib/constants/settings';
+  import type { SettingsSection } from '$lib/classes/settings';
+  import SettingsElement from '$lib/Components/Settings/settingsElement.svelte';
+
   import { onDestroy, onMount } from 'svelte';
 
   interface Props {
@@ -8,18 +10,17 @@
   }
 
   const { options }: Props = $props();
-  const { columns, objects, updater } = options;
 
-  let elements = $state(typeof objects === 'function' ? objects().elements : objects.elements);
+  let elements = $state(typeof options.objects === 'function' ? options.objects().elements : options.objects.elements);
 
   let unsubscribes: Array<() => void> = [];
   onMount(() => {
-    if (updater && typeof objects === 'function') {
-      const updaters = Array.isArray(updater) ? updater : [updater];
+    if (options.updater && typeof options.objects === 'function') {
+      const updaters = Array.isArray(options.updater) ? options.updater : [options.updater];
 
       unsubscribes = updaters.map((u) =>
         u.subscribe(() => {
-          elements = objects().elements;
+	  elements = (options.objects as () => SettingsSection)().elements;
         })
       );
     }
@@ -30,12 +31,9 @@
   });
 </script>
 
-<div class="settings_grid" style="--columns: {columns};">
+<div class="settings_grid" style="--columns: {options.columns};">
   {#each elements as element, i (i)}
-    {#if elementComponents[element.elementType]}
-      {@const Comp = elementComponents[element.elementType]}
-      <Comp options={element.elementOptions} />
-    {/if}
+    <SettingsElement element={element} />
   {/each}
 </div>
 

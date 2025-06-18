@@ -7,3 +7,4 @@ export type { Options as CheckboxProps } from './checkbox';
 export type { Options as ImageProps } from './image';
 export type { Options as GroupProps } from './group';
 export type { Options as GridProps } from './grid';
+export type { Options as CustomHTMLProps } from './customHTML';

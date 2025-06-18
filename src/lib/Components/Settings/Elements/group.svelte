@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { elementComponents } from '$lib/constants/settings';
   import type { Options } from '$lib/types/settings/elements/group';
+  import SettingsElement from '$lib/Components/Settings/settingsElement.svelte';
 
   interface Props {
     options: Options;
@@ -18,10 +18,7 @@
     : 'flex-start'};"
 >
   {#each options.objects.elements as element, i (i)}
-    {#if elementComponents[element.elementType]}
-      {@const Comp = elementComponents[element.elementType]}
-      <Comp options={element.elementOptions} />
-    {/if}
+    <SettingsElement {element} />
   {/each}
 </div>
 
