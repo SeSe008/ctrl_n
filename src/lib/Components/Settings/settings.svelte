@@ -18,7 +18,7 @@
 
   import { onDestroy } from 'svelte';
 
-  let selectedTab = $state<number>(2);
+  let selectedTab = $state<number>(1);
 
   let settingsElements: Element[] = $state([]);
 
@@ -45,15 +45,12 @@
 <aside id="settings">
   <div id="tab_cont">
     <div id="tab_nav">
-      <button class={selectedTab === 0 ? 'active' : ''} onclick={() => (selectedTab = 0)}
-        >Global Settings</button
-      >
-      <button class={selectedTab === 1 ? 'active' : ''} onclick={() => (selectedTab = 1)}
-        >Row Settings</button
-      >
-      <button class={selectedTab === 2 ? 'active' : ''} onclick={() => (selectedTab = 2)}
-        >Tile Settings</button
-      >
+      <button class={selectedTab === 0 ? 'active' : ''} onclick={() => (selectedTab = 0)}>
+        Global Settings
+      </button>
+      <button class={selectedTab === 1 ? 'active' : ''} onclick={() => (selectedTab = 1)}>
+        Element Settings
+      </button>
     </div>
     <div id="tab_elements">
       {#if selectedTab === 0}
@@ -63,30 +60,11 @@
             <div class="element"><Comp options={element.elementOptions} /></div>
           {/each}
         </div>
-      {:else if selectedTab === 1 && $settings.selectedManager !== undefined}
-        <div class="settings_tab">
-          {#each tileManagerSettings.elements as element, i (i)}
-            {@const Comp = elementComponents[element.elementType]}
-            <div class="element"><Comp options={element.elementOptions} /></div>
-          {/each}
-          <h2>Row preview</h2>
-          <div class="preview" id="group_preview" inert>
-            <TileManager id={$settings.selectedManager} inSettings={true} />
-          </div>
-        </div>
-      {:else if selectedTab === 2 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+      {:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
         <div class="settings_tab">
           {#each settingsElements as element, i (i)}
             <div class="element"><SettingsElement {element} /></div>
           {/each}
-          <h2>Tile Preview</h2>
-          <div class="preview" id="tile_preview" inert>
-            <TileElement
-              managerId={$settings.selectedManager}
-              tileId={$settings.selectedTile}
-              inSettings={true}
-            />
-          </div>
         </div>
       {/if}
     </div>
@@ -192,43 +170,6 @@
     box-sizing: border-box;
   }
 
-  .settings_tab h2 {
-    font-size: 2em;
-    font-weight: bold;
-    align-self: center;
-  }
-
-  .preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    min-height: 50vh;
-    max-height: 50vh;
-
-    padding-bottom: 1rem;
-  }
-
-  #group_preview {
-    width: 100vw;
-  }
-
-  #tile_preview {
-    width: 100%;
-  }
-
-  :global {
-    .preview > * {
-      pointer-events: none !important;
-      cursor: not-allowed !important;
-      max-width: 90% !important;
-    }
-
-    .preview .tile_element > #inputs {
-      display: none;
-    }
-  }
-
   #close_controls {
     align-self: flex-end;
     justify-self: stretch;
@@ -252,6 +193,8 @@
     max-width: 100%;
     height: auto;
     overflow: hidden;
+
+    font-size: inherit;
   }
 
   :global {

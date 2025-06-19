@@ -70,7 +70,7 @@
 <main>
   <img id="bg_img" alt="bg img" src={$backgroundImage} />
 
-  <div bind:this={tileGrid} id="tiles" {...$settings.enabled && { inert: true }}>
+  <div bind:this={tileGrid} id="tiles">
     {#each { length: $globalTiles.length } as _, i (i)}
       <TileManager id={i} />
     {/each}

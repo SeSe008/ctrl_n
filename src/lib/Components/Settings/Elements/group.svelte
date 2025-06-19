@@ -55,6 +55,8 @@
     flex-wrap: var(--wrap);
     justify-content: var(--center);
     align-items: var(--center);
+
+    font-size: inherit;
   }
 
   :global(.settings_group > *) {

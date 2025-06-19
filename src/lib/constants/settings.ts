@@ -109,7 +109,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
     layout: 'vert',
     objects: new SettingsSection()
       .appendElement('text', {
-        text: 'Opacity',
+        text: 'Opacity:',
         classes: ['big', 'left', 'margin-top']
       })
       .appendElement('range', {
@@ -182,7 +182,7 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
   })
   .appendElement('text', {
     text: 'Row-Height:',
-    classes: ['medium', 'left', 'margin_vert']
+    classes: ['big', 'left', 'margin_top']
   })
   .appendElement('range', {
     min: 0,

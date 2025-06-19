@@ -48,6 +48,8 @@
     gap: 0.5rem;
     max-width: 100%;
     overflow: hidden;
+
+    font-size: inherit;
   }
 
   :global(.settings_grid > *) {
