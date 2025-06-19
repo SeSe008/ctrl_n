@@ -61,7 +61,7 @@ export const elementComponents: ElementComponents = {
 export const tileSettings: SettingsSection = new SettingsSection()
   .appendElement('text', {
     text: 'Tile Settings',
-    classes: ['large', 'center', 'strong']
+    classes: ['large', 'center', 'strong', 'margin_top']
   })
   .appendElement('group', {
     center: true,
@@ -226,19 +226,16 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
     max: 5,
     step: 0.1,
     onInput: (value: number) => changeManagerHeight(get(settings).selectedManager, value),
-    defaultValue: derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-      const mgr = $settings.selectedManager;
-      return mgr !== undefined ? $globalTiles[mgr].height : 0;
-    }),
+    defaultValue: derived(globalTiles, (_) =>
+      getSelectedManagerId() !== undefined && getManager(getSelectedManagerId()!)
+        ? getManager(getSelectedManagerId()!)!.height
+        : 1
+    ),
     specialValues: {
       0: 'Fit-Content'
     },
     valueLabel: 'Preferred height:',
     unit: 'fr'
-  })
-  .appendElement('button', {
-    onClick: () => changeManagerHeight(get(settings).selectedManager, 1),
-    text: 'Reset Height'
   });
 
 export const globalSettings: SettingsSection = new SettingsSection()

@@ -9,4 +9,6 @@ export function setClockType(type: string) {
 
 export function initClockType() {
   clockType.set(window.localStorage.getItem('clockType') || 'digital');
+
+  clockType.subscribe(current => window.localStorage.setItem('clockType', current));
 }
