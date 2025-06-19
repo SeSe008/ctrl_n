@@ -58,11 +58,13 @@
           {/each}
         </div>
       {:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-        <div class="settings_tab">
-          {#each settingsElements as element, i (i)}
-            <div class="element"><SettingsElement {element} /></div>
-          {/each}
-        </div>
+        {#key `${$settings.selectedManager}:${$settings.selectedTile}`}
+          <div class="settings_tab">
+            {#each settingsElements as element, i (i)}
+              <div class="element"><SettingsElement {element} /></div>
+            {/each}
+          </div>
+        {/key}
       {/if}
     </div>
   </div>
