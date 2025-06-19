@@ -5,10 +5,9 @@
 
   interface Props {
     id: number;
-    inSettings?: boolean;
   }
 
-  let { id, inSettings }: Props = $props();
+  let { id }: Props = $props();
 
   let manager = $state<TileManager>();
 
@@ -27,7 +26,7 @@
 <div class="tile_manager" bind:this={tileManager}>
   {#if manager}
     {#each manager.tiles as _, i (i)}
-      <TileElement managerId={id} tileId={i} {inSettings} />
+      <TileElement managerId={id} tileId={i} />
     {/each}
   {/if}
 </div>

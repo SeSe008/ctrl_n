@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-
   import Icon from '@iconify/svelte';
   import { parse } from 'mathjs';
 
   import { searchEngines } from '$lib/constants/searchEngines';
   import { initSearchEngineName, searchEngineName } from '$lib/stores/widgets/searchEngine';
-
   import type { SearchEngine, SuggestionEndpoint } from '$lib/types/widgets/searchEngines';
+
+  import { resize } from '$lib/utils/resize';
 
   interface RecentlySearched {
     query: string;
@@ -214,6 +214,22 @@
   }
 
   let searchBar: HTMLInputElement;
+  let searchInputs: HTMLDivElement;
+
+  let suggestionsLeft = $state<number>();
+  let suggestionsWidth = $state<number>();
+
+  function setSuggestionStyle(left: number, width: number) {
+    suggestionsLeft = left;
+    suggestionsWidth = width;
+  }
+
+  function searchBarResizeListener(entry: ResizeObserverEntry) {
+    const { width } = entry.contentRect;
+    const left = entry.target.getBoundingClientRect().left;
+
+    setSuggestionStyle(left, width);
+  }
 
   onMount(() => {
     document.body.focus();
@@ -226,11 +242,14 @@
     ).map((item: RecentlySearched) => [item.query, item]);
 
     recentCache = new Map<string, RecentlySearched>(recentEntries);
+
+    let searchInputsRect = searchInputs.getBoundingClientRect();
+    setSuggestionStyle(searchInputsRect.left, searchInputsRect.width);
   });
 </script>
 
 <div id="search">
-  <div id="inputs">
+  <div id="inputs" bind:this={searchInputs} use:resize={searchBarResizeListener}>
     <input
       onkeydown={handleKeydown}
       oninput={handleInput}
@@ -244,7 +263,7 @@
       }}><Icon icon="mdi:search" /></button
     >
   </div>
-  <div id="suggestions">
+  <div id="suggestions" style="--left: {suggestionsLeft}; --width: {suggestionsWidth}">
     {#each suggestions as suggestion, i (i)}
       <button onclick={() => search(suggestion)} class="suggestion">{suggestion}</button>
     {/each}
@@ -307,9 +326,9 @@
     flex-direction: column;
     text-align: left;
 
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 1.75rem - 1.5vmax);
+    left: calc(var(--left) * 1px + 0.5rem);
+    width: calc(var(--width) * 1px - 1rem);
+
     overflow: hidden;
 
     color: rgb(var(--c1));
@@ -325,6 +344,7 @@
 
   .suggestion {
     width: 100%;
+
     height: min-content;
     padding: 0.5rem;
     box-sizing: border-box;

@@ -9,10 +9,9 @@
   interface Props {
     managerId: number;
     tileId: number;
-    inSettings?: boolean;
   }
 
-  let { managerId, tileId, inSettings }: Props = $props();
+  let { managerId, tileId }: Props = $props();
 
   let tile = $state<Tile>();
   let SelectedComponent = $state<Component | null>();
@@ -42,8 +41,7 @@
 
 <div
   use:applyVars={cssVars}
-  class="tile_element {inSettings !== true &&
-  $settings.enabled &&
+  class="tile_element {$settings.enabled &&
   $settings.selectedManager === managerId &&
   $settings.selectedTile === tileId
     ? 'settings_selected_tile'
