@@ -169,35 +169,38 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
             },
             derived(bookmarks, ($bookmarks) => $bookmarks.length > 0)
           )
-          .appendElement('group', {
-            center: true,
-            objects: () =>
-              createNewSettingsSlice(
-                getBookmarks().map((bookmark, i) => ({
-                  elementType: 'group',
-                  elementOptions: {
-                    layout: 'vert',
-                    center: true,
-                    objects: () =>
-                      createNewSettingsSlice()
-                        .appendElement('image', {
-                          image: () =>
-                            `https://icons.duckduckgo.com/ip3/${getBookmarks()[i].url.split('/')[2]}.ico`,
-                          width: '2.5em',
-                          updater: bookmarks
-                        })
-                        .appendElement('text', {
-                          text: bookmark.name
-                        })
-                        .appendElement('button', {
-                          icon: 'mdi:delete',
-                          onClick: () => removeBookmark(i)
-                        })
-                  }
-                }))
-              ),
-            updater: bookmarks
-          })
+          .appendElement(
+            'group',
+            {
+              center: true,
+              objects: () =>
+                createNewSettingsSlice(
+                  getBookmarks().map((bookmark, i) => ({
+                    elementType: 'group',
+                    elementOptions: {
+                      layout: 'vert',
+                      center: true,
+                      objects: () =>
+                        createNewSettingsSlice()
+                          .appendElement('image', {
+                            image: () =>
+                              `https://icons.duckduckgo.com/ip3/${getBookmarks()[i].url.split('/')[2]}.ico`,
+                            width: '2.5em'
+                          })
+                          .appendElement('text', {
+                            text: bookmark.name
+                          })
+                          .appendElement('button', {
+                            icon: 'mdi:delete',
+                            onClick: () => removeBookmark(i)
+                          })
+                    }
+                  }))
+                )
+            },
+            undefined,
+            bookmarks
+          )
       };
 
     default:

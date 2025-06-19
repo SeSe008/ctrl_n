@@ -4,13 +4,18 @@ import type { Readable } from 'svelte/store';
 export class SettingsSection {
   #elements: Element[];
 
-  constructor(elements?: (Element)[]) {
+  constructor(elements?: Element[]) {
     this.#elements = elements || [];
     return this;
   }
 
-  public appendElement(type: string, options: ElementProps, condition?: Readable<boolean> | (() => boolean)) {
-    this.#elements.push(new SettingsElement(type, options, condition));
+  public appendElement(
+    type: string,
+    options: ElementProps,
+    condition?: Readable<boolean> | (() => boolean),
+    updater?: Readable<any> | Array<Readable<any>>
+  ) {
+    this.#elements.push(new SettingsElement(type, options, condition, updater));
     return this;
   }
 
@@ -26,12 +31,19 @@ export class SettingsSection {
 export class SettingsElement implements Element {
   #elementType: string;
   #elementOptions: ElementProps;
-  #condition?: Readable<boolean> | (() => boolean)
+  #condition?: Readable<boolean> | (() => boolean);
+  #updater?: Readable<any> | Array<Readable<any>>;
 
-  constructor(type: string, options: ElementProps, condition?: Readable<boolean> | (() => boolean)) {
+  constructor(
+    type: string,
+    options: ElementProps,
+    condition?: Readable<boolean> | (() => boolean),
+    updater?: Readable<any> | Array<Readable<any>>
+  ) {
     this.#elementType = type;
     this.#elementOptions = options;
     this.#condition = condition;
+    this.#updater = updater;
   }
 
   public get elementType(): string {
@@ -42,7 +54,11 @@ export class SettingsElement implements Element {
     return this.#elementOptions;
   }
 
-  public get condition() : (Readable<boolean> | (() => boolean)) {
+  public get condition(): Readable<boolean> | (() => boolean) {
     return this.#condition ?? (() => true);
+  }
+
+  public get updater(): (Readable<any> | Array<Readable<any>>) | undefined {
+    return this.#updater;
   }
 }

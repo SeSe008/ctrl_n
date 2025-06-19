@@ -1,14 +1,13 @@
 <script lang="ts">
   import type { Options } from '$lib/types/settings/elements/checkbox';
   import { get } from 'svelte/store';
-  import { onMount, onDestroy } from 'svelte';
 
   interface Props {
     options: Options;
   }
 
   const { options }: Props = $props();
-  const { onChange, store, updater, defaultValue, label } = options;
+  const { onChange, store, defaultValue, label } = options;
 
   function getDefault(): boolean {
     if (defaultValue === undefined) return true;
@@ -24,23 +23,6 @@
 
   $effect(() => {
     if (store) store.update(() => checkboxValue);
-  });
-
-  let unsubscribes: Array<() => void> = [];
-  onMount(() => {
-    if (updater && defaultValue) {
-      const updaters = Array.isArray(updater) ? updater : [updater];
-
-      unsubscribes = updaters.map((u) =>
-        u.subscribe(async () => {
-          checkboxValue = getDefault();
-        })
-      );
-    }
-  });
-
-  onDestroy(() => {
-    unsubscribes?.forEach((unsub) => unsub());
   });
 </script>
 

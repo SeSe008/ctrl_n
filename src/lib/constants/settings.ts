@@ -65,17 +65,21 @@ export const tileSettings: SettingsSection = new SettingsSection()
   })
   .appendElement('group', {
     center: true,
-    objects: new SettingsSection().appendElement('select', {
-      label: 'Select Widget:',
-      selectOptions: () =>
-        getManager(getSelectedManagerId() || 0)?.tiles.map((tle, i) => ({
-          label: `Tile ${i + 1} (${tileMetadata[tle.element].label})`,
-          icon: tileMetadata[tle.element].icon
-        })) || [],
-      defaultValue: () => getSelectedTileId(),
-      onChange: (value: number) => setSelectedTile(value),
-      updater: [globalTiles, settings]
-    })
+    objects: new SettingsSection().appendElement(
+      'select',
+      {
+        label: 'Select Widget:',
+        selectOptions: () =>
+          getManager(getSelectedManagerId() || 0)?.tiles.map((tle, i) => ({
+            label: `Tile ${i + 1} (${tileMetadata[tle.element].label})`,
+            icon: tileMetadata[tle.element].icon
+          })) || [],
+        defaultValue: () => getSelectedTileId(),
+        onChange: (value: number) => setSelectedTile(value)
+      },
+      undefined,
+      [globalTiles, settings]
+    )
   })
   .appendElement('group', {
     objects: new SettingsSection()
@@ -246,13 +250,17 @@ export const globalSettings: SettingsSection = new SettingsSection()
     text: 'Background Image',
     classes: ['big', 'left', 'strong', 'margin_top']
   })
-  .appendElement('select', {
-    selectOptions: () => getImageCategories(),
-    defaultValue: imageCategory,
-    store: imageCategory,
-    updater: imageCategories,
-    label: 'Image Category: '
-  })
+  .appendElement(
+    'select',
+    {
+      selectOptions: () => getImageCategories(),
+      defaultValue: imageCategory,
+      store: imageCategory,
+      label: 'Image Category: '
+    },
+    undefined,
+    imageCategories
+  )
   .appendElement('group', {
     objects: new SettingsSection()
       .appendElement('text', {
@@ -268,42 +276,43 @@ export const globalSettings: SettingsSection = new SettingsSection()
         onClick: () => addImageToCategoryInCategories(getImageCategory(), get(newImageUrl))
       })
   })
-  .appendElement('grid', {
-    columns: 4,
-    objects: () =>
-      new SettingsSection(
-        getImageCategories()[getImageCategory()].images?.map(
-          (img, i) =>
-            new SettingsElement('group', {
-              layout: 'vert',
-              objects: new SettingsSection()
-                .appendElement('image', {
-                  image: () => getImageCategories()[getImageCategory()].images?.[i] || img,
-                  alt: 'Background-Image',
-                  updater: [imageCategory, imageCategories]
-                })
-                .appendElement('group', {
-                  wrap: false,
-                  center: true,
-                  objects: new SettingsSection()
-                    .appendElement('checkbox', {
-                      onChange: () => toggleImageInCategory(getImageCategory(), i),
-                      defaultValue: () =>
-                        (getImageCategories()[getImageCategory()].images?.[i][1] ||
-                          img[1]) as boolean,
-                      label: 'Enabled'
-                    })
-                    .appendElement('button', {
-                      icon: 'mdi:delete',
-                      onClick: () => {
-                        // Force ok here - for deleting an image, you need an image
-                        if (getImageCategories()[getImageCategory()].images!.length > 1)
-                          removeImageFromCategoryInCategories(getImageCategory(), i);
-                      }
-                    })
-                })
-            })
+  .appendElement(
+    'grid',
+    {
+      columns: 4,
+      objects: () =>
+        new SettingsSection(
+          getImageCategories()[getImageCategory()].images?.map(
+            (img, i) =>
+              new SettingsElement('group', {
+                layout: 'vert',
+                objects: new SettingsSection()
+                  .appendElement('image', {
+                    image: () => img,
+                    alt: 'Background-Image'
+                  })
+                  .appendElement('group', {
+                    wrap: false,
+                    center: true,
+                    objects: new SettingsSection()
+                      .appendElement('checkbox', {
+                        onChange: () => toggleImageInCategory(getImageCategory(), i),
+                        defaultValue: () => img[1] as boolean,
+                        label: 'Enabled'
+                      })
+                      .appendElement('button', {
+                        icon: 'mdi:delete',
+                        onClick: () => {
+                          // Force ok here - for deleting an image, you need an image
+                          if (getImageCategories()[getImageCategory()].images!.length > 1)
+                            removeImageFromCategoryInCategories(getImageCategory(), i);
+                        }
+                      })
+                  })
+              })
+          )
         )
-      ),
-    updater: [imageCategories, imageCategory]
-  });
+    },
+    undefined,
+    [imageCategory, imageCategories]
+  );

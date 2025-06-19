@@ -8,9 +8,8 @@ export interface SelectOption {
 
 export interface Options {
   selectOptions: SelectOption[] | (() => SelectOption[]);
-  store?: Writable<any>;
-  updater?: Readable<any> | Array<Readable<any>>;
   onChange?: (_value: any) => void;
+  store?: Writable<any>;
   defaultValue?: Readable<any> | (() => any);
   label?: string;
 }

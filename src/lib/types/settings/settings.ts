@@ -36,6 +36,7 @@ export interface Element {
   elementType: string;
   elementOptions: ElementProps;
   condition?: Readable<boolean> | (() => boolean);
+  updater?: Readable<any> | Array<Readable<any>>
 }
 
 export interface ElementComponents {

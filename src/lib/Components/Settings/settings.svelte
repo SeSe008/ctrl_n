@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { elementComponents, globalSettings } from '$lib/constants/settings';
+  import { globalSettings } from '$lib/constants/settings';
   import {
     getSelectedManagerId,
     getSelectedTileId,
@@ -53,12 +53,11 @@
       {#if selectedTab === 0}
         <div class="settings_tab">
           {#each globalSettings.elements as element, i (i)}
-            {@const Comp = elementComponents[element.elementType]}
-            <div class="element"><Comp options={element.elementOptions} /></div>
+            <div class="element"><SettingsElement {element} /></div>
           {/each}
         </div>
       {:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-        {#key `${$settings.selectedManager}:${$settings.selectedTile}`}
+        {#key `${$settings.selectedManager}:${$settings.selectedTile}:${$globalTiles}`}
           <div class="settings_tab">
             {#each settingsElements as element, i (i)}
               <div class="element"><SettingsElement {element} /></div>

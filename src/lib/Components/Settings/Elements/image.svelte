@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import type { Options } from '$lib/types/settings/elements/image';
   import type { Image } from '$lib/types/backgroundImage';
 
@@ -8,30 +8,13 @@
   }
 
   const { options }: Props = $props();
-  const { image, updater, label, alt, width, height } = options;
+  const { image, label, alt, width, height } = options;
 
   let img = $state<Image>('');
 
   // when the component mounts, await the images and assign them
   onMount(async () => {
     img = await image();
-  });
-
-  let unsubscribes: Array<() => void> = [];
-  onMount(() => {
-    if (updater) {
-      const updaters = Array.isArray(updater) ? updater : [updater];
-
-      unsubscribes = updaters.map((u) =>
-        u.subscribe(async () => {
-          img = await image();
-        })
-      );
-    }
-  });
-
-  onDestroy(() => {
-    unsubscribes?.forEach((unsub) => unsub());
   });
 </script>
 
