@@ -43,6 +43,6 @@ export class SettingsElement implements Element {
   }
 
   public get condition() : (Readable<boolean> | (() => boolean)) {
-    return  this.#condition ?? (() => true);
+    return this.#condition ?? (() => true);
   }
 }

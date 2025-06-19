@@ -110,11 +110,15 @@
       --c3: 150, 150, 150;
       --c4: 100, 100, 100;
       --c5: 50, 50, 50, 50;
+
+      /* Tile-Specific vars */
       --o1: 0.3;
       --o2: 0.7;
+      --tileWidth: 100%;
+      --tileHorPos: center;
     }
 
-    html,
+    html,xc 
     body {
       height: 100%;
       width: 100%;

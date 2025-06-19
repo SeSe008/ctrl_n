@@ -123,6 +123,16 @@ export function deleteCssVar(
     });
 }
 
+export function getCssVar(managerId: number | undefined, tileId: number | undefined, cssVar: string): string | undefined {
+  if (managerId !== undefined && tileId !== undefined) {
+    const current = get(globalTiles);
+    if (current[managerId] && current[managerId].tiles[tileId]) {
+      return current[managerId].tiles[tileId].cssVars[cssVar];
+    }
+  }
+  return undefined;
+}
+
 export function initializeTiles() {
   const stored = window.localStorage.getItem('tiles') || '';
 

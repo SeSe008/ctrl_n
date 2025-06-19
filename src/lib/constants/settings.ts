@@ -12,7 +12,8 @@ import {
   addManager,
   removeManager,
   getTiles,
-  getManager
+  getManager,
+  getCssVar
 } from '$lib/stores/tiles';
 import {
   getSelectedManagerId,
@@ -109,7 +110,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
     layout: 'vert',
     objects: new SettingsSection()
       .appendElement('text', {
-        text: 'Opacity:',
+        text: 'Styling:',
         classes: ['big', 'left', 'margin-top']
       })
       .appendElement('range', {
@@ -117,22 +118,9 @@ export const tileSettings: SettingsSection = new SettingsSection()
         max: 1,
         step: 0.1,
         onInput: (value: number) =>
-          changeCssVar(
-            get(settings).selectedManager,
-            get(settings).selectedTile,
-            '--o1',
-            value.toString()
-          ),
-        defaultValue: derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-          const mgr = $settings.selectedManager;
-          const tle = $settings.selectedTile;
-          return mgr !== undefined &&
-            tle !== undefined &&
-            $globalTiles[mgr].tiles[tle].cssVars &&
-            $globalTiles[mgr].tiles[tle].cssVars['--o1']
-            ? parseInt($globalTiles[mgr].tiles[tle].cssVars['--o1'])
-            : 0.3;
-        }),
+          changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
+        defaultValue: () =>
+          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '1'),
         label: 'Primary opacity:'
       })
       .appendElement('range', {
@@ -140,24 +128,53 @@ export const tileSettings: SettingsSection = new SettingsSection()
         max: 1,
         step: 0.1,
         onInput: (value: number) =>
-          changeCssVar(
-            get(settings).selectedManager,
-            get(settings).selectedTile,
-            '--o2',
-            value.toString()
-          ),
-        defaultValue: derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-          const mgr = $settings.selectedManager;
-          const tle = $settings.selectedTile;
-          return mgr !== undefined &&
-            tle !== undefined &&
-            $globalTiles[mgr].tiles[tle].cssVars &&
-            $globalTiles[mgr].tiles[tle].cssVars['--o2']
-            ? parseInt($globalTiles[mgr].tiles[tle].cssVars['--o2'])
-            : 0.7;
-        }),
+          changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
+        defaultValue: () =>
+          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '1'),
         label: 'Secondary opacity:'
       })
+      .appendElement('range', {
+        min: 1,
+        max: 100,
+        step: 1,
+        unit: '%',
+        onInput: (value: number) =>
+          changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth', `${value}%`),
+        defaultValue: () =>
+          parseInt(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'),
+        label: 'Tile Width:'
+      })
+      .appendElement(
+        'select',
+        {
+          selectOptions: [
+            {
+              label: 'Center',
+              value: 'center'
+            },
+            {
+              label: 'Left',
+              value: 'flex-start'
+            },
+            {
+              label: 'Right',
+              value: 'flex-end'
+            }
+          ],
+          defaultValue: () =>
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tilePos') ?? 'center',
+          onChange: (value: string) =>
+            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
+          label: 'Horizontal Position:'
+        },
+        derived(
+          globalTiles,
+          (_) =>
+            parseInt(
+              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+            ) < 100
+        )
+      )
   });
 
 export const tileManagerSettings: SettingsSection = new SettingsSection()
@@ -179,6 +196,22 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
       },
       defaultValue: derived(settings, ($settings) => $settings.selectedManager || 0)
     })
+  })
+  .appendElement('group', {
+    objects: new SettingsSection()
+      .appendElement('button', {
+        text: 'Append Row',
+        icon: 'mdi:add-circle-outline',
+        onClick: () => addManager()
+      })
+      .appendElement('button', {
+        text: 'Remove Row',
+        icon: 'mdi:remove-circle-outline',
+        onClick: () => {
+          removeManager(get(settings).selectedManager);
+          setSelectedManager(get(settings).selectedManager! - 1);
+        }
+      })
   })
   .appendElement('text', {
     text: 'Row-Height:',
@@ -273,24 +306,4 @@ export const globalSettings: SettingsSection = new SettingsSection()
         )
       ),
     updater: [imageCategories, imageCategory]
-  })
-  .appendElement('text', {
-    text: 'Rows',
-    classes: ['big', 'left', 'strong', 'margin_top']
-  })
-  .appendElement('group', {
-    objects: new SettingsSection()
-      .appendElement('button', {
-        text: 'Append Row',
-        icon: 'mdi:add-circle-outline',
-        onClick: () => addManager()
-      })
-      .appendElement('button', {
-        text: 'Remove Row',
-        icon: 'mdi:remove-circle-outline',
-        onClick: () => {
-          removeManager(get(settings).selectedManager);
-          setSelectedManager(get(settings).selectedManager! - 1);
-        }
-      })
   });

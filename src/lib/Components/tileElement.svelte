@@ -61,7 +61,10 @@
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
     box-sizing: border-box;
-    width: 100%;
+
+    width: var(--tileWidth);
+    justify-self: var(--tileHorPos);
+
     height: 100%;
     overflow: hidden;
   }

@@ -7,7 +7,7 @@
     element: Element;
   }
 
-  const { element }: Props = $props();
+  let { element }: Props = $props();
 
   let enabled = $state<boolean>(true);
   let unsubscribe: Function;
