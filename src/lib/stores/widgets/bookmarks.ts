@@ -51,7 +51,7 @@ export function parseBookmarksLinkTarget() {
   const parsed = stored !== 'false';
   bookmarksLinkTarget.set(parsed);
 
-  bookmarks.subscribe((current) => {
+  bookmarksLinkTarget.subscribe((current) => {
     window.localStorage.setItem('bookmarksTarget', current.toString());
   });
 }

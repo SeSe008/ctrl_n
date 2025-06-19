@@ -128,6 +128,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           const tle = $settings.selectedTile;
           return mgr !== undefined &&
             tle !== undefined &&
+            $globalTiles[mgr].tiles[tle].cssVars &&
             $globalTiles[mgr].tiles[tle].cssVars['--o1']
             ? parseInt($globalTiles[mgr].tiles[tle].cssVars['--o1'])
             : 0.3;
@@ -150,6 +151,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           const tle = $settings.selectedTile;
           return mgr !== undefined &&
             tle !== undefined &&
+            $globalTiles[mgr].tiles[tle].cssVars &&
             $globalTiles[mgr].tiles[tle].cssVars['--o2']
             ? parseInt($globalTiles[mgr].tiles[tle].cssVars['--o2'])
             : 0.7;

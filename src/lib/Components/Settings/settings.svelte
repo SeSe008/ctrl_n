@@ -16,15 +16,29 @@
   import type { Element } from '$lib/types/settings/settings';
   import SettingsElement from './settingsElement.svelte';
 
+  import { onDestroy } from 'svelte';
+
   let selectedTab = $state<number>(2);
 
   let settingsElements: Element[] = $state([]);
 
-  settings.subscribe(() => {
+  function getElements() {
     const mgr = getSelectedManagerId() ?? 0;
     const tle = getSelectedTileId() ?? 0;
     const def = tileDefs[getTile(mgr, tle)?.element ?? 0];
     settingsElements = def.tileProps.elements;
+  }
+
+  let unsubscribes = $state<Array<() => void>>([]);
+
+  // On selected settings element change
+  unsubscribes.push(settings.subscribe(() => getElements()));
+
+  // On widget change
+  unsubscribes.push(globalTiles.subscribe(() => getElements()));
+
+  onDestroy(() => {
+    unsubscribes.forEach((unsub) => unsub());
   });
 </script>
 
