@@ -117,11 +117,10 @@ export const tileSettings: SettingsSection = new SettingsSection()
         resetCssVars(getSelectedManagerId(), getSelectedTileId());
         changeTile(getSelectedManagerId(), getSelectedTileId(), value);
       },
-      defaultValue: derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-        const mgr = $settings.selectedManager;
-        const tle = $settings.selectedTile;
-        return mgr !== undefined && tle !== undefined ? $globalTiles[mgr].tiles[tle].element : 0;
-      }),
+      defaultValue: derived(
+        globalTiles,
+        (_) => getTile(getSelectedManagerId(), getSelectedTileId())?.element ?? 0
+      ),
       label: 'Widget Type:'
     },
     undefined,

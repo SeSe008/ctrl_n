@@ -79,9 +79,9 @@ export function removeTile(managerId: number | undefined, tileId?: number) {
     });
 }
 
-export function getTile(managerId: number, tileId: number): Tile | undefined {
+export function getTile(managerId: number | undefined, tileId: number | undefined): Tile | undefined {
   const current = get(globalTiles);
-  if (current[managerId] && current[managerId].tiles[tileId]) {
+  if (managerId !== undefined && tileId !== undefined && current[managerId] && current[managerId].tiles[tileId]) {
     return current[managerId].tiles[tileId];
   } else {
     return undefined;

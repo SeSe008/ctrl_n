@@ -17,6 +17,10 @@ export function toggleSettings(managerId?: number, tileId?: number) {
   });
 }
 
+export function settingsEnabled(): boolean {
+  return get(settings).enabled;
+}
+
 export function setSelectedTile(selectedTile: number) {
   settings.update((current) => {
     current.selectedTile = selectedTile;

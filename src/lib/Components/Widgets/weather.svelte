@@ -1,7 +1,12 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { initWeatherLoaction, weatherLocation } from '$lib/stores/widgets/weatherLocation';
+  import {
+    getWeatherLocation,
+    initWeatherLoaction,
+    weatherLocation
+  } from '$lib/stores/widgets/weatherLocation';
   import { onMount } from 'svelte';
+  import { settingsEnabled } from '$lib/stores/settings/settings';
 
   interface Weather {
     name: string;
@@ -44,7 +49,7 @@
   onMount(initWeatherLoaction);
 
   weatherLocation.subscribe((loc) => {
-    if (loc) fetchWeather(loc);
+    if (loc && !settingsEnabled()) fetchWeather(loc);
   });
 </script>
 
@@ -65,8 +70,13 @@
       </div>
     </div>
   {:else}
-    <div id="info">
-      {error ? error : 'Could not load weather. Try setting a new location in the settings.'}
+    <div class="info">
+      {#if settingsEnabled()}
+        Close Settings for Weather Info
+      {:else if error}
+        Could not load weather. Try setting a new location in the settings.
+      {/if}
+      <button onclick={() => fetchWeather(getWeatherLocation())}><Icon icon="mdi:reload" /></button>
     </div>
   {/if}
 </div>
@@ -154,15 +164,49 @@
     height: min-content;
   }
 
-  #info {
+  .info {
     flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
     box-sizing: border-box;
     padding: 0.5rem;
+
     font-size: calc(8px + 1vmin);
     text-align: center;
+
     border-radius: 0.5rem;
     border: 1px solid rgb(var(--c2));
+
     color: rgb(var(--c2));
-    background-color: rgb(var(--c1));
+    background-color: rgba(var(--c1), var(--o2));
+  }
+
+  .info button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.25rem;
+
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.25rem;
+
+    color: inherit;
+    background-color: transparent;
+
+    cursor: pointer;
+
+    transition:
+      0.2s background-color linear,
+      0.2s color linear;
+  }
+
+  .info button:hover {
+    color: rgb(var(--c1));
+    background-color: rgb(var(--c2));
   }
 </style>

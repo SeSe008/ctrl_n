@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 
 export const rssUrl = writable<string>();
 
@@ -8,6 +8,10 @@ export function setRssUrl(url: string) {
   }
 
   rssUrl.set(url);
+}
+
+export function getRssUrl() : string {
+  return get(rssUrl);
 }
 
 export function initRssUrl() {

@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { globalTiles } from '$lib/stores/tiles';
+  import { getTile, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
-  import type { Tile } from '$lib/types/tiles';
   import { settings } from '$lib/stores/settings/settings';
-
-  import type { Component } from 'svelte';
 
   interface Props {
     managerId: number;
@@ -12,16 +9,6 @@
   }
 
   let { managerId, tileId }: Props = $props();
-
-  let tile = $state<Tile>();
-  let SelectedComponent = $state<Component | null>();
-  let cssVars = $state<Record<string, string>>();
-
-  globalTiles.subscribe((tiles) => {
-    tile = tiles[managerId]?.tiles[tileId];
-    SelectedComponent = tile && tile.element != null ? tileDefs[tile.element]?.component : null;
-    cssVars = tile?.cssVars ?? {};
-  });
 
   function applyVars(node: HTMLElement, vars: Record<string, string> | undefined) {
     if (!vars) return;
@@ -39,22 +26,26 @@
   }
 </script>
 
-{#key $globalTiles}
-  <div
-    use:applyVars={cssVars}
-    class="tile_element {$settings.enabled &&
-    $settings.selectedManager === managerId &&
-    $settings.selectedTile === tileId
-      ? 'settings_selected_tile'
-      : ''}"
-    id="tile_element_{managerId}{tileId}"
-  >
-    {#if SelectedComponent}
-      <SelectedComponent />
-    {:else}
-      <div id="spacer"></div>
-    {/if}
-  </div>
+{#key JSON.stringify($globalTiles[managerId]?.tiles[tileId])}
+  {@const tile = getTile(managerId, tileId)}
+  {#if tile}
+    <div
+      use:applyVars={tile.cssVars}
+      class="tile_element {$settings.enabled &&
+      $settings.selectedManager === managerId &&
+      $settings.selectedTile === tileId
+        ? 'settings_selected_tile'
+        : ''}"
+      id="tile_element_{managerId}{tileId}"
+    >
+      {#if tileDefs[tile.element]}
+        {@const SelectedComponent = tileDefs[tile.element].component}
+        <SelectedComponent />
+      {:else}
+        <div id="spacer"></div>
+      {/if}
+    </div>
+  {/if}
 {/key}
 
 <style>

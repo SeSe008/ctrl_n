@@ -4,7 +4,8 @@
   import Icon from '@iconify/svelte';
 
   import type { Article } from '$lib/types/widgets/rss';
-  import { initRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
+  import { getRssUrl, initRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
+  import { settingsEnabled } from '$lib/stores/settings/settings';
 
   let articles = $state<Article[]>([]);
   let error = $state<string>();
@@ -25,29 +26,39 @@
     }
   }
 
-  rssUrl.subscribe((url) => parseRss(url));
+  rssUrl.subscribe((url) => {
+    if (!settingsEnabled()) parseRss(url);
+  });
 
   onMount(initRssUrl);
 </script>
 
 <div id="rss-feed">
-  <div id="articles">
-    <h2><Icon icon="mdi:newspaper-variant-multiple" />Rss Feed</h2>
-    {#each articles as article (article)}
-      <a href={article.link} target="_blank">
-        <div class="article">
-          <h3>{article.title}</h3>
-          {#if article.imageUrl}
-            <img src={article.imageUrl} alt={article.title} />
-          {/if}
-          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-          <div>{@html DOMPurify.sanitize(article.desc)}</div>
-        </div>
-      </a>
-    {/each}
-  </div>
-  {#if error}
-    <div class="error">Error parsing RSS: {error}</div>
+  {#if articles.length !== 0}
+    <div id="articles">
+      <h2><Icon icon="mdi:newspaper-variant-multiple" />Rss Feed</h2>
+      {#each articles as article (article)}
+        <a href={article.link} target="_blank">
+          <div class="article">
+            <h3>{article.title}</h3>
+            {#if article.imageUrl}
+              <img src={article.imageUrl} alt={article.title} />
+            {/if}
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+            <div>{@html DOMPurify.sanitize(article.desc)}</div>
+          </div>
+        </a>
+      {/each}
+    </div>
+  {:else}
+    <div class="info">
+      {#if settingsEnabled()}
+        Close Settings for Rss-Feed
+      {:else if error}
+        Error parsing RSS: {error}
+      {/if}
+      <button onclick={() => parseRss(getRssUrl())}><Icon icon="mdi:reload" /></button>
+    </div>
   {/if}
 </div>
 
@@ -164,16 +175,49 @@
     color: inherit;
   }
 
-  .error {
-    background-color: rgb(var(--c1));
-    color: rgb(var(--c2));
-    border: 1px solid rgb(var(--c2));
-    border-radius: 0.3rem;
+  .info {
+    flex-grow: 1;
 
-    width: max-content;
-    max-width: 100%;
-    align-self: center;
-    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
     box-sizing: border-box;
+    padding: 0.5rem;
+
+    font-size: calc(8px + 1vmin);
+    text-align: center;
+
+    border-radius: 0.5rem;
+    border: 1px solid rgb(var(--c2));
+
+    color: rgb(var(--c2));
+    background-color: rgba(var(--c1), var(--o2));
+  }
+
+  .info button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.25rem;
+
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.25rem;
+
+    color: inherit;
+    background-color: transparent;
+
+    cursor: pointer;
+
+    transition:
+      0.2s background-color linear,
+      0.2s color linear;
+  }
+
+  .info button:hover {
+    color: rgb(var(--c1));
+    background-color: rgb(var(--c2));
   }
 </style>
