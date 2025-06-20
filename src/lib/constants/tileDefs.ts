@@ -32,6 +32,8 @@ import {
   removeBookmark,
   toggleBookmarksLinkTarget
 } from '$lib/stores/widgets/bookmarks';
+import { changeCssVar, getCssVar, globalTiles } from '$lib/stores/tiles';
+import { getSelectedManagerId, getSelectedTileId } from '$lib/stores/settings/settings';
 
 export const tileDefs: TileDef[] = tileMetadata.map((m) => {
   switch (m.name) {
@@ -72,6 +74,118 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
             defaultValue: clockType,
             label: 'Clock-Type:'
           })
+          .appendElement(
+            'group',
+            {
+              layout: 'vert',
+              objects: createNewSettingsSlice()
+                .appendElement('text', {
+                  text: 'Font-Options:',
+                  classes: ['medium', 'left', 'margin_top']
+                })
+                .appendElement('select', {
+                  selectOptions: [
+                    'Small',
+                    'Medium',
+                    'Large',
+                    'X-Large',
+                    'XX-Large',
+                    'XXX-Large',
+                    'Custom'
+                  ].map((val) => ({
+                    value: val.toLowerCase(),
+                    label: val
+                  })),
+                  defaultValue: () => {
+                    const cssVal =
+                      getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontSize') ??
+                      'xxx-large';
+                    return cssVal.endsWith('em') ? 'custom' : cssVal;
+                  },
+                  onChange: (value: string) =>
+                    changeCssVar(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      '--clockFontSize',
+                      value === 'custom' ? '1em' : value
+                    ),
+                  label: 'Font-Size:'
+                })
+                .appendElement(
+                  'range',
+                  {
+                    min: 1,
+                    max: 10,
+                    step: 0.1,
+                    onInput: (value: number) => {
+                      changeCssVar(
+                        getSelectedManagerId(),
+                        getSelectedTileId(),
+                        '--clockFontSize',
+                        `${value}em`
+                      );
+                    },
+                    defaultValue: () =>
+                      parseFloat(
+                        getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontSize') ??
+                          '1'
+                      ),
+                    label: 'Font-Size:',
+                    unit: 'em'
+                  },
+                  derived(
+                    globalTiles,
+                    (_) =>
+                      getCssVar(
+                        getSelectedManagerId(),
+                        getSelectedTileId(),
+                        '--clockFontSize'
+                      )?.endsWith('em') ?? false
+                  )
+                )
+                .appendElement('select', {
+                  selectOptions: [
+                    {
+                      label: 'Normal',
+                      value: 'normal'
+                    },
+                    {
+                      label: 'Italic',
+                      value: 'italic'
+                    }
+                  ],
+                  defaultValue: () =>
+                    getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontStyle') ??
+                    'normal',
+                  onChange: (value: string) =>
+                    changeCssVar(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      '--clockFontStyle',
+                      value
+                    ),
+                  label: 'Font-Style:'
+                })
+                .appendElement('select', {
+                  selectOptions: ['Lighter', 'Normal', 'Bold'].map((val) => ({
+                    value: val.toLowerCase(),
+                    label: val
+                  })),
+                  defaultValue: () =>
+                    getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontWeight') ??
+                    'bold',
+                  onChange: (value: string) =>
+                    changeCssVar(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      '--clockFontWeight',
+                      value
+                    ),
+                  label: 'Font-Weight:'
+                })
+            },
+            derived(clockType, ($clockType) => $clockType === 'digital')
+          )
       };
 
     case 'rss_feed':

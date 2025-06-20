@@ -61,12 +61,9 @@
   #clock {
     height: 100%;
     display: flex;
-    flex-direction: column;
+
     overflow: hidden;
     box-sizing: border-box;
-    align-items: center;
-    gap: 0.25rem;
-    justify-content: center;
   }
 
   /* Digital Clock */
@@ -75,16 +72,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: min-content;
-    font-size: calc(24px + 4vmin);
+
+    height: 100%;
+
     color: rgb(var(--c1));
-    background-color: rgb(var(--c2));
+    background-color: rgba(var(--c2), var(--o2));
+
+    box-sizing: border-box;
     padding: 1rem;
     margin: 0;
+
     border-radius: 0.5rem;
     border: 1px solid rgb(var(--c1));
+
     font-variant-numeric: tabular-nums;
     font-family: Roboto !important;
+    font-size: var(--clockFontSize, xxx-large);
+    font-style: var(--clockFontStyle, normal);
+    font-weight: var(--clockFontWeight, bold);
   }
 
   /* Analog clock */
@@ -108,11 +113,12 @@
 
   #analog {
     position: relative;
+
     height: 100%;
-    background-color: rgb(var(--c2));
-    justify-self: stretch;
     aspect-ratio: 1 / 1;
-    border-radius: 50%;
+
+    background-color: rgb(var(--c2));
+
     clip-path: polygon(
       50% 0%,
       61.65% 6.53%,
