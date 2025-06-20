@@ -74,19 +74,23 @@
 <style>
   #weather {
     justify-self: center;
+
     display: flex;
     flex-direction: column;
-    height: min-content;
-    width: fit-content;
+    gap: 0.5rem;
+
+    height: 100%;
+    width: 100%;
+
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: rgba(var(--c1), var(--o2));
+
+    background-color: rgba(var(--c1), var(--o1));
     border: 1px solid rgb(var(--c2));
     border-radius: 1rem;
+
     box-sizing: border-box;
     padding: 1rem;
-    gap: 0.5rem;
-    max-width: 100%;
   }
 
   #properties {

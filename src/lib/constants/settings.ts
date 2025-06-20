@@ -124,7 +124,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
         onInput: (value: number) =>
           changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
         defaultValue: () =>
-          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '1'),
+          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
         label: 'Primary opacity:'
       })
       .appendElement('range', {
@@ -134,18 +134,30 @@ export const tileSettings: SettingsSection = new SettingsSection()
         onInput: (value: number) =>
           changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
         defaultValue: () =>
-          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '1'),
+          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
         label: 'Secondary opacity:'
       })
       .appendElement('range', {
-        min: 1,
+        min: 0,
         max: 100,
         step: 1,
         unit: '%',
         onInput: (value: number) =>
-          changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth', `${value}%`),
+          changeCssVar(
+            getSelectedManagerId(),
+            getSelectedTileId(),
+            '--tileWidth',
+            value === 0 ? 'max-content' : `${value}%`
+          ),
+        specialValues: {
+          0: 'Auto'
+        },
         defaultValue: () =>
-          parseInt(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'),
+          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') === 'max-content'
+            ? 0
+            : parseInt(
+                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+              ),
         label: 'Tile Width:'
       })
       .appendElement(
@@ -166,17 +178,67 @@ export const tileSettings: SettingsSection = new SettingsSection()
             }
           ],
           defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tilePos') ?? 'center',
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
           onChange: (value: string) =>
             changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
           label: 'Horizontal Position:'
         },
-        derived(
-          globalTiles,
-          (_) =>
-            parseInt(
-              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
-            ) < 100
+        derived(globalTiles, (_) =>
+          ((h) => parseInt(h) < 100 || h === 'max-content')(
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+          )
+        )
+      )
+      .appendElement('range', {
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: '%',
+        onInput: (value: number) =>
+          changeCssVar(
+            getSelectedManagerId(),
+            getSelectedTileId(),
+            '--tileHeight',
+            value === 0 ? 'max-content' : `${value}%`
+          ),
+        specialValues: {
+          0: 'Auto'
+        },
+        defaultValue: () =>
+          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') === 'max-content'
+            ? 0
+            : parseInt(
+                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+              ),
+        label: 'Tile Height:'
+      })
+      .appendElement(
+        'select',
+        {
+          selectOptions: [
+            {
+              label: 'Center',
+              value: 'center'
+            },
+            {
+              label: 'Top',
+              value: 'flex-start'
+            },
+            {
+              label: 'Bottom',
+              value: 'flex-end'
+            }
+          ],
+          defaultValue: () =>
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ?? 'flex-start',
+          onChange: (value: string) =>
+            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
+          label: 'Vertical Position:'
+        },
+        derived(globalTiles, (_) =>
+          ((h) => parseInt(h) < 100 || h === 'max-content')(
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+          )
         )
       )
   });

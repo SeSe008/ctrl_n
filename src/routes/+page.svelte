@@ -114,8 +114,12 @@
       /* Tile-Specific vars */
       --o1: 0.3;
       --o2: 0.7;
+
       --tileWidth: 100%;
       --tileHorPos: center;
+
+      --tileHeight: 100%;
+      --tileVerPos: flex-start;
     }
 
     html,xc 

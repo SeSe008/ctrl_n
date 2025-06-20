@@ -65,7 +65,9 @@
     width: var(--tileWidth);
     justify-self: var(--tileHorPos);
 
-    height: 100%;
+    height: var(--tileHeight);
+    align-self: var(--tileVerPos);
+
     overflow: hidden;
   }
 
