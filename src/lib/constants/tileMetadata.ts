@@ -2,10 +2,30 @@ import type { TileMetadata } from '$lib/types/tiles';
 
 export const tileMetadata: TileMetadata[] = [
   { name: 'spacer', label: 'Spacer', icon: 'mdi:arrow-expand-vertical' },
-  { name: 'search_bar', label: 'Search Bar', icon: 'mdi:search' },
-  { name: 'clock', label: 'Clock', icon: 'mdi:clock' },
-  { name: 'rss_feed', label: 'RSS-Feed', icon: 'mdi:newspaper-variant-multiple' },
-  { name: 'weather', label: 'Weather', icon: 'mdi:weather-partly-cloudy' },
-  { name: 'calculator', label: 'Calculator', icon: 'mdi:calculator-variant' },
-  { name: 'bookmarks', label: 'Bookmarks', icon: 'mdi:bookmark-multiple' }
+  { name: 'search_bar', label: 'Search Bar', icon: 'mdi:search', cssVars: ['--o1'] },
+  { name: 'clock', label: 'Clock', icon: 'mdi:clock', cssVars: ['--o1'] },
+  {
+    name: 'rss_feed',
+    label: 'RSS-Feed',
+    icon: 'mdi:newspaper-variant-multiple',
+    cssVars: ['--o1', '--o2']
+  },
+  {
+    name: 'weather',
+    label: 'Weather',
+    icon: 'mdi:weather-partly-cloudy',
+    cssVars: ['--o1', '--o2']
+  },
+  {
+    name: 'calculator',
+    label: 'Calculator',
+    icon: 'mdi:calculator-variant',
+    cssVars: ['--o1', '--o2']
+  },
+  {
+    name: 'bookmarks',
+    label: 'Bookmarks',
+    icon: 'mdi:bookmark-multiple',
+    cssVars: ['--o1', '--o2']
+  }
 ];

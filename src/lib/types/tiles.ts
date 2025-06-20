@@ -26,4 +26,5 @@ export interface TileMetadata {
   name: string;
   label: string;
   icon?: string;
+  cssVars?: Array<string>;
 }

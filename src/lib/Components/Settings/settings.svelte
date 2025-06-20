@@ -14,6 +14,7 @@
   import SettingsElement from './settingsElement.svelte';
 
   import { onDestroy } from 'svelte';
+  import { derived } from 'svelte/store';
 
   let selectedTab = $state<number>(1);
 
@@ -33,6 +34,8 @@
 
   // On widget change
   unsubscribes.push(globalTiles.subscribe(() => getElements()));
+
+  const keyStore = derived([settings, globalTiles], (values) => JSON.stringify(values));
 
   onDestroy(() => {
     unsubscribes.forEach((unsub) => unsub());
@@ -57,7 +60,7 @@
           {/each}
         </div>
       {:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-        {#key `${$settings.selectedManager}:${$settings.selectedTile}:${$globalTiles}`}
+        {#key keyStore}
           <div class="settings_tab">
             {#each settingsElements as element, i (i)}
               <div class="element"><SettingsElement {element} /></div>

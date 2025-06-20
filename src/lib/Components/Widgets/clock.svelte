@@ -75,15 +75,15 @@
 
     height: 100%;
 
-    color: rgb(var(--c1));
-    background-color: rgba(var(--c2), var(--o2));
+    color: rgb(var(--c2));
+    background-color: rgba(var(--c1), var(--o1));
 
     box-sizing: border-box;
     padding: 1rem;
     margin: 0;
 
     border-radius: 0.5rem;
-    border: 1px solid rgb(var(--c1));
+    border: 1px solid rgb(var(--c2));
 
     font-variant-numeric: tabular-nums;
     font-family: Roboto !important;

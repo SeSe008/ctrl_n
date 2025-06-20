@@ -39,21 +39,23 @@
   }
 </script>
 
-<div
-  use:applyVars={cssVars}
-  class="tile_element {$settings.enabled &&
-  $settings.selectedManager === managerId &&
-  $settings.selectedTile === tileId
-    ? 'settings_selected_tile'
-    : ''}"
-  id="tile_element_{managerId}{tileId}"
->
-  {#if SelectedComponent}
-    <SelectedComponent />
-  {:else}
-    <div id="spacer"></div>
-  {/if}
-</div>
+{#key $globalTiles}
+  <div
+    use:applyVars={cssVars}
+    class="tile_element {$settings.enabled &&
+    $settings.selectedManager === managerId &&
+    $settings.selectedTile === tileId
+      ? 'settings_selected_tile'
+      : ''}"
+    id="tile_element_{managerId}{tileId}"
+  >
+    {#if SelectedComponent}
+      <SelectedComponent />
+    {:else}
+      <div id="spacer"></div>
+    {/if}
+  </div>
+{/key}
 
 <style>
   .tile_element {

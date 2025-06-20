@@ -13,7 +13,9 @@ import {
   removeManager,
   getTiles,
   getManager,
-  getCssVar
+  getCssVar,
+  getTile,
+  resetCssVars
 } from '$lib/stores/tiles';
 import {
   getSelectedManagerId,
@@ -88,160 +90,213 @@ export const tileSettings: SettingsSection = new SettingsSection()
         icon: 'mdi:add-circle-outline',
         onClick: () => addTile(getSelectedManagerId())
       })
-      .appendElement('button', {
-        text: 'Remove Tile',
-        icon: 'mdi:remove-circle-outline',
-        onClick: () => {
-          removeTile(getSelectedManagerId(), getSelectedTileId());
-          setSelectedTile(0);
-        }
-      })
-  })
-  .appendElement('select', {
-    selectOptions: tileMetadata.map(({ label, icon }) => {
-      return { label, icon };
-    }),
-    onChange: (value: number) =>
-      changeTile(get(settings).selectedManager, get(settings).selectedTile, value),
-    defaultValue: derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-      const mgr = $settings.selectedManager;
-      const tle = $settings.selectedTile;
-      return mgr !== undefined && tle !== undefined ? $globalTiles[mgr].tiles[tle].element : 0;
-    }),
-    label: 'Widget Type:'
-  })
-  .appendElement('group', {
-    layout: 'vert',
-    objects: new SettingsSection()
-      .appendElement('text', {
-        text: 'Styling:',
-        classes: ['big', 'left', 'margin-top']
-      })
-      .appendElement('range', {
-        min: 0,
-        max: 1,
-        step: 0.1,
-        onInput: (value: number) =>
-          changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
-        defaultValue: () =>
-          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
-        label: 'Primary opacity:'
-      })
-      .appendElement('range', {
-        min: 0,
-        max: 1,
-        step: 0.1,
-        onInput: (value: number) =>
-          changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
-        defaultValue: () =>
-          parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
-        label: 'Secondary opacity:'
-      })
-      .appendElement('range', {
-        min: 0,
-        max: 100,
-        step: 1,
-        unit: '%',
-        onInput: (value: number) =>
-          changeCssVar(
-            getSelectedManagerId(),
-            getSelectedTileId(),
-            '--tileWidth',
-            value === 0 ? 'max-content' : `${value}%`
-          ),
-        specialValues: {
-          0: 'Auto'
-        },
-        defaultValue: () =>
-          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') === 'max-content'
-            ? 0
-            : parseInt(
-                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
-              ),
-        label: 'Tile Width:'
-      })
       .appendElement(
-        'select',
+        'button',
         {
-          selectOptions: [
-            {
-              label: 'Center',
-              value: 'center'
-            },
-            {
-              label: 'Left',
-              value: 'flex-start'
-            },
-            {
-              label: 'Right',
-              value: 'flex-end'
-            }
-          ],
-          defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
-          onChange: (value: string) =>
-            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
-          label: 'Horizontal Position:'
+          text: 'Remove Tile',
+          icon: 'mdi:remove-circle-outline',
+          onClick: () => {
+            removeTile(getSelectedManagerId(), getSelectedTileId());
+            setSelectedTile(0);
+          }
         },
         derived(globalTiles, (_) =>
-          ((h) => parseInt(h) < 100 || h === 'max-content')(
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
-          )
+          getSelectedManagerId() !== undefined
+            ? (getManager(getSelectedManagerId()!)?.tiles.length ?? 0) > 1
+            : false
         )
       )
-      .appendElement('range', {
-        min: 0,
-        max: 100,
-        step: 1,
-        unit: '%',
-        onInput: (value: number) =>
-          changeCssVar(
-            getSelectedManagerId(),
-            getSelectedTileId(),
-            '--tileHeight',
-            value === 0 ? 'max-content' : `${value}%`
-          ),
-        specialValues: {
-          0: 'Auto'
-        },
-        defaultValue: () =>
-          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') === 'max-content'
-            ? 0
-            : parseInt(
-                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
-              ),
-        label: 'Tile Height:'
-      })
-      .appendElement(
-        'select',
-        {
-          selectOptions: [
-            {
-              label: 'Center',
-              value: 'center'
-            },
-            {
-              label: 'Top',
-              value: 'flex-start'
-            },
-            {
-              label: 'Bottom',
-              value: 'flex-end'
+  })
+  .appendElement(
+    'select',
+    {
+      selectOptions: tileMetadata.map(({ label, icon }) => {
+        return { label, icon };
+      }),
+      onChange: (value: number) => {
+        resetCssVars(getSelectedManagerId(), getSelectedTileId());
+        changeTile(getSelectedManagerId(), getSelectedTileId(), value);
+      },
+      defaultValue: derived([globalTiles, settings], ([$globalTiles, $settings]) => {
+        const mgr = $settings.selectedManager;
+        const tle = $settings.selectedTile;
+        return mgr !== undefined && tle !== undefined ? $globalTiles[mgr].tiles[tle].element : 0;
+      }),
+      label: 'Widget Type:'
+    },
+    undefined,
+    settings
+  )
+  .appendElement(
+    'group',
+    {
+      layout: 'vert',
+      objects: new SettingsSection()
+        .appendElement('text', {
+          text: 'Styling:',
+          classes: ['big', 'left', 'margin-top']
+        })
+        .appendElement(
+          'range',
+          {
+            min: 0,
+            max: 1,
+            step: 0.1,
+            onInput: (value: number) =>
+              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
+            defaultValue: () =>
+              parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
+            label: 'Primary opacity:'
+          },
+          derived(globalTiles, (_) => {
+            const managerId = getSelectedManagerId();
+            const tileId = getSelectedTileId();
+
+            if (managerId != null && tileId != null) {
+              const tile = getTile(managerId, tileId);
+              if (tile) {
+                return tileMetadata[tile.element].cssVars?.includes('--o1') ?? false;
+              }
             }
-          ],
+
+            return false;
+          })
+        )
+        .appendElement(
+          'range',
+          {
+            min: 0,
+            max: 1,
+            step: 0.1,
+            onInput: (value: number) =>
+              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
+            defaultValue: () =>
+              parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
+            label: 'Secondary opacity:'
+          },
+          derived(globalTiles, (_) => {
+            const managerId = getSelectedManagerId();
+            const tileId = getSelectedTileId();
+
+            if (managerId != null && tileId != null) {
+              const tile = getTile(managerId, tileId);
+              if (tile) {
+                return tileMetadata[tile.element].cssVars?.includes('--o2') ?? false;
+              }
+            }
+
+            return false;
+          })
+        )
+        .appendElement('range', {
+          min: 0,
+          max: 100,
+          step: 1,
+          unit: '%',
+          onInput: (value: number) =>
+            changeCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--tileWidth',
+              value === 0 ? 'max-content' : `${value}%`
+            ),
+          specialValues: {
+            0: 'Auto'
+          },
           defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ?? 'flex-start',
-          onChange: (value: string) =>
-            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
-          label: 'Vertical Position:'
-        },
-        derived(globalTiles, (_) =>
-          ((h) => parseInt(h) < 100 || h === 'max-content')(
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') === 'max-content'
+              ? 0
+              : parseInt(
+                  getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+                ),
+          label: 'Tile Width:'
+        })
+        .appendElement(
+          'select',
+          {
+            selectOptions: [
+              {
+                label: 'Center',
+                value: 'center'
+              },
+              {
+                label: 'Left',
+                value: 'flex-start'
+              },
+              {
+                label: 'Right',
+                value: 'flex-end'
+              }
+            ],
+            defaultValue: () =>
+              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
+            onChange: (value: string) =>
+              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
+            label: 'Horizontal Position:'
+          },
+          derived(globalTiles, (_) =>
+            ((h) => parseInt(h) < 100 || h === 'max-content')(
+              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+            )
           )
         )
-      )
-  });
+        .appendElement('range', {
+          min: 0,
+          max: 100,
+          step: 1,
+          unit: '%',
+          onInput: (value: number) =>
+            changeCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--tileHeight',
+              value === 0 ? 'max-content' : `${value}%`
+            ),
+          specialValues: {
+            0: 'Auto'
+          },
+          defaultValue: () =>
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') === 'max-content'
+              ? 0
+              : parseInt(
+                  getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+                ),
+          label: 'Tile Height:'
+        })
+        .appendElement(
+          'select',
+          {
+            selectOptions: [
+              {
+                label: 'Center',
+                value: 'center'
+              },
+              {
+                label: 'Top',
+                value: 'flex-start'
+              },
+              {
+                label: 'Bottom',
+                value: 'flex-end'
+              }
+            ],
+            defaultValue: () =>
+              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ??
+              'flex-start',
+            onChange: (value: string) =>
+              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
+            label: 'Vertical Position:'
+          },
+          derived(globalTiles, (_) =>
+            ((h) => parseInt(h) < 100 || h === 'max-content')(
+              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+            )
+          )
+        )
+    },
+    undefined,
+    settings
+  );
 
 export const tileManagerSettings: SettingsSection = new SettingsSection()
   .appendElement('text', {
@@ -274,8 +329,10 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
         text: 'Remove Row',
         icon: 'mdi:remove-circle-outline',
         onClick: () => {
-          removeManager(get(settings).selectedManager);
-          setSelectedManager(get(settings).selectedManager! - 1);
+          if (getTiles().length > 1) {
+            removeManager(getSelectedManagerId());
+            setSelectedManager(0);
+          }
         }
       })
   })

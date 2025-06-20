@@ -30,8 +30,6 @@
       ? [element.updater]
       : [];
 
-  if (updaters.length) console.log(element.elementType, updaters);
-
   const keyStore = derived(updaters, (values) => JSON.stringify(values));
 </script>
 

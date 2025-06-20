@@ -123,6 +123,15 @@ export function deleteCssVar(
     });
 }
 
+export function resetCssVars(managerId: number | undefined, tileId: number | undefined) {
+  if (managerId !== undefined && tileId !== undefined)
+    globalTiles.update((current) => {
+      if (current[managerId] && current[managerId].tiles[tileId])
+	current[managerId].tiles[tileId].cssVars = {};
+      return current;
+    });
+}
+
 export function getCssVar(managerId: number | undefined, tileId: number | undefined, cssVar: string): string | undefined {
   if (managerId !== undefined && tileId !== undefined) {
     const current = get(globalTiles);
@@ -142,7 +151,12 @@ export function initializeTiles() {
     // Clock and search bar
     globalTiles.set([
       {
-        tiles: [{ pos: 0, element: 2, cssVars: {} }],
+        tiles: [{ pos: 0, element: 2, cssVars: {
+	  '--tileWidth': 'max-content',
+	  '--tileHeight': 'max-content',
+	  '--tileHorPos': 'center',
+	  '--tileVerPos': 'center'
+	} }],
         height: 1
       },
       {
