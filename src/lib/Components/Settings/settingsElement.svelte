@@ -12,7 +12,7 @@
   let { element }: Props = $props();
 
   let enabled = $state<boolean>(true);
-  let unsubscribe: Function;
+  let unsubscribe: () => void;
 
   if (typeof element.condition === 'function') {
     enabled = element.condition();

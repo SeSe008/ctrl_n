@@ -82,8 +82,8 @@
     padding: 1rem;
     margin: 0;
 
-    border-radius: 0.5rem;
-    border: 1px solid rgb(var(--c2));
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
+    border-radius: var(--tileBorderRadius);
 
     font-variant-numeric: tabular-nums;
     font-family: Roboto !important;

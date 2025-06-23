@@ -232,9 +232,6 @@
   }
 
   onMount(() => {
-    document.body.focus();
-    searchBar.focus();
-
     initSearchEngineName();
 
     const recentEntries: [string, RecentlySearched][] = JSON.parse(
@@ -288,9 +285,11 @@
     outline: none;
     padding: 0.5rem;
     font-size: calc(10px + 1vmin);
-    border-radius: 0.5rem 0 0 0.5rem;
-    border: 1px solid rgb(var(--c2));
+
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
     border-right: none;
+    border-radius: var(--tileBorderRadius) 0 0 var(--tileBorderRadius);
+
     color: rgb(var(--c2));
     background-color: rgba(var(--c1), var(--o1));
     transition: background-color 0.2s;
@@ -306,9 +305,10 @@
   }
 
   #inputs > button {
-    border-radius: 0 0.5rem 0.5rem 0;
-    border: 1px solid rgb(var(--c2));
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
     border-left: none;
+    border-radius: 0 var(--tileBorderRadius) var(--tileBorderRadius) 0;
+
     outline: none;
     color: rgb(var(--c2));
     background-color: rgb(var(--c3));

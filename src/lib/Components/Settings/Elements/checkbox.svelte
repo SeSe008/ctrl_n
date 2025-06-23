@@ -19,7 +19,7 @@
     }
   }
 
-  let checkboxValue: any = $state(getDefault());
+  let checkboxValue: boolean = $state(getDefault());
 
   $effect(() => {
     if (store) store.update(() => checkboxValue);

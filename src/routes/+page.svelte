@@ -75,25 +75,23 @@
       <TileManager id={i} />
     {/each}
   </div>
-  
-  <div id="pageControl">
-    <button onclick={nextImage}>
-      <Icon icon="mdi:image-outline" />
-    </button>
-    <button onclick={() => toggleSettings(0, 0)}>
-      <Icon icon="mdi:settings-outline" />
-    </button>
-  </div>
-  
-  <div id="credit">
+
+  <div id="page_info">
     {#if $exifData}
       <div>
-	<a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>,
-	<a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>,
-	<a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a>
+        <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>
+        <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>
+        <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a>
       </div>
     {/if}
-    <span></span>
+    <div>
+      <button onclick={nextImage}>
+        <Icon icon="mdi:image-outline" />
+      </button>
+      <button onclick={() => toggleSettings(0, 0)}>
+        <Icon icon="mdi:settings-outline" />
+      </button>
+    </div>
     <div><a target="_blank" href="privacy">Privacy and Credit</a></div>
   </div>
 </main>
@@ -115,6 +113,9 @@
       --o1: 0.3;
       --o2: 0.7;
 
+      --tileBorder: unset;
+      --tileBorderRadius: 0.5rem;
+
       --tileWidth: 100%;
       --tileHorPos: center;
 
@@ -122,8 +123,8 @@
       --tileVerPos: flex-start;
     }
 
-    html,xc 
-    body {
+    html,
+    xc body {
       height: 100%;
       width: 100%;
       margin: 0;
@@ -192,7 +193,7 @@
   main {
     display: flex;
     flex-direction: column;
-    gap: .25rem;
+    gap: 0.25rem;
 
     width: 100%;
     height: 100%;
@@ -223,51 +224,83 @@
     overflow-y: visible;
   }
 
-  #pageControl {
-    display: flex;
-    flex-direction: row;
+  #page_info {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(max-content, 1fr);
     gap: 0.25rem;
-    width: 100%;
-  }
-
-  #pageControl button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    outline: none;
-    border: 1px solid rgb(var(--c2));
-    border-radius: 0.3rem;
-
-    background-color: rgb(var(--c1));
-    color: rgb(var(--c2));
-
-    font-size: calc(8px + .75vmin);
-    padding: .25em;
-    aspect-ratio: 1 / 1;
-
-    cursor: pointer;
-  }
-
-  #credit {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: .25rem;
 
     font-size: 0.75em;
     font-weight: bold;
+
+    justify-items: center;
+    align-items: stretch;
   }
 
-  #credit div {
+  #page_info div:first-child {
+    justify-self: flex-start;
+  }
+
+  #page_info div:last-child {
+    justify-self: flex-end;
+  }
+
+  #page_info div {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+
     color: rgb(var(--c1));
-    padding: 0.25rem;
+    padding: 0;
 
     background-color: rgba(var(--c2), var(--o2));
     border-radius: 0.25rem;
   }
 
-  #credit a {
-    color: inherit;
+  #page_info a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.25rem;
+    height: 100%;
+
+    border-radius: 0.25rem;
+
+    background-color: transparent;
+    color: rgb(var(--c1));
+
+    text-decoration: none;
+    font-size: calc(8px + 0.75vmin);
+
+    cursor: pointer;
+
+    transition: background-color 0.2s linear;
+  }
+
+  #page_info a:hover {
+    background-color: rgb(var(--c2));
+  }
+
+  #page_info button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 0.25rem;
+    background-color: transparent;
+
+    color: rgb(var(--c1));
+
+    font-size: calc(8px + 0.75vmin);
+    aspect-ratio: 1 / 1;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s linear;
+  }
+
+  #page_info button:hover {
+    background-color: rgb(var(--c2));
   }
 </style>

@@ -96,8 +96,10 @@
     overflow-x: hidden;
 
     background-color: rgba(var(--c1), var(--o1));
+
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
     border: 1px solid rgb(var(--c2));
-    border-radius: 1rem;
+    border-radius: var(--tileBorderRadius);
 
     box-sizing: border-box;
     padding: 1rem;
@@ -173,16 +175,11 @@
     gap: 0.5rem;
 
     box-sizing: border-box;
-    padding: 0.5rem;
 
     font-size: calc(8px + 1vmin);
     text-align: center;
 
-    border-radius: 0.5rem;
-    border: 1px solid rgb(var(--c2));
-
     color: rgb(var(--c2));
-    background-color: rgba(var(--c1), var(--o2));
   }
 
   .info button {
@@ -194,6 +191,7 @@
 
     border: 1px solid rgb(var(--c2));
     border-radius: 0.25rem;
+    outline: none;
 
     color: inherit;
     background-color: transparent;

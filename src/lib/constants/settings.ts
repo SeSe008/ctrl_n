@@ -292,9 +292,80 @@ export const tileSettings: SettingsSection = new SettingsSection()
             )
           )
         )
+        .appendElement(
+          'checkbox',
+          {
+            onChange: (value: boolean) =>
+              changeCssVar(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                '--tileBorder',
+                value ? 'unset' : 'none'
+              ),
+            defaultValue: () =>
+              (getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorder') ??
+                'unset') === 'unset',
+            label: 'Tile-Border'
+          },
+          derived(globalTiles, (_) => {
+            const managerId = getSelectedManagerId();
+            const tileId = getSelectedTileId();
+
+            if (managerId != null && tileId != null) {
+              const tile = getTile(managerId, tileId);
+              if (tile) {
+                return tileMetadata[tile.element].cssVars?.includes('--tileBorder') ?? false;
+              }
+            }
+
+            return false;
+          })
+        )
+        .appendElement(
+          'range',
+          {
+            min: 0,
+            max: 10,
+            step: 0.5,
+            unit: 'rem',
+            onInput: (value: number) =>
+              changeCssVar(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                '--tileBorderRadius',
+                `${value}rem`
+              ),
+            defaultValue: () =>
+              parseFloat(
+                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorderRadius') ??
+                  '0.5'
+              ),
+            label: 'Border Radius:'
+          },
+          derived(globalTiles, (_) => {
+            const managerId = getSelectedManagerId();
+            const tileId = getSelectedTileId();
+
+            if (managerId != null && tileId != null) {
+              const tile = getTile(managerId, tileId);
+              if (tile) {
+                return tileMetadata[tile.element].cssVars?.includes('--tileBorderRadius') ?? false;
+              }
+            }
+
+            return false;
+          })
+        )
     },
     undefined,
-    settings
+    [
+      settings,
+      derived([globalTiles, settings], ([$globalTiles, $settings]) => {
+        const mgr = $settings.selectedManager;
+        const tle = $settings.selectedTile;
+        return mgr !== undefined && tle !== undefined ? $globalTiles[mgr].tiles[tle].element : null;
+      })
+    ]
   );
 
 export const tileManagerSettings: SettingsSection = new SettingsSection()

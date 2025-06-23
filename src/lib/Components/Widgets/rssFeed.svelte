@@ -68,11 +68,14 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background-color: rgba(var(--c1), var(--o1));
-    border: 1px solid rgb(var(--c2));
-    border-radius: 1rem;
-    container-type: inline-size;
+
     box-sizing: border-box;
+
+    background-color: rgba(var(--c1), var(--o1));
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
+    border-radius: var(--tileBorderRadius);
+
+    container-type: inline-size;
   }
 
   #rss-feed h2 {

@@ -50,8 +50,10 @@
     width: 100%;
 
     background-color: rgba(var(--c1), var(--o1));
+
     border: 1px solid rgb(var(--c2));
-    border-radius: 1rem;
+    border-radius: var(--tileBorderRadius);
+
     box-sizing: border-box;
     padding: 1rem;
   }

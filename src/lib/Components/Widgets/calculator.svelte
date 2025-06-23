@@ -235,8 +235,10 @@
     outline: none;
     color: rgb(var(--c2));
     background-color: rgba(var(--c1), var(--o2));
-    border: 2px solid rgb(var(--c1));
-    border-radius: 1vmin;
+
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
+    border-radius: var(--tileBorderRadius);
+
     cursor: pointer;
 
     font-size: inherit;
