@@ -1,37 +1,18 @@
 import ColorThief from 'colorthief';
 
-function getPalette(img: HTMLImageElement, colors: number, colorThief: ColorThief) {
-  return colorThief.getPalette(img, colors);
+function luminance([r, g, b]: number[]) : number {
+  return 0.299 * r + 0.587 * g + 0.114 * b;
 }
 
-export function getPaletteFromSrc(
-  src: string,
-  colors: number,
-  colorThief: ColorThief
-): Promise<number[][]> {
-  // Generate palette from image source
-  return new Promise((resolve, reject) => {
-    const img: HTMLImageElement = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.src = src;
+function contrast(lum: number, darkestLum: number) : number {
+  return (lum + 0.05) / (darkestLum + 0.05);
+}
 
-    if (img.complete) {
-      try {
-        const palette = getPalette(img, colors, colorThief);
-        resolve(palette);
-      } catch (err) {
-        reject(err);
-      }
-    } else {
-      img.onload = () => {
-        try {
-          const palette = getPalette(img, colors, colorThief);
-          resolve(palette);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      img.onerror = reject;
-    }
-  });
+export function getPalette(img: HTMLImageElement, colors: number, colorThief: ColorThief) : number[][] {
+  const pallete: number[][] = colorThief.getPalette(img, colors);
+  const darkest: number = Math.min(...pallete.map(luminance));
+  
+  return pallete.sort((a, b) => {
+    return contrast(luminance(a), darkest) - contrast(luminance(b), darkest);
+  });;
 }

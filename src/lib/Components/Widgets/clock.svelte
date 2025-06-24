@@ -75,7 +75,7 @@
 
     height: 100%;
 
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
     background-color: rgba(var(--c1), var(--o1));
 
     box-sizing: border-box;
@@ -117,7 +117,7 @@
     height: 100%;
     aspect-ratio: 1 / 1;
 
-    background-color: rgb(var(--c2));
+    background-color: rgba(var(--c2), var(--o1));
 
     clip-path: polygon(
       50% 0%,

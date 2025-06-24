@@ -1,4 +1,4 @@
-import { getPaletteFromSrc } from './getPalette';
+import { getPalette } from './getPalette';
 import { applyPalette } from './applyPalette';
 import { parseExif } from './getExif';
 
@@ -42,9 +42,7 @@ export function applyImage(
 
     parseExif(image);
 
-    getPaletteFromSrc(image, colors, colorThief).then((palette) => {
-      applyPalette(palette);
-    });
+    applyPalette(getPalette(imgElement, colors, colorThief));
   };
 
   imgElement.onerror = () => {

@@ -162,7 +162,7 @@
     overflow-x: hidden;
 
     background-color: rgba(var(--c1), var(--o2));
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
 
     border: 2px solid rgb(var(--c1));
     border-radius: 1vmin;
@@ -233,7 +233,7 @@
     width: 100%;
 
     outline: none;
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
     background-color: rgba(var(--c1), var(--o2));
 
     border: var(--tileBorder, 1px solid rgb(var(--c2)));

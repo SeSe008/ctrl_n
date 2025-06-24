@@ -94,7 +94,7 @@
     box-sizing: border-box;
     border-radius: 1vmin;
 
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
     background-color: rgba(var(--c1), var(--o2));
   }
 
@@ -135,13 +135,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(var(--c1), var(--o2));
-    border: 1px solid rgb(var(--c2));
     height: 100%;
-    color: rgb(var(--c2));
+
+    background-color: rgba(var(--c1), var(--o2));
+    color: rgb(var(--c5));
+
+    border: 1px solid rgb(var(--c2));
     border-radius: 0.5rem;
+
     padding: 0.5rem;
     box-sizing: border-box;
+
     transition:
       transform 0.2s,
       filter 0.5s;
@@ -195,7 +199,7 @@
     border-radius: 0.5rem;
     border: 1px solid rgb(var(--c2));
 
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
     background-color: rgba(var(--c1), var(--o2));
   }
 
@@ -221,6 +225,6 @@
 
   .info button:hover {
     color: rgb(var(--c1));
-    background-color: rgb(var(--c2));
+    background-color: rgb(var(--c5));
   }
 </style>

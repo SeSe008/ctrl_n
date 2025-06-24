@@ -305,19 +305,23 @@
   }
 
   #inputs > button {
-    border: var(--tileBorder, 1px solid rgb(var(--c2)));
-    border-left: none;
-    border-radius: 0 var(--tileBorderRadius) var(--tileBorderRadius) 0;
-
-    outline: none;
-    color: rgb(var(--c2));
-    background-color: rgb(var(--c3));
-    cursor: pointer;
-    font-size: calc(10px + 2vmin);
-    padding: 0 1rem;
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
+    border-left: none;
+    border-radius: 0 var(--tileBorderRadius) var(--tileBorderRadius) 0;
+    outline: none;
+
+    color: rgb(var(--c4));
+    background-color: rgb(var(--c3));
+
+    cursor: pointer;
+
+    font-size: calc(10px + 2vmin);
+
+    padding: 0 1rem;
   }
 
   #suggestions {

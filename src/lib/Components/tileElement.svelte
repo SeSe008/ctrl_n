@@ -59,6 +59,8 @@
     justify-self: var(--tileHorPos);
 
     height: var(--tileHeight);
+    max-height: 100%;
+
     align-self: var(--tileVerPos);
 
     overflow: hidden;

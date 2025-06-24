@@ -71,19 +71,19 @@
   <img id="bg_img" alt="bg img" src={$backgroundImage} />
 
   <div bind:this={tileGrid} id="tiles">
-    {#each { length: $globalTiles.length } as _, i (i)}
+    {#each $globalTiles as _, i (i)}
       <TileManager id={i} />
     {/each}
   </div>
 
   <div id="page_info">
-    {#if $exifData}
-      <div>
+    <div>
+      {#if $exifData}
         <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>
         <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>
         <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a>
-      </div>
-    {/if}
+      {/if}
+    </div>
     <div>
       <button onclick={nextImage}>
         <Icon icon="mdi:image-outline" />
@@ -250,7 +250,7 @@
     align-items: center;
     gap: 0.2em;
 
-    color: rgb(var(--c1));
+    color: rgba(var(--c5), 0.7);
     padding: 0;
 
     background-color: rgba(var(--c2), var(--o2));
@@ -267,7 +267,7 @@
     border-radius: 0.25rem;
 
     background-color: transparent;
-    color: rgb(var(--c1));
+    color: inherit;
 
     text-decoration: none;
     font-size: calc(8px + 0.75vmin);
@@ -289,8 +289,7 @@
     border: none;
     border-radius: 0.25rem;
     background-color: transparent;
-
-    color: rgb(var(--c1));
+    color: inherit;
 
     font-size: calc(8px + 0.75vmin);
     aspect-ratio: 1 / 1;

@@ -51,7 +51,7 @@
 
     background-color: rgba(var(--c1), var(--o1));
 
-    border: 1px solid rgb(var(--c2));
+    border: var(--tileBorder, 1px solid rgb(var(--c2)));
     border-radius: var(--tileBorderRadius);
 
     box-sizing: border-box;
@@ -74,7 +74,7 @@
     box-sizing: border-box;
     border-radius: 1vmin;
 
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
     background-color: rgba(var(--c1), var(--o2));
   }
 
@@ -87,13 +87,12 @@
   }
 
   .bookmark {
-    width: min-content;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     width: calc(8px + 8vmin);
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   .bookmark a {
@@ -110,8 +109,8 @@
     padding: 0.25rem 0.5rem;
     border-radius: 1vmin;
 
-    background-color: rgba(var(--c1), var(--o2));
-    color: rgb(var(--c2));
+    background-color: rgba(var(--c2), var(--o2));
+    color: rgb(var(--c5));
 
     text-decoration: none;
     white-space: nowrap;
@@ -126,8 +125,9 @@
   .bookmark a span {
     display: block;
     width: 100%;
-    min-width: 0;
+
     overflow: hidden;
+
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: center;

@@ -83,10 +83,10 @@
 
 <style>
   #weather {
-    justify-self: center;
-
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 0.5rem;
 
     height: 100%;
@@ -98,7 +98,6 @@
     background-color: rgba(var(--c1), var(--o1));
 
     border: var(--tileBorder, 1px solid rgb(var(--c2)));
-    border: 1px solid rgb(var(--c2));
     border-radius: var(--tileBorderRadius);
 
     box-sizing: border-box;
@@ -109,11 +108,10 @@
     display: grid;
     grid-template-rows: repeat(2, min-content);
     grid-template-columns: repeat(2, auto);
-    box-sizing: border-box;
-    width: max-content;
-    align-self: center;
     gap: 0.25rem;
-    color: rgb(var(--c2));
+
+    width: max-content;
+    color: rgb(var(--c5));
     max-width: 100%;
   }
 

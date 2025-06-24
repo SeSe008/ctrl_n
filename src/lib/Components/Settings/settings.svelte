@@ -87,7 +87,7 @@
     grid-template-rows: minmax(0, 1fr) auto;
 
     background-color: rgba(var(--c1), 0.9);
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
     border-left: 1px solid rgb(var(--c2));
 
     z-index: 100;
@@ -144,14 +144,15 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem 0.25rem 0 0;
 
-    color: rgb(var(--c2));
+    color: inherit;
     background-color: transparent;
 
     cursor: pointer;
+
+    transition: background-color 0.2s linear;
   }
 
   #tab_nav button.active {
-    color: rgb(var(--c1));
     background-color: rgb(var(--c2));
   }
 
@@ -288,8 +289,8 @@
       width: 1rem;
       height: 1rem;
       margin-top: -0.35rem;
-      background-color: rgb(var(--c2));
-      border: 1px solid rgb(var(--c2));
+      background-color: rgb(var(--c4));
+      border: none;
       border-radius: 50%;
     }
 
@@ -365,7 +366,7 @@
     }
 
     .element input[type='checkbox']:checked::before {
-      background-color: rgb(var(--c2));
+      background-color: rgb(var(--c4));
     }
   }
 </style>
