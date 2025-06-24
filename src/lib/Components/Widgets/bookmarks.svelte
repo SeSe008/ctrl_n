@@ -97,6 +97,7 @@
 
   .bookmark a {
     position: relative;
+    z-index: 0;
     display: inline-block;
 
     display: flex;
@@ -117,9 +118,7 @@
     text-overflow: ellipsis;
     font-size: calc(8px + 1vmin);
 
-    transition:
-      transform 0.6s ease-in-out,
-      color 0.6s ease-in-out;
+    transition: color 0.6s ease-in-out;
   }
 
   .bookmark a span {
@@ -154,7 +153,6 @@
   }
 
   .bookmark a:hover {
-    transform: scale(1.01);
     color: black;
   }
 

@@ -67,21 +67,16 @@ export const tileSettings: SettingsSection = new SettingsSection()
   })
   .appendElement('group', {
     center: true,
-    objects: new SettingsSection().appendElement(
-      'select',
-      {
-        label: 'Select Widget:',
-        selectOptions: () =>
-          getManager(getSelectedManagerId() || 0)?.tiles.map((tle, i) => ({
-            label: `Tile ${i + 1} (${tileMetadata[tle.element].label})`,
-            icon: tileMetadata[tle.element].icon
-          })) || [],
-        defaultValue: () => getSelectedTileId(),
-        onChange: (value: number) => setSelectedTile(value)
-      },
-      undefined,
-      [globalTiles, settings]
-    )
+    objects: new SettingsSection().appendElement('select', {
+      label: 'Select Widget:',
+      selectOptions: () =>
+        getManager(getSelectedManagerId() || 0)?.tiles.map((tle, i) => ({
+          label: `Tile ${i + 1} (${tileMetadata[tle.element].label})`,
+          icon: tileMetadata[tle.element].icon
+        })) || [],
+      defaultValue: () => getSelectedTileId(),
+      onChange: (value: number) => setSelectedTile(value)
+    })
   })
   .appendElement('group', {
     objects: new SettingsSection()
@@ -126,247 +121,233 @@ export const tileSettings: SettingsSection = new SettingsSection()
     undefined,
     settings
   )
-  .appendElement(
-    'group',
-    {
-      layout: 'vert',
-      objects: new SettingsSection()
-        .appendElement('text', {
-          text: 'Styling:',
-          classes: ['big', 'left', 'margin-top']
-        })
-        .appendElement(
-          'range',
-          {
-            min: 0,
-            max: 1,
-            step: 0.1,
-            onInput: (value: number) =>
-              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
-            defaultValue: () =>
-              parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
-            label: 'Primary opacity:'
-          },
-          derived(globalTiles, (_) => {
-            const managerId = getSelectedManagerId();
-            const tileId = getSelectedTileId();
-
-            if (managerId != null && tileId != null) {
-              const tile = getTile(managerId, tileId);
-              if (tile) {
-                return tileMetadata[tile.element].cssVars?.includes('--o1') ?? false;
-              }
-            }
-
-            return false;
-          })
-        )
-        .appendElement(
-          'range',
-          {
-            min: 0,
-            max: 1,
-            step: 0.1,
-            onInput: (value: number) =>
-              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
-            defaultValue: () =>
-              parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
-            label: 'Secondary opacity:'
-          },
-          derived(globalTiles, (_) => {
-            const managerId = getSelectedManagerId();
-            const tileId = getSelectedTileId();
-
-            if (managerId != null && tileId != null) {
-              const tile = getTile(managerId, tileId);
-              if (tile) {
-                return tileMetadata[tile.element].cssVars?.includes('--o2') ?? false;
-              }
-            }
-
-            return false;
-          })
-        )
-        .appendElement('range', {
-          min: 0,
-          max: 100,
-          step: 1,
-          unit: '%',
-          onInput: (value: number) =>
-            changeCssVar(
-              getSelectedManagerId(),
-              getSelectedTileId(),
-              '--tileWidth',
-              value === 0 ? 'max-content' : `${value}%`
-            ),
-          specialValues: {
-            0: 'Auto'
-          },
-          defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') === 'max-content'
-              ? 0
-              : parseInt(
-                  getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
-                ),
-          label: 'Tile Width:'
-        })
-        .appendElement(
-          'select',
-          {
-            selectOptions: [
-              {
-                label: 'Center',
-                value: 'center'
-              },
-              {
-                label: 'Left',
-                value: 'flex-start'
-              },
-              {
-                label: 'Right',
-                value: 'flex-end'
-              }
-            ],
-            defaultValue: () =>
-              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
-            onChange: (value: string) =>
-              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
-            label: 'Horizontal Position:'
-          },
-          derived(globalTiles, (_) =>
-            ((h) => parseInt(h) < 100 || h === 'max-content')(
-              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
-            )
-          )
-        )
-        .appendElement('range', {
-          min: 0,
-          max: 100,
-          step: 1,
-          unit: '%',
-          onInput: (value: number) =>
-            changeCssVar(
-              getSelectedManagerId(),
-              getSelectedTileId(),
-              '--tileHeight',
-              value === 0 ? 'max-content' : `${value}%`
-            ),
-          specialValues: {
-            0: 'Auto'
-          },
-          defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') === 'max-content'
-              ? 0
-              : parseInt(
-                  getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
-                ),
-          label: 'Tile Height:'
-        })
-        .appendElement(
-          'select',
-          {
-            selectOptions: [
-              {
-                label: 'Center',
-                value: 'center'
-              },
-              {
-                label: 'Top',
-                value: 'flex-start'
-              },
-              {
-                label: 'Bottom',
-                value: 'flex-end'
-              }
-            ],
-            defaultValue: () =>
-              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ??
-              'flex-start',
-            onChange: (value: string) =>
-              changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
-            label: 'Vertical Position:'
-          },
-          derived(globalTiles, (_) =>
-            ((h) => parseInt(h) < 100 || h === 'max-content')(
-              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
-            )
-          )
-        )
-        .appendElement(
-          'checkbox',
-          {
-            onChange: (value: boolean) =>
-              changeCssVar(
-                getSelectedManagerId(),
-                getSelectedTileId(),
-                '--tileBorder',
-                value ? 'unset' : 'none'
-              ),
-            defaultValue: () =>
-              (getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorder') ??
-                'unset') === 'unset',
-            label: 'Tile-Border'
-          },
-          derived(globalTiles, (_) => {
-            const managerId = getSelectedManagerId();
-            const tileId = getSelectedTileId();
-
-            if (managerId != null && tileId != null) {
-              const tile = getTile(managerId, tileId);
-              if (tile) {
-                return tileMetadata[tile.element].cssVars?.includes('--tileBorder') ?? false;
-              }
-            }
-
-            return false;
-          })
-        )
-        .appendElement(
-          'range',
-          {
-            min: 0,
-            max: 10,
-            step: 0.5,
-            unit: 'rem',
-            onInput: (value: number) =>
-              changeCssVar(
-                getSelectedManagerId(),
-                getSelectedTileId(),
-                '--tileBorderRadius',
-                `${value}rem`
-              ),
-            defaultValue: () =>
-              parseFloat(
-                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorderRadius') ??
-                  '0.5'
-              ),
-            label: 'Border Radius:'
-          },
-          derived(globalTiles, (_) => {
-            const managerId = getSelectedManagerId();
-            const tileId = getSelectedTileId();
-
-            if (managerId != null && tileId != null) {
-              const tile = getTile(managerId, tileId);
-              if (tile) {
-                return tileMetadata[tile.element].cssVars?.includes('--tileBorderRadius') ?? false;
-              }
-            }
-
-            return false;
-          })
-        )
-    },
-    undefined,
-    [
-      settings,
-      derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-        const mgr = $settings.selectedManager;
-        const tle = $settings.selectedTile;
-        return mgr !== undefined && tle !== undefined ? $globalTiles[mgr].tiles[tle].element : null;
+  .appendElement('group', {
+    layout: 'vert',
+    objects: new SettingsSection()
+      .appendElement('text', {
+        text: 'Styling:',
+        classes: ['big', 'left', 'margin-top']
       })
-    ]
-  );
+      .appendElement(
+        'range',
+        {
+          min: 0,
+          max: 1,
+          step: 0.1,
+          onInput: (value: number) =>
+            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
+          defaultValue: () =>
+            parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
+          label: 'Primary opacity:'
+        },
+        derived(globalTiles, (_) => {
+          const managerId = getSelectedManagerId();
+          const tileId = getSelectedTileId();
+
+          if (managerId != null && tileId != null) {
+            const tile = getTile(managerId, tileId);
+            if (tile) {
+              return tileMetadata[tile.element].cssVars?.includes('--o1') ?? false;
+            }
+          }
+
+          return false;
+        })
+      )
+      .appendElement(
+        'range',
+        {
+          min: 0,
+          max: 1,
+          step: 0.1,
+          onInput: (value: number) =>
+            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
+          defaultValue: () =>
+            parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
+          label: 'Secondary opacity:'
+        },
+        derived(globalTiles, (_) => {
+          const managerId = getSelectedManagerId();
+          const tileId = getSelectedTileId();
+
+          if (managerId != null && tileId != null) {
+            const tile = getTile(managerId, tileId);
+            if (tile) {
+              return tileMetadata[tile.element].cssVars?.includes('--o2') ?? false;
+            }
+          }
+
+          return false;
+        })
+      )
+      .appendElement('range', {
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: '%',
+        onInput: (value: number) =>
+          changeCssVar(
+            getSelectedManagerId(),
+            getSelectedTileId(),
+            '--tileWidth',
+            value === 0 ? 'max-content' : `${value}%`
+          ),
+        specialValues: {
+          0: 'Auto'
+        },
+        defaultValue: () =>
+          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') === 'max-content'
+            ? 0
+            : parseInt(
+                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+              ),
+        label: 'Tile Width:'
+      })
+      .appendElement(
+        'select',
+        {
+          selectOptions: [
+            {
+              label: 'Center',
+              value: 'center'
+            },
+            {
+              label: 'Left',
+              value: 'flex-start'
+            },
+            {
+              label: 'Right',
+              value: 'flex-end'
+            }
+          ],
+          defaultValue: () =>
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
+          onChange: (value: string) =>
+            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
+          label: 'Horizontal Position:'
+        },
+        derived(globalTiles, (_) =>
+          ((h) => parseInt(h) < 100 || h === 'max-content')(
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+          )
+        )
+      )
+      .appendElement('range', {
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: '%',
+        onInput: (value: number) =>
+          changeCssVar(
+            getSelectedManagerId(),
+            getSelectedTileId(),
+            '--tileHeight',
+            value === 0 ? 'max-content' : `${value}%`
+          ),
+        specialValues: {
+          0: 'Auto'
+        },
+        defaultValue: () =>
+          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') === 'max-content'
+            ? 0
+            : parseInt(
+                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+              ),
+        label: 'Tile Height:'
+      })
+      .appendElement(
+        'select',
+        {
+          selectOptions: [
+            {
+              label: 'Center',
+              value: 'center'
+            },
+            {
+              label: 'Top',
+              value: 'flex-start'
+            },
+            {
+              label: 'Bottom',
+              value: 'flex-end'
+            }
+          ],
+          defaultValue: () =>
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ?? 'flex-start',
+          onChange: (value: string) =>
+            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
+          label: 'Vertical Position:'
+        },
+        derived(globalTiles, (_) =>
+          ((h) => parseInt(h) < 100 || h === 'max-content')(
+            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+          )
+        )
+      )
+      .appendElement(
+        'checkbox',
+        {
+          onChange: (value: boolean) =>
+            changeCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--tileBorder',
+              value ? 'unset' : 'none'
+            ),
+          defaultValue: () =>
+            (getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorder') ?? 'unset') ===
+            'unset',
+          label: 'Tile-Border'
+        },
+        derived(globalTiles, (_) => {
+          const managerId = getSelectedManagerId();
+          const tileId = getSelectedTileId();
+
+          if (managerId != null && tileId != null) {
+            const tile = getTile(managerId, tileId);
+            if (tile) {
+              return tileMetadata[tile.element].cssVars?.includes('--tileBorder') ?? false;
+            }
+          }
+
+          return false;
+        })
+      )
+      .appendElement(
+        'range',
+        {
+          min: 0,
+          max: 10,
+          step: 0.5,
+          unit: 'rem',
+          onInput: (value: number) =>
+            changeCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--tileBorderRadius',
+              `${value}rem`
+            ),
+          defaultValue: () =>
+            parseFloat(
+              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorderRadius') ?? '0.5'
+            ),
+          label: 'Border Radius:'
+        },
+        derived(globalTiles, (_) => {
+          const managerId = getSelectedManagerId();
+          const tileId = getSelectedTileId();
+
+          if (managerId != null && tileId != null) {
+            const tile = getTile(managerId, tileId);
+            if (tile) {
+              return tileMetadata[tile.element].cssVars?.includes('--tileBorderRadius') ?? false;
+            }
+          }
+
+          return false;
+        })
+      )
+  });
 
 export const tileManagerSettings: SettingsSection = new SettingsSection()
   .appendElement('text', {

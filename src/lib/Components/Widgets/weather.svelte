@@ -177,7 +177,7 @@
     font-size: calc(8px + 1vmin);
     text-align: center;
 
-    color: rgb(var(--c2));
+    color: rgb(var(--c5));
   }
 
   .info button {

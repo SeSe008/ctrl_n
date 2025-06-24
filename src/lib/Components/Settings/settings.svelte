@@ -35,7 +35,13 @@
   // On widget change
   unsubscribes.push(globalTiles.subscribe(() => getElements()));
 
-  const keyStore = derived([settings, globalTiles], (values) => JSON.stringify(values));
+  const keyStore = derived([globalTiles, settings], ([$globalTiles, $settings]) => {
+    const mgr = $settings.selectedManager;
+    const tle = $settings.selectedTile;
+    return mgr !== undefined && tle !== undefined
+      ? JSON.stringify(`${$globalTiles[mgr].tiles[tle].element}:${$settings}`)
+      : $settings;
+  });
 
   onDestroy(() => {
     unsubscribes.forEach((unsub) => unsub());
@@ -60,9 +66,9 @@
           {/each}
         </div>
       {:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
-        {#key keyStore}
+        {#key $keyStore}
           <div class="settings_tab">
-            {#each settingsElements as element, i (i)}
+            {#each settingsElements as element, i (`${element.elementType}-${i}`)}
               <div class="element"><SettingsElement {element} /></div>
             {/each}
           </div>
