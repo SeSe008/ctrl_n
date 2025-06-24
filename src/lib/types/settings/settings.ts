@@ -16,8 +16,8 @@ import type { Readable } from 'svelte/store';
 
 export interface Settings {
   enabled: boolean;
-  selectedManager?: number;
-  selectedTile?: number;
+  selectedManager: number;
+  selectedTile: number;
 }
 
 export type ElementProps =

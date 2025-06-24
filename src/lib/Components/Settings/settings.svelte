@@ -41,7 +41,7 @@
   const keyStore = derived([globalTiles, settings], ([$globalTiles, $settings]) => {
     const mgr = $settings.selectedManager;
     const tle = $settings.selectedTile;
-    return mgr !== undefined && tle !== undefined
+    return $globalTiles[mgr] && $globalTiles[mgr].tiles[tle]
       ? JSON.stringify(`${$globalTiles[mgr].tiles[tle].element}:${$settings}`)
       : $settings;
   });
@@ -51,7 +51,7 @@
   });
 </script>
 
-<aside id="settings">
+<aside id="settings" class={$selectingTile ? 'selecting' : ''}>
   <div id="tab_cont">
     <div id="tab_nav">
       <button class={selectedTab === 0 ? 'active' : ''} onclick={() => (selectedTab = 0)}>
@@ -68,7 +68,7 @@
             <div class="element"><SettingsElement {element} /></div>
           {/each}
         </div>
-      {:else if selectedTab === 1 && $settings.selectedManager !== undefined && $settings.selectedTile !== undefined && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile].element !== undefined}
+      {:else if selectedTab === 1 && $globalTiles[$settings.selectedManager] && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile]}
         {#key $keyStore}
           <div class="settings_tab">
             {#each settingsElements as element, i (`${element.elementType}-${i}`)}
@@ -119,6 +119,10 @@
       position: fixed;
       width: min(600px, 100%);
       right: 0;
+    }
+
+    #settings.selecting {
+      display: none;
     }
   }
 

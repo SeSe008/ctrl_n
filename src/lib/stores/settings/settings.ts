@@ -1,19 +1,18 @@
 import { writable, get } from 'svelte/store';
 import type { Settings } from '$lib/types/settings/settings';
 
-export const settings = writable<Settings>({ enabled: false });
+export const settings = writable<Settings>({ enabled: false, selectedManager: 0, selectedTile: 0 });
 
 export function toggleSettings(managerId?: number, tileId?: number) {
   settings.update((current) => {
     if (current.enabled) {
-      return { enabled: false };
+      current.enabled = false;
     } else {
-      return {
-        enabled: true,
-        selectedManager: managerId,
-        selectedTile: tileId
-      };
+      current.enabled = true;
+      current.selectedManager = managerId ?? 0;
+      current.selectedTile = tileId ?? 0;
     }
+    return current;
   });
 }
 
@@ -28,7 +27,7 @@ export function setSelectedTile(selectedTile: number) {
   });
 }
 
-export function getSelectedTileId(): number | undefined {
+export function getSelectedTileId(): number {
   return get(settings).selectedTile;
 }
 
@@ -39,10 +38,9 @@ export function setSelectedManager(selectedManager: number) {
   });
 }
 
-export function getSelectedManagerId(): number | undefined {
+export function getSelectedManagerId(): number {
   return get(settings).selectedManager;
 }
-
 
 export const selectingTile = writable<boolean>(false);
 

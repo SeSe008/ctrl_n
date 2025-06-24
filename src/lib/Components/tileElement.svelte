@@ -35,7 +35,7 @@
 
   let tileElement = $state<HTMLDivElement>();
 
-  onMount(() => {
+  $effect(() => {
     if (tileElement)
       tileElement.addEventListener('click', () => {
         if (isSelectingTile()) {

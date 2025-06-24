@@ -65,9 +65,7 @@
   });
 
   function stopSelectingTile(e: Event) {
-    console.log(e.target);
     if (e.target && (e.target as HTMLElement).tagName === 'MAIN' && isSelectingTile()) {
-      console.log(e.target);
       toggleSelectingTile();
     }
   }
