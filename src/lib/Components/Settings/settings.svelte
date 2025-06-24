@@ -3,7 +3,10 @@
   import {
     getSelectedManagerId,
     getSelectedTileId,
+    selectingTile,
+    setSelectingTile,
     settings,
+    toggleSelectingTile,
     toggleSettings
   } from '$lib/stores/settings/settings';
 
@@ -77,7 +80,17 @@
     </div>
   </div>
   <div id="close_controls">
-    <button onclick={() => toggleSettings()}> Close </button>
+    <button onclick={() => toggleSelectingTile()} class={$selectingTile ? 'active' : ''}
+      >Select Tile</button
+    >
+    <button
+      onclick={() => {
+        toggleSettings();
+        setSelectingTile(false);
+      }}
+    >
+      Close
+    </button>
   </div>
 </aside>
 
@@ -189,7 +202,7 @@
 
     display: flex;
     align-items: flex-end;
-    justify-content: flex-end;
+    justify-content: space-between;
 
     background-color: rgb(var(--c1));
     border-top: 1px solid rgb(var(--c2));
@@ -225,8 +238,10 @@
         color 0.2s linear;
     }
 
-    .element button:hover {
-      background-color: rgb(var(--c2));
+    .element button:hover,
+    #close_controls button:hover,
+    #close_controls button.active {
+      background-color: rgb(var(--c5));
       color: rgb(var(--c1));
     }
 

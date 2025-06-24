@@ -66,19 +66,6 @@ export const tileSettings: SettingsSection = new SettingsSection()
     classes: ['large', 'center', 'strong', 'margin_top']
   })
   .appendElement('group', {
-    center: true,
-    objects: new SettingsSection().appendElement('select', {
-      label: 'Select Widget:',
-      selectOptions: () =>
-        getManager(getSelectedManagerId() || 0)?.tiles.map((tle, i) => ({
-          label: `Tile ${i + 1} (${tileMetadata[tle.element].label})`,
-          icon: tileMetadata[tle.element].icon
-        })) || [],
-      defaultValue: () => getSelectedTileId(),
-      onChange: (value: number) => setSelectedTile(value)
-    })
-  })
-  .appendElement('group', {
     objects: new SettingsSection()
       .appendElement('button', {
         text: 'Append Tile',
@@ -353,21 +340,6 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
   .appendElement('text', {
     text: 'Row Settings',
     classes: ['large', 'center', 'strong', 'margin_top']
-  })
-  .appendElement('group', {
-    center: true,
-    objects: new SettingsSection().appendElement('select', {
-      label: 'Select Row:',
-      selectOptions: () =>
-        getTiles().map((_, i) => ({
-          label: `Row ${i + 1}`
-        })),
-      onChange: (value: number) => {
-        setSelectedTile(0);
-        setSelectedManager(value);
-      },
-      defaultValue: derived(settings, ($settings) => $settings.selectedManager || 0)
-    })
   })
   .appendElement('group', {
     objects: new SettingsSection()

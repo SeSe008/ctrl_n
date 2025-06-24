@@ -10,7 +10,13 @@
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
   import { globalTiles } from '$lib/stores/tiles';
-  import { settings, toggleSettings } from '$lib/stores/settings/settings';
+
+  import {
+    settings,
+    toggleSettings,
+    isSelectingTile,
+    toggleSelectingTile
+  } from '$lib/stores/settings/settings';
 
   import {
     backgroundImage,
@@ -58,6 +64,14 @@
     }
   });
 
+  function stopSelectingTile(e: Event) {
+    console.log(e.target);
+    if (e.target && (e.target as HTMLElement).tagName === 'MAIN' && isSelectingTile()) {
+      console.log(e.target);
+      toggleSelectingTile();
+    }
+  }
+
   onMount(async () => {
     colorThief = new ColorThief();
 
@@ -66,6 +80,8 @@
     initializeTiles();
   });
 </script>
+
+<svelte:window on:click={stopSelectingTile} />
 
 <main>
   <img id="bg_img" alt="bg img" src={$backgroundImage} />
@@ -220,8 +236,11 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.5rem;
+
     overflow-x: hidden;
     overflow-y: visible;
+
+    pointer-events: none;
   }
 
   #page_info {
@@ -253,7 +272,7 @@
     color: rgba(var(--c5), 0.7);
     padding: 0;
 
-    background-color: rgba(var(--c2), var(--o2));
+    background-color: rgba(var(--c1), var(--o2));
     border-radius: 0.25rem;
   }
 
@@ -278,7 +297,7 @@
   }
 
   #page_info a:hover {
-    background-color: rgb(var(--c2));
+    background-color: rgb(var(--c1));
   }
 
   #page_info button {
@@ -300,6 +319,6 @@
   }
 
   #page_info button:hover {
-    background-color: rgb(var(--c2));
+    background-color: rgb(var(--c1));
   }
 </style>
