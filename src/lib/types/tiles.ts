@@ -12,7 +12,10 @@ export interface TileManager {
   height: number;
 }
 
-export type GlobalTiles = TileManager[];
+export interface GlobalTiles {
+  managers: TileManager[];
+  cssVars: Record<string, string>;
+}
 
 export interface TileDef {
   name: string;

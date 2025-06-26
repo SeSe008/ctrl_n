@@ -9,7 +9,7 @@
     settings,
     toggleSelectingTile
   } from '$lib/stores/settings/settings';
-  import { onMount } from 'svelte';
+  import { applyCssVars } from '$lib/utils/applyCssVars';
 
   interface Props {
     managerId: number;
@@ -18,20 +18,6 @@
 
   let { managerId, tileId }: Props = $props();
 
-  function applyVars(node: HTMLElement, vars: Record<string, string> | undefined) {
-    if (!vars) return;
-
-    for (const [key, value] of Object.entries(vars)) {
-      node.style.setProperty(key, value);
-    }
-    return {
-      update(newVars: Record<string, string>) {
-        for (const [key, value] of Object.entries(newVars)) {
-          node.style.setProperty(key, value);
-        }
-      }
-    };
-  }
 
   let tileElement = $state<HTMLDivElement>();
 
@@ -47,12 +33,12 @@
   });
 </script>
 
-{#key JSON.stringify($globalTiles[managerId]?.tiles[tileId])}
+{#key JSON.stringify($globalTiles.managers[managerId]?.tiles[tileId])}
   {@const tile = getTile(managerId, tileId)}
   {#if tile}
     <div
       bind:this={tileElement}
-      use:applyVars={tile.cssVars}
+      use:applyCssVars={tile.cssVars}
       class="tile_element {$settings.enabled &&
       $settings.selectedManager === managerId &&
       $settings.selectedTile === tileId

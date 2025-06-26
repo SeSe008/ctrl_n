@@ -6,7 +6,7 @@
   import TileManager from '$lib/Components/tileManager.svelte';
   import Settings from '$lib/Components/Settings/settings.svelte';
 
-  import { applyImage } from '$lib/utils/useImage';
+  import { applyImage } from '$lib/utils/applyImage';
   import { exifData } from '$lib/stores/exif';
   import { initializeTiles } from '$lib/stores/tiles';
   import { globalTiles } from '$lib/stores/tiles';
@@ -26,6 +26,8 @@
     initBgImages
   } from '$lib/stores/backgroundImage';
   import type { BgImageCategory } from '$lib/types/backgroundImage';
+
+  import { applyCssVars } from '$lib/utils/applyCssVars';
 
   let colorThief: ColorThief;
 
@@ -55,9 +57,9 @@
   }
 
   let tileGrid: HTMLDivElement;
-  globalTiles.subscribe((managers) => {
+  globalTiles.subscribe((gTls) => {
     if (tileGrid) {
-      const rows = managers
+      const rows = gTls.managers
         .map((m) => (m.height === 0 ? 'max-content' : `${m.height}fr`))
         .join(' ');
       tileGrid.style.gridTemplateRows = rows;
@@ -81,11 +83,11 @@
 
 <svelte:window on:click={stopSelectingTile} />
 
-<main>
+<main use:applyCssVars={$globalTiles.cssVars}>
   <img id="bg_img" alt="bg img" src={$backgroundImage} />
 
   <div bind:this={tileGrid} id="tiles">
-    {#each $globalTiles as _, i (i)}
+    {#each $globalTiles.managers as _, i (i)}
       <TileManager id={i} />
     {/each}
   </div>
@@ -117,13 +119,16 @@
 <style>
   :global {
     :root {
+      /* Global Page Vars */
       --c1: 255, 255, 255;
       --c2: 0, 0, 0;
       --c3: 150, 150, 150;
       --c4: 100, 100, 100;
       --c5: 50, 50, 50, 50;
 
-      /* Tile-Specific vars */
+      --tileContainerPadding: 0rem;
+
+      /* Tile-Specific Vars */
       --o1: 0.3;
       --o2: 0.7;
 
@@ -138,11 +143,12 @@
     }
 
     html,
-    xc body {
+    body {
       height: 100%;
       width: 100%;
       margin: 0;
       padding: 0;
+      overflow: hidden;
     }
 
     body {
@@ -150,11 +156,6 @@
       flex-direction: row;
       position: absolute;
       inset: 0;
-
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      overflow: hidden;
 
       font-family: 'Quicksand', sans-serif;
 
@@ -214,6 +215,7 @@
 
     padding: 0.5rem 1rem;
     box-sizing: border-box;
+    overflow: hidden;
   }
 
   #bg_img {
@@ -235,10 +237,12 @@
     grid-template-columns: 1fr;
     gap: 0.5rem;
 
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: hidden;
 
     pointer-events: none;
+
+    padding: var(--tileContainerPadding, 0);
+    box-sizing: border-box;
   }
 
   #page_info {
@@ -247,11 +251,11 @@
     grid-auto-columns: minmax(max-content, 1fr);
     gap: 0.25rem;
 
-    font-size: 0.75em;
-    font-weight: bold;
-
     justify-items: center;
     align-items: stretch;
+
+    font-size: 0.75em;
+    font-weight: bold;
   }
 
   #page_info div:first-child {

@@ -41,8 +41,8 @@
   const keyStore = derived([globalTiles, settings], ([$globalTiles, $settings]) => {
     const mgr = $settings.selectedManager;
     const tle = $settings.selectedTile;
-    return $globalTiles[mgr] && $globalTiles[mgr].tiles[tle]
-      ? JSON.stringify(`${$globalTiles[mgr].tiles[tle].element}:${$settings}`)
+    return $globalTiles.managers[mgr] && $globalTiles.managers[mgr].tiles[tle]
+      ? JSON.stringify(`${$globalTiles.managers[mgr].tiles[tle].element}:${$settings}`)
       : $settings;
   });
 
@@ -68,7 +68,7 @@
             <div class="element"><SettingsElement {element} /></div>
           {/each}
         </div>
-      {:else if selectedTab === 1 && $globalTiles[$settings.selectedManager] && $globalTiles[$settings.selectedManager].tiles[$settings.selectedTile]}
+      {:else if selectedTab === 1 && $globalTiles.managers[$settings.selectedManager] && $globalTiles.managers[$settings.selectedManager].tiles[$settings.selectedTile]}
         {#key $keyStore}
           <div class="settings_tab">
             {#each settingsElements as element, i (`${element.elementType}-${i}`)}

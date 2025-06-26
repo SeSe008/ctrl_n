@@ -314,7 +314,7 @@
     border-radius: 0 var(--tileBorderRadius) var(--tileBorderRadius) 0;
     outline: none;
 
-    color: rgb(var(--c4));
+    color: rgb(var(--c5));
     background-color: rgb(var(--c3));
 
     cursor: pointer;

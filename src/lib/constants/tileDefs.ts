@@ -2,7 +2,7 @@ import { derived, get } from 'svelte/store';
 
 import type { TileDef } from '$lib/types/tiles';
 import { tileMetadata } from '$lib/constants/tileMetadata';
-import { createNewSettingsSlice, createNewSettingsSection } from '$lib/utils/settings';
+import { createNewSettingsSlice, createNewSettingsSection } from '$lib/utils/createSettings';
 
 import SearchBar from '$lib/Components/Widgets/searchBar.svelte';
 import Clock from '$lib/Components/Widgets/clock.svelte';
@@ -32,7 +32,8 @@ import {
   removeBookmark,
   toggleBookmarksLinkTarget
 } from '$lib/stores/widgets/bookmarks';
-import { changeCssVar, getCssVar, globalTiles } from '$lib/stores/tiles';
+
+import { changeTileCssVar, getTileCssVar, globalTiles } from '$lib/stores/tiles';
 import { getSelectedManagerId, getSelectedTileId } from '$lib/stores/settings/settings';
 
 export const tileDefs: TileDef[] = tileMetadata.map((m) => {
@@ -98,12 +99,15 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                   })),
                   defaultValue: () => {
                     const cssVal =
-                      getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontSize') ??
-                      'xxx-large';
+                      getTileCssVar(
+                        getSelectedManagerId(),
+                        getSelectedTileId(),
+                        '--clockFontSize'
+                      ) ?? 'xxx-large';
                     return cssVal.endsWith('em') ? 'custom' : cssVal;
                   },
                   onChange: (value: string) =>
-                    changeCssVar(
+                    changeTileCssVar(
                       getSelectedManagerId(),
                       getSelectedTileId(),
                       '--clockFontSize',
@@ -118,7 +122,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                     max: 10,
                     step: 0.1,
                     onInput: (value: number) => {
-                      changeCssVar(
+                      changeTileCssVar(
                         getSelectedManagerId(),
                         getSelectedTileId(),
                         '--clockFontSize',
@@ -127,8 +131,11 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                     },
                     defaultValue: () =>
                       parseFloat(
-                        getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontSize') ??
-                          '1'
+                        getTileCssVar(
+                          getSelectedManagerId(),
+                          getSelectedTileId(),
+                          '--clockFontSize'
+                        ) ?? '1'
                       ),
                     label: 'Font-Size:',
                     unit: 'em'
@@ -136,7 +143,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                   derived(
                     globalTiles,
                     (_) =>
-                      getCssVar(
+                      getTileCssVar(
                         getSelectedManagerId(),
                         getSelectedTileId(),
                         '--clockFontSize'
@@ -155,10 +162,13 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                     }
                   ],
                   defaultValue: () =>
-                    getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontStyle') ??
-                    'normal',
+                    getTileCssVar(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      '--clockFontStyle'
+                    ) ?? 'normal',
                   onChange: (value: string) =>
-                    changeCssVar(
+                    changeTileCssVar(
                       getSelectedManagerId(),
                       getSelectedTileId(),
                       '--clockFontStyle',
@@ -172,10 +182,13 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                     label: val
                   })),
                   defaultValue: () =>
-                    getCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockFontWeight') ??
-                    'bold',
+                    getTileCssVar(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      '--clockFontWeight'
+                    ) ?? 'bold',
                   onChange: (value: string) =>
-                    changeCssVar(
+                    changeTileCssVar(
                       getSelectedManagerId(),
                       getSelectedTileId(),
                       '--clockFontWeight',

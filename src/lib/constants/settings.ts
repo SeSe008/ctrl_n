@@ -2,21 +2,24 @@ import type { ElementComponents } from '$lib/types/settings/settings';
 import { SettingsElement, SettingsSection } from '$lib/classes/settings';
 
 import { derived, get } from 'svelte/store';
+
 import {
-  addTile,
-  removeTile,
-  changeManagerHeight,
-  changeTile,
   globalTiles,
-  changeCssVar,
+  getManagers,
+  getManager,
   addManager,
   removeManager,
-  getTiles,
-  getManager,
-  getCssVar,
+  changeManagerHeight,
   getTile,
-  resetCssVars
+  addTile,
+  removeTile,
+  setTileElement,
+  getTileCssVar,
+  changeTileCssVar,
+  resetTileCssVars,
+  changeGlobalCssVar
 } from '$lib/stores/tiles';
+
 import {
   getSelectedManagerId,
   getSelectedTileId,
@@ -24,7 +27,9 @@ import {
   setSelectedTile,
   settings
 } from '$lib/stores/settings/settings';
+
 import { tileMetadata } from '$lib/constants/tileMetadata';
+
 import {
   addImageToCategoryInCategories,
   getImageCategories,
@@ -96,8 +101,8 @@ export const tileSettings: SettingsSection = new SettingsSection()
         return { label, icon };
       }),
       onChange: (value: number) => {
-        resetCssVars(getSelectedManagerId(), getSelectedTileId());
-        changeTile(getSelectedManagerId(), getSelectedTileId(), value);
+        resetTileCssVars(getSelectedManagerId(), getSelectedTileId());
+        setTileElement(getSelectedManagerId(), getSelectedTileId(), value);
       },
       defaultValue: derived(
         globalTiles,
@@ -122,9 +127,9 @@ export const tileSettings: SettingsSection = new SettingsSection()
           max: 1,
           step: 0.1,
           onInput: (value: number) =>
-            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
+            changeTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
           defaultValue: () =>
-            parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
+            parseFloat(getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
           label: 'Primary opacity:'
         },
         derived(globalTiles, (_) => {
@@ -148,9 +153,9 @@ export const tileSettings: SettingsSection = new SettingsSection()
           max: 1,
           step: 0.1,
           onInput: (value: number) =>
-            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
+            changeTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
           defaultValue: () =>
-            parseFloat(getCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
+            parseFloat(getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
           label: 'Secondary opacity:'
         },
         derived(globalTiles, (_) => {
@@ -173,7 +178,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
         step: 1,
         unit: '%',
         onInput: (value: number) =>
-          changeCssVar(
+          changeTileCssVar(
             getSelectedManagerId(),
             getSelectedTileId(),
             '--tileWidth',
@@ -183,10 +188,11 @@ export const tileSettings: SettingsSection = new SettingsSection()
           0: 'Auto'
         },
         defaultValue: () =>
-          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') === 'max-content'
+          getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ===
+          'max-content'
             ? 0
             : parseInt(
-                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+                getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
               ),
         label: 'Tile Width:'
       })
@@ -208,14 +214,14 @@ export const tileSettings: SettingsSection = new SettingsSection()
             }
           ],
           defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
+            getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos') ?? 'center',
           onChange: (value: string) =>
-            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
+            changeTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHorPos', value),
           label: 'Horizontal Position:'
         },
         derived(globalTiles, (_) =>
           ((h) => parseInt(h) < 100 || h === 'max-content')(
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
+            getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileWidth') ?? '100'
           )
         )
       )
@@ -225,7 +231,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
         step: 1,
         unit: '%',
         onInput: (value: number) =>
-          changeCssVar(
+          changeTileCssVar(
             getSelectedManagerId(),
             getSelectedTileId(),
             '--tileHeight',
@@ -235,10 +241,11 @@ export const tileSettings: SettingsSection = new SettingsSection()
           0: 'Auto'
         },
         defaultValue: () =>
-          getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') === 'max-content'
+          getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ===
+          'max-content'
             ? 0
             : parseInt(
-                getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+                getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
               ),
         label: 'Tile Height:'
       })
@@ -260,14 +267,15 @@ export const tileSettings: SettingsSection = new SettingsSection()
             }
           ],
           defaultValue: () =>
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ?? 'flex-start',
+            getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos') ??
+            'flex-start',
           onChange: (value: string) =>
-            changeCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
+            changeTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileVerPos', value),
           label: 'Vertical Position:'
         },
         derived(globalTiles, (_) =>
           ((h) => parseInt(h) < 100 || h === 'max-content')(
-            getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
+            getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileHeight') ?? '100'
           )
         )
       )
@@ -275,15 +283,15 @@ export const tileSettings: SettingsSection = new SettingsSection()
         'checkbox',
         {
           onChange: (value: boolean) =>
-            changeCssVar(
+            changeTileCssVar(
               getSelectedManagerId(),
               getSelectedTileId(),
               '--tileBorder',
               value ? 'unset' : 'none'
             ),
           defaultValue: () =>
-            (getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorder') ?? 'unset') ===
-            'unset',
+            (getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorder') ??
+              'unset') === 'unset',
           label: 'Tile-Border'
         },
         derived(globalTiles, (_) => {
@@ -308,7 +316,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           step: 0.5,
           unit: 'rem',
           onInput: (value: number) =>
-            changeCssVar(
+            changeTileCssVar(
               getSelectedManagerId(),
               getSelectedTileId(),
               '--tileBorderRadius',
@@ -316,7 +324,8 @@ export const tileSettings: SettingsSection = new SettingsSection()
             ),
           defaultValue: () =>
             parseFloat(
-              getCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorderRadius') ?? '0.5'
+              getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileBorderRadius') ??
+                '0.5'
             ),
           label: 'Border Radius:'
         },
@@ -352,7 +361,7 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
         text: 'Remove Row',
         icon: 'mdi:remove-circle-outline',
         onClick: () => {
-          if (getTiles().length > 1) {
+          if (getManagers().length > 1) {
             removeManager(getSelectedManagerId());
             setSelectedManager(0);
           }
@@ -454,4 +463,17 @@ export const globalSettings: SettingsSection = new SettingsSection()
     },
     undefined,
     [imageCategory, imageCategories]
-  );
+  )
+  .appendElement('text', {
+    text: 'Styling:',
+    classes: ['big', 'left', 'margin_top']
+  })
+  .appendElement('range', {
+    min: 0,
+    max: 10,
+    step: 0.5,
+    unit: 'rem',
+    onInput: (value: number) => {
+      changeGlobalCssVar('--tileContainerPadding', `${value.toString()}rem`);
+    }
+  });

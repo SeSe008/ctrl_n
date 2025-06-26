@@ -251,6 +251,6 @@
 
   #calculator button:hover {
     transform: scale(1.01);
-    filter: drop-shadow(0 0 0.125rem rgb(var(--c2)));
+    filter: drop-shadow(0 0 0.125rem rgb(var(--c5)));
   }
 </style>

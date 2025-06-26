@@ -143,6 +143,6 @@ export function initBgImages(
     if (!getImageCategories()[category].images)
       setImageCategoryInCategories(category, await fetchImages(category));
 
-    useImage(getImageCategories()[category].images, imageInterval, colors, colorThief);
+    useImage({ images: getImageCategories()[category].images, changeInterval: imageInterval, colors, colorThief });
   });
 }

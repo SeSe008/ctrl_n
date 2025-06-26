@@ -13,7 +13,7 @@
   let manager = $state<TileManager>();
 
   $effect(() => {
-    if ($globalTiles && $globalTiles[id]) manager = $globalTiles[id];
+    if ($globalTiles && $globalTiles.managers[id]) manager = $globalTiles.managers[id];
   });
 
   let tileManager: HTMLDivElement;

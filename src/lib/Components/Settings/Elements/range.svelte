@@ -43,8 +43,7 @@
       {#if specialValues && specialValues[rangeValue]}
         {specialValues[rangeValue]}
       {:else}
-        {rangeValue}
-        {unit}
+        {rangeValue}{unit}
       {/if}
     </span>
   </div>
@@ -57,9 +56,5 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
-  }
-
-  span {
-    gap: 0;
   }
 </style>
