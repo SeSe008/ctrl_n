@@ -78,6 +78,10 @@
     color: rgb(var(--c5));
     background-color: rgba(var(--c1), var(--o1));
 
+    --txtBrdSize: calc(var(--textBorderSize) * 1px);
+    --txtBrdSizeInv: calc(var(--txtBrdSize) * -1);
+    --txtBrdClr: var(--textBorderColor, rgb(var(--c1)));
+        
     box-sizing: border-box;
     padding: 1rem;
     margin: 0;
@@ -90,6 +94,22 @@
     font-size: var(--clockFontSize, xxx-large);
     font-style: var(--clockFontStyle, normal);
     font-weight: var(--clockFontWeight, bold);
+  }
+
+  @supports (-webkit-text-stroke: 1px currentColor) {
+    h1 {
+      -webkit-text-stroke: var(--txtBrdSize) var(--txtBrdClr);
+    }
+  }
+
+  @supports not (-webkit-text-stroke: 1px currentColor) {
+    h1 {
+      text-shadow:
+	var(--txtBrdSizeInv) var(--txtBrdSizeInv) 0 var(--txtBrdClr),
+	var(--txtBrdSize) var(--txtBrdSizeInv) 0 var(--txtBrdClr),
+	var(--txtBrdSizeInv) var(--txtBrdSize) 0 var(--txtBrdClr),
+	var(--txtBrdSize) var(--txtBrdSize) 0 var(--txtBrdClr);
+    }
   }
 
   /* Analog clock */

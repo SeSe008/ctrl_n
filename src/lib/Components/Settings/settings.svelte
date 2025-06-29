@@ -80,9 +80,9 @@
     </div>
   </div>
   <div id="close_controls">
-    <button onclick={() => toggleSelectingTile()} class={$selectingTile ? 'active' : ''}
-      >Select Tile</button
-    >
+    <button onclick={() => toggleSelectingTile()} class={$selectingTile ? 'active' : ''}>
+      <b>Select Tile</b>
+    </button>
     <button
       onclick={() => {
         toggleSettings();
@@ -95,6 +95,8 @@
 </aside>
 
 <style>
+  @import url(/styles/settingsElements.css);
+
   #settings {
     overflow: hidden;
 
@@ -180,7 +182,7 @@
   }
 
   #tab_elements {
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .settings_tab {
@@ -220,178 +222,5 @@
     overflow: hidden;
 
     font-size: inherit;
-  }
-
-  :global {
-    .element button,
-    #close_controls button {
-      width: max-content;
-      height: min-content;
-
-      outline: none;
-      border: 1px solid rgb(var(--c2));
-      border-radius: 0.25em;
-      background-color: rgb(var(--c1));
-      color: inherit;
-
-      font-size: calc(8px + 1vmin);
-      cursor: pointer;
-
-      transition:
-        background-color 0.2s linear,
-        color 0.2s linear;
-    }
-
-    .element button:hover,
-    #close_controls button:hover,
-    #close_controls button.active {
-      background-color: rgb(var(--c5));
-      color: rgb(var(--c1));
-    }
-
-    .element select {
-      appearance: base-select;
-
-      width: max-content;
-      height: min-content;
-
-      outline: none;
-      border: 1px solid rgb(var(--c2));
-      border-radius: 0.5vmin;
-      background-color: rgb(var(--c1));
-      color: inherit;
-
-      font-size: calc(8px + 1vmin);
-      cursor: pointer;
-    }
-
-    .element select::picker(select) {
-      appearance: base-select;
-
-      color: inherit;
-      background-color: inherit;
-    }
-
-    .element span,
-    .element div,
-    .element label {
-      color: inherit;
-      font-size: calc(8px + 1.25\vmin);
-    }
-
-    .element label {
-      user-select: none;
-      cursor: pointer;
-    }
-
-    .element input[type='range'] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 6rem;
-      height: 1.2rem;
-      padding: 0;
-      margin: 0;
-      background: transparent;
-      cursor: pointer;
-    }
-
-    .element input[type='range']::-webkit-slider-runnable-track {
-      height: 0.4rem;
-      background-color: rgb(var(--c1));
-      border: 1px solid rgb(var(--c2));
-      border-radius: 0.3rem;
-    }
-
-    .element input[type='range']::-moz-range-track {
-      height: 0.4rem;
-      background-color: rgb(var(--c1));
-      border: 1px solid rgb(var(--c2));
-      border-radius: 0.3rem;
-    }
-
-    .element input[type='range']::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 1rem;
-      height: 1rem;
-      margin-top: -0.35rem;
-      background-color: rgb(var(--c4));
-      border: none;
-      border-radius: 50%;
-    }
-
-    .element input[type='range']::-moz-range-thumb {
-      width: 1rem;
-      height: 1rem;
-      background-color: rgb(var(--c2));
-      border: 1px solid rgb(var(--c2));
-      border-radius: 50%;
-    }
-
-    .element input[type='range']:focus {
-      outline: none;
-    }
-
-    .element input[type='text'] {
-      appearance: base-select;
-
-      width: max-content;
-      height: min-content;
-
-      outline: none;
-      border: none;
-      border-bottom: 1px solid rgb(var(--c2));
-      border-radius: 0.25em 0.25em 0 0;
-
-      background-color: transparent;
-      color: inherit;
-
-      font-size: calc(8px + 1vmin);
-
-      transition: background-color 0.2s linear;
-    }
-
-    .element input[type='text']::placeholder {
-      color: inherit;
-      opacity: 0.7;
-    }
-
-    .element input[type='text']:focus {
-      background-color: rgb(var(--c1));
-    }
-
-    .element input[type='checkbox'] {
-      appearance: none;
-      -webkit-appearance: none;
-
-      position: relative;
-
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      cursor: pointer;
-
-      outline: none;
-
-      border: 1px solid rgb(var(--c2));
-      border-radius: 0.25em;
-      background-color: rgb(var(--c1));
-    }
-
-    .element input[type='checkbox']::before {
-      content: '';
-      position: absolute;
-      inset: 0.125em;
-      width: calc(100%-0.125em);
-      height: calc(100%-0.125em);
-
-      background-color: transparent;
-      border-radius: 0.125em;
-
-      transition: background-color 0.2s ease-in-out;
-    }
-
-    .element input[type='checkbox']:checked::before {
-      background-color: rgb(var(--c4));
-    }
   }
 </style>

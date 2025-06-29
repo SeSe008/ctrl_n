@@ -273,6 +273,7 @@
 
     color: rgba(var(--c5), 0.7);
     padding: 0;
+    overflow: hidden;
 
     background-color: rgba(var(--c1), var(--o2));
     border-radius: 0.25rem;
@@ -282,7 +283,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0.25rem;
+    padding: 0.25rem;
     height: 100%;
 
     border-radius: 0.25rem;
@@ -306,6 +307,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
 
     border: none;
     border-radius: 0.25rem;

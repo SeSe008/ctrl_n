@@ -120,7 +120,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                   {
                     min: 1,
                     max: 10,
-                    step: 0.1,
+                    step: 0.25,
                     onInput: (value: number) => {
                       changeTileCssVar(
                         getSelectedManagerId(),
@@ -195,6 +195,66 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                       value
                     ),
                   label: 'Font-Weight:'
+                })
+                .appendElement('checkbox', {
+                  label: 'Text Border',
+                  onChange: (value: boolean) =>
+                    changeTileCssVar(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      '--textBorderSize',
+                      value ? '3' : '0'
+                    ),
+                  defaultValue: derived(
+                    globalTiles,
+                    (_) =>
+                      parseInt(
+                        getTileCssVar(
+                          getSelectedManagerId(),
+                          getSelectedTileId(),
+                          '--textBorderSize'
+                        ) ?? '0'
+                      ) > 0
+                  )
+                })
+                .appendElement('group', {
+                  layout: 'vert',
+                  objects: createNewSettingsSlice().appendElement(
+                    'range',
+                    {
+                      min: 1,
+                      max: 10,
+                      step: 1,
+                      unit: 'px',
+                      onInput: (value: number) =>
+                        changeTileCssVar(
+                          getSelectedManagerId(),
+                          getSelectedTileId(),
+                          '--textBorderSize',
+                          value.toString()
+                        ),
+                      defaultValue: () =>
+                        parseInt(
+                          getTileCssVar(
+                            getSelectedManagerId(),
+                            getSelectedTileId(),
+                            '--textBorderSize'
+                          ) ?? '0'
+                        ),
+                      label: 'Text-Border size:'
+                    },
+                    derived(
+                      globalTiles,
+                      (_) =>
+                        parseInt(
+                          getTileCssVar(
+                            getSelectedManagerId(),
+                            getSelectedTileId(),
+                            '--textBorderSize'
+                          ) ?? '0'
+                        ) > 0
+                    )
+                  )
                 })
             },
             derived(clockType, ($clockType) => $clockType === 'digital')

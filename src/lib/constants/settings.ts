@@ -124,12 +124,20 @@ export const tileSettings: SettingsSection = new SettingsSection()
         'range',
         {
           min: 0,
-          max: 1,
-          step: 0.1,
+          max: 100,
+          step: 10,
+          unit: '%',
           onInput: (value: number) =>
-            changeTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1', value.toString()),
+            changeTileCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--o1',
+              (value / 100).toString()
+            ),
           defaultValue: () =>
-            parseFloat(getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'),
+            parseFloat(
+              getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'
+            ) * 100,
           label: 'Primary opacity:'
         },
         derived(globalTiles, (_) => {
@@ -150,12 +158,19 @@ export const tileSettings: SettingsSection = new SettingsSection()
         'range',
         {
           min: 0,
-          max: 1,
-          step: 0.1,
+          max: 100,
+          step: 10,
           onInput: (value: number) =>
-            changeTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2', value.toString()),
+            changeTileCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--o2',
+              (value / 100).toString()
+            ),
           defaultValue: () =>
-            parseFloat(getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'),
+            parseFloat(
+              getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'
+            ) * 100,
           label: 'Secondary opacity:'
         },
         derived(globalTiles, (_) => {
@@ -475,5 +490,6 @@ export const globalSettings: SettingsSection = new SettingsSection()
     unit: 'rem',
     onInput: (value: number) => {
       changeGlobalCssVar('--tileContainerPadding', `${value.toString()}rem`);
-    }
+    },
+    label: 'Tile-Container Padding:'
   });

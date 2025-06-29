@@ -75,11 +75,11 @@
     pointer-events: auto;
     overflow: hidden;
 
-    transition: filter 0.2s linear;
+    transition: background-color 0.2s linear;
   }
 
   .tile_element.selecting:hover {
-    filter: brightness(0.6);
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
   .settings_selected_tile {

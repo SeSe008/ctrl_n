@@ -1,0 +1,285 @@
+:global {
+  .element span,
+  .element div,
+  .element label {
+    color: inherit;
+    font-size: calc(8px + 1.25\vmin);
+  }
+
+  .element label {
+    user-select: none;
+    cursor: pointer;
+  }
+  
+  .element button,
+  #close_controls button {
+    appearance: none;
+    --webkit-appearance: none;
+
+    display: inline-flex;
+    align-items: center;
+    
+    width: max-content;
+    height: min-content;
+
+    box-sizing: border-box;
+    padding: 0.3rem 0.4rem;
+    margin: 0;
+
+    outline: none;
+    border: 1px solid rgb(var(--c2));
+    border-radius: .125em;
+    background-color: rgb(var(--c1));
+    color: inherit;
+
+    font-size: calc(8px + 1vmin);
+    cursor: pointer;
+
+    transition:
+      padding 0.2s linear,
+      margin 0.2s linear,
+      background-color 0.2s linear,
+      color 0.2s linear;
+  }
+
+  .element button:hover,
+  #close_controls button:hover,
+  #close_controls button.active {
+    padding: 0.2rem 0.25rem;
+    margin: 0.1rem 0.15rem;
+    box-shadow: 0 0 0.1rem rgb(var(--c5));
+    background-color: rgb(var(--c5));
+    color: rgb(var(--c1));
+  }
+
+  .element select {
+    appearance: base-select;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: max-content;
+    height: min-content;
+    padding: .25rem .5rem;
+
+    outline: none;
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0;
+    background-color: rgb(var(--c1));
+    color: inherit;
+
+    font-size: calc(8px + 1vmin);
+    cursor: pointer;
+
+    transition:
+      background-color .2s linear,
+      color .2s linear;
+  }
+
+  .element select:open {
+    background-color: rgb(var(--c5));
+    color: rgb(var(--c1))
+  }
+
+  .element select::picker-icon {
+    transform: rotate(0deg);
+
+    aspect-ratio: 1 / 1;
+    width: 1.5em;
+
+    background-color: currentColor;
+    
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6l-6 6z'/%3E%3C/svg%3E");
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+
+    transition: transform .2s linear;
+  }
+
+  .element select:open::picker-icon {
+    transform: rotate(180deg);
+  }
+
+  .element select::picker(select) {
+    appearance: base-select;
+
+    color: rgb(var(--c5));
+    background-color: rgb(var(--c1));
+  }
+
+  @property --thumbSize {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 1;
+  }
+
+  .element input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+
+    width: 6rem;
+    height: 1rem;
+
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .element input[type='range']:hover {
+    animation: thumbHoverAnim .3s forwards ease-out;
+  }
+
+  .element input[type='range']::-webkit-slider-runnable-track {
+    height: 0.5rem;
+    background-color: rgb(var(--c1));
+
+    box-sizing: border-box; 
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.5rem;
+
+    transition: height .2s linear;
+  }
+
+  .element input[type='range']:hover::-webkit-slider-runnable-track {
+    height: 1rem;
+  }
+
+  .element input[type='range']::-moz-range-track {
+    height: 0.5rem;
+    background-color: rgb(var(--c1));
+
+    box-sizing: border-box; 
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.5rem;
+
+    transition: height .2s linear;
+  }
+
+  .element input[type='range']:hover::-moz-range-track {
+    height: 1rem;
+  }
+
+  .element input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+
+    height: calc(1rem - 2px);
+    aspect-ratio: 1 / 1;
+    margin-top: -.25rem;
+    
+    background-color: rgb(var(--c5));
+    border: none;
+    border-radius: 50%;
+    
+    transform: scale(var(--thumbSize));
+
+    transition: margin .2s linear;
+  }
+
+  .element input[type='range']:hover::-webkit-slider-thumb {
+    margin-top: 0;
+  }
+
+  .element input[type='range']::-moz-range-thumb {
+    appearance: none;
+
+    height: calc(1rem - 2px);
+    aspect-ratio: 1 / 1;
+    margin-top: -.25rem;
+    
+    background-color: rgb(var(--c5));
+    border: none;
+    border-radius: 50%;
+
+    transform: scale(var(--thumbSize));
+
+    transition: margin .2s linear;
+  }
+
+  @keyframes thumbHoverAnim {
+    0% {
+      --thumbSize: 1;
+    }
+    50% {
+      --thumbSize: 0.75;
+    }
+    100% {
+      --thumbeSize: 1;
+    }
+  }
+
+  .element input[type='range']:focus {
+    outline: none;
+  }
+
+  .element input[type='text'] {
+    appearance: base-select;
+
+    width: max-content;
+    height: min-content;
+
+    outline: none;
+    border: none;
+    border-bottom: 1px solid rgb(var(--c2));
+    border-radius: 0.25em 0.25em 0 0;
+
+    background-color: transparent;
+    color: inherit;
+
+    font-size: calc(8px + 1vmin);
+
+    transition: background-color 0.2s linear;
+  }
+
+  .element input[type='text']::placeholder {
+    color: inherit;
+    opacity: 0.7;
+  }
+
+  .element input[type='text']:focus {
+    background-color: rgb(var(--c1));
+  }
+
+  .element input[type='checkbox'] {
+    appearance: none;
+    -webkit-appearance: none;
+
+    position: relative;
+
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+
+    outline: none;
+
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.25em;
+    background-color: rgb(var(--c1));
+  }
+
+  .element input[type='checkbox']::before {
+    content: '';
+    position: absolute;
+    inset: 0.125em;
+    width: calc(100%-0.125em);
+    height: calc(100%-0.125em);
+
+    background-color: transparent;
+    border-radius: 0.125em;
+
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .element input[type='checkbox']:checked::before {
+    background-color: rgb(var(--c4));
+  }
+}

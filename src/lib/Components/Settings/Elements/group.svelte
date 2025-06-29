@@ -30,7 +30,7 @@
   .settings_group {
     display: flex;
     width: 100%;
-    gap: 0.5rem;
+    gap: 0.25rem;
 
     flex-wrap: var(--wrap);
     justify-content: var(--center);
