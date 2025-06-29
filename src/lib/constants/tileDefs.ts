@@ -256,6 +256,26 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                     )
                   )
                 })
+                .appendElement('checkbox', {
+                  label: 'Use adaptive coloring (inverted background)',
+                  onChange: (value: boolean) => {
+                    const mgr = getSelectedManagerId();
+                    const tle = getSelectedTileId();
+
+                    if (value) {
+                      changeTileCssVar(mgr, tle, '--clockFgClr', 'white');
+                      changeTileCssVar(mgr, tle, '--clockBgClr', 'transparent');
+                      changeTileCssVar(mgr, tle, '--clockBlMode', 'difference');
+                    } else {
+                      changeTileCssVar(mgr, tle, '--clockFgClr', 'rgb(var(--c5))');
+                      changeTileCssVar(mgr, tle, '--clockBgClr', 'rgba(var(--c1), var(--O1))');
+                      changeTileCssVar(mgr, tle, '--clockBlMode', 'normal');
+                    }
+                  },
+                  defaultValue: () =>
+                    getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--clockBlMode') ===
+                    'difference'
+                })
             },
             derived(clockType, ($clockType) => $clockType === 'digital')
           )

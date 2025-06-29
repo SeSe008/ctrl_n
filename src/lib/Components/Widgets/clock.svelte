@@ -75,8 +75,9 @@
 
     height: 100%;
 
-    color: rgb(var(--c5));
-    background-color: rgba(var(--c1), var(--o1));
+    color: var(--clockFgClr, rgb(var(--c5)));
+    background-color: var(--clockBgClr, rgba(var(--c1), var(--o1)));
+    mix-blend-mode: var(--clockBlMode, normal);
 
     --txtBrdSize: calc(var(--textBorderSize) * 1px);
     --txtBrdSizeInv: calc(var(--txtBrdSize) * -1);

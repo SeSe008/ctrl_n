@@ -272,8 +272,10 @@
     gap: 0.2em;
 
     color: rgba(var(--c5), 0.7);
+
     padding: 0;
     overflow: hidden;
+    height: 100%;
 
     background-color: rgba(var(--c1), var(--o2));
     border-radius: 0.25rem;
