@@ -145,7 +145,9 @@
     border: 1px solid rgb(var(--c2));
     border-radius: 0.5rem;
 
-    transition: height .2s linear;
+    transition:
+      height .2s linear,
+      box-shadow .2s linear;
   }
 
   .element input[type='range']:hover::-webkit-slider-runnable-track {
@@ -282,5 +284,61 @@
 
   .element input[type='checkbox']:checked::before {
     background-color: rgb(var(--c4));
+  }
+
+  @property --colorPickerSize {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 1;
+  }
+  
+  .element input[type='color'] {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 2em;
+    height: 2em;
+    padding: 0;
+
+    outline: none;
+    border: none;
+
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  .element input[type='color']:open {
+    animation: colorPickerAnim 0.3s forwards ease-in-out;
+  }			 
+
+  .element input[type='color']::-webkit-color-swatch {
+    width: 100%;
+    height: 100%;
+    
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.25rem;
+
+    transform: scale(var(--colorPickerSize));		  }
+
+  .element input[type='color']::-moz-color-swatch {
+    width: 100%;
+    height: 100%;
+    
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.25rem;
+
+    transform: scale(var(--colorPickerSize));
+  }
+
+  @keyframes colorPickerAnim {
+    0% {
+      --colorPickerSize: 1;
+    }
+    50% {
+      --colorPickerSize: 0.75;
+    }
+    100% {
+      --colorPickerSize: 1;
+    }
   }
 }

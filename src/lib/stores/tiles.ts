@@ -23,10 +23,12 @@ export function changeGlobalCssVar(name: string, value: string) {
 }
 
 export function deleteGlobalCssVar(name: string) {
-  globalTiles.update((current) => {
-    delete current.cssVars[name];
-    return current;
-  });
+  globalTiles.update(({ cssVars, ...rest }) => ({
+    ...rest,
+    cssVars: Object.fromEntries(
+      Object.entries(cssVars).filter(([key]) => key !== name)
+    )
+  }));
 }
 
 export function getGlobalCssVar(name: string): string | undefined {

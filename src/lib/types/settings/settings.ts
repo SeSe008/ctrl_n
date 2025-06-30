@@ -4,6 +4,7 @@ import type {
   ButtonProps,
   RangeProps,
   TextInputProps,
+  ColorInputProps,
   CheckboxProps,
   ImageProps,
   GroupProps,
@@ -26,8 +27,9 @@ export type ElementProps =
   | ButtonProps
   | RangeProps
   | TextInputProps
-  | ImageProps
+  | ColorInputProps
   | CheckboxProps
+  | ImageProps
   | GroupProps
   | GridProps
   | CustomHTMLProps;

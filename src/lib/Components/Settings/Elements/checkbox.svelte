@@ -37,7 +37,5 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-
-    stroke-width: 3px;
   }
 </style>

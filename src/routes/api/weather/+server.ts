@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { z } from 'zod';
 dotenv.config();
 
-import { error, type RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { RateLimiter } from 'sveltekit-rate-limiter/server';
 
 const LIMITER = new RateLimiter({
@@ -19,7 +19,10 @@ const CITY_SCHEMA = z.object({
 
 export const POST: RequestHandler = async (event) => {
   if (await LIMITER.isLimited(event)) {
-    throw error(429, 'Too many requests');
+    return new Response(JSON.stringify({ error: 'Too many requests' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   const { request } = event;

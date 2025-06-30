@@ -49,12 +49,12 @@
   onMount(initWeatherLoaction);
 
   weatherLocation.subscribe((loc) => {
-    if (loc && !settingsEnabled()) fetchWeather(loc);
+    if (loc) fetchWeather(loc);
   });
 </script>
 
 <div id="weather">
-  {#if weather && !error}
+  {#if weather && weather.weather && !error}
     <div id="properties">
       <img
         alt="Weather Icon"
@@ -63,10 +63,13 @@
       <span id="location">{weather.name}</span>
       <div id="values">
         <span id="description">{capitalizeWords(weather.weather[0].description)}</span>
-        <span id="temp"
-          ><Icon icon="mdi:temperature" />{weather.main.temp}°C ({weather.main.feels_like}°C)</span
+        <span class="value" id="temp">
+          <Icon icon="mdi:temperature" />{weather.main.temp}°C ({weather.main.feels_like}°C)</span
         >
-        <span id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
+        <span class="value" id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
+        <button id="reload" onclick={() => fetchWeather(getWeatherLocation())}>
+          <Icon icon="mdi:reload" />
+        </button>
       </div>
     </div>
   {:else}
@@ -74,9 +77,11 @@
       {#if settingsEnabled()}
         Close Settings for Weather Info
       {:else if error}
-        Could not load weather. Try setting a new location in the settings.
+        Could not load weather.<br />{error}
       {/if}
-      <button onclick={() => fetchWeather(getWeatherLocation())}><Icon icon="mdi:reload" /></button>
+      <button id="reload" onclick={() => fetchWeather(getWeatherLocation())}>
+        <Icon icon="mdi:reload" />
+      </button>
     </div>
   {/if}
 </div>
@@ -136,17 +141,24 @@
   #values {
     grid-row: 1 / 3;
     grid-column: 2;
+
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: min-content repeat(2, 1fr);
   }
 
   #description {
+    grid-column: 1 / 3;
+
     display: flex;
     align-items: center;
     justify-content: flex-start;
     font-size: calc(8px + 1.5vh);
     font-weight: bold;
+  }
+
+  #temp {
+    grid-column: 1 / 3;
   }
 
   #temp,
@@ -158,7 +170,39 @@
     font-size: calc(8px + 1.5vh);
   }
 
-  :global(#values .iconify) {
+  #reload {
+    align-self: flex-end;
+    justify-self: flex-end;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: min-content;
+    width: min-content;
+
+    padding: 0.25rem;
+
+    border: 1px solid rgb(var(--c2));
+    border-radius: 0.25rem;
+    outline: none;
+
+    color: rgb(var(--c5));
+    background-color: rgb(var(--c2));
+
+    cursor: pointer;
+
+    transition:
+      0.2s background-color linear,
+      0.2s color linear;
+  }
+
+  #reload:hover {
+    color: rgb(var(--c2));
+    background-color: rgb(var(--c1));
+  }
+
+  :global(.value .iconify) {
     align-self: center;
     font-size: calc(8px + 3vh);
     height: min-content;
@@ -178,31 +222,5 @@
     text-align: center;
 
     color: rgb(var(--c5));
-  }
-
-  .info button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0.25rem;
-
-    border: 1px solid rgb(var(--c2));
-    border-radius: 0.25rem;
-    outline: none;
-
-    color: inherit;
-    background-color: transparent;
-
-    cursor: pointer;
-
-    transition:
-      0.2s background-color linear,
-      0.2s color linear;
-  }
-
-  .info button:hover {
-    color: rgb(var(--c1));
-    background-color: rgb(var(--c2));
   }
 </style>

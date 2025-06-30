@@ -3,6 +3,7 @@ export type { Options as SelectProps } from './select';
 export type { Options as ButtonProps } from './button';
 export type { Options as RangeProps } from './range';
 export type { Options as TextInputProps } from './textInput';
+export type { Options as ColorInputProps } from './colorInput';
 export type { Options as CheckboxProps } from './checkbox';
 export type { Options as ImageProps } from './image';
 export type { Options as GroupProps } from './group';
