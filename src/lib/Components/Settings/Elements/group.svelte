@@ -6,18 +6,19 @@
     options: Options;
   }
 
-  let { options }: Props = $props();
-
+  const { options }: Props = $props();
+  const { objects, layout, wrap, center } = options;
+  
   let elements = $derived(
-    typeof options.objects === 'function' ? options.objects().elements : options.objects.elements
+    typeof objects === 'function' ? objects().elements : objects.elements
   );
 </script>
 
 <div
-  class="settings_group {options.layout === 'vert' || options.layout === 'vertical'
+  class="settings_group {layout === 'vert' || layout === 'vertical'
     ? 'vert'
     : 'hor'}"
-  style="--wrap: {options.wrap === false ? 'nowrap' : 'wrap'}; --center: {options.center
+  style="--wrap: {wrap === false ? 'nowrap' : 'wrap'}; --center: {center
     ? 'center'
     : 'flex-start'};"
 >

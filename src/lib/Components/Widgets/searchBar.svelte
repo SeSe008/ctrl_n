@@ -363,7 +363,7 @@
     text-align: inherit;
   }
 
-  :global(.selected_suggestion) {
+  .suggestion:hover, :global(.selected_suggestion) {
     background-color: rgba(var(--c1), 0.3) !important;
   }
 </style>

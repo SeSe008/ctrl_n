@@ -6,8 +6,8 @@
   import TileManager from '$lib/Components/tileManager.svelte';
   import Settings from '$lib/Components/Settings/settings.svelte';
 
-  import { applyImage } from '$lib/utils/applyImage';
-  import { exifData } from '$lib/stores/exif';
+  import { fetchAndApplyImage } from '$lib/utils/fetchAndApplyImage';
+  import { imageCredits } from '$lib/stores/backgroundImage';
   import { initializeTiles } from '$lib/stores/tiles';
   import { globalTiles } from '$lib/stores/tiles';
 
@@ -20,37 +20,23 @@
 
   import {
     backgroundImage,
-    getBackgroundImage,
-    getImageCategories,
     getImageCategory,
     initBgImages
   } from '$lib/stores/backgroundImage';
-  import type { BgImageCategory } from '$lib/types/backgroundImage';
 
   import { applyCssVars } from '$lib/utils/applyCssVars';
 
   let colorThief: ColorThief;
 
   const defaultCategory = 0; // Default category when none is set
-  const defaultCategories: Array<BgImageCategory> = [
-    {
-      label: 'Animals',
-      icon: 'lucide:squirrel',
-      path: 'backgrounds/animals'
-    },
-    {
-      label: 'Space',
-      icon: 'lucide:rocket',
-      path: 'backgrounds/space'
-    }
-  ];
+  const defaultApiKeyWord = 'Sunset';
+
   const imageInterval = 5 * 60 * 1000; // When image changes - Make Customizable?
   const colors: number = 5; // Amount of colors for palette
 
   function nextImage() {
-    applyImage(
-      getImageCategories()[getImageCategory()].images,
-      getBackgroundImage(),
+    fetchAndApplyImage(
+      getImageCategory(),
       colors,
       colorThief
     );
@@ -75,7 +61,7 @@
   onMount(async () => {
     colorThief = new ColorThief();
 
-    initBgImages(defaultCategory, defaultCategories, imageInterval, colors, colorThief);
+    initBgImages(defaultCategory, defaultApiKeyWord, imageInterval, colors, colorThief);
 
     initializeTiles();
   });
@@ -94,10 +80,9 @@
 
   <div id="page_info">
     <div>
-      {#if $exifData}
-        <a target="_blank" href={$exifData.artist[1]}>{$exifData.artist[0]}</a>
-        <a target="_blank" href={$exifData.copyright[1]}>{$exifData.copyright[0]}</a>
-        <a target="_blank" href={$exifData.description[1]}>{$exifData.description[0]}</a>
+      {#if $imageCredits}
+        <a target="_blank" href={$imageCredits.creatorUrl}>{$imageCredits.creator}</a>
+        <a target="_blank" href={$imageCredits.licenseUrl}>{$imageCredits.license}</a>
       {/if}
     </div>
     <div>

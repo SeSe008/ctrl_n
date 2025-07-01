@@ -1,12 +1,11 @@
 import { useImage } from '$lib/utils/useImage';
-import { writable, get } from 'svelte/store';
+import { writable, get, derived } from 'svelte/store';
 import type ColorThief from 'colorthief';
-import { fetchImages } from '$lib/utils/fetchImages';
-import type { BgImageCategory, Image } from '$lib/types/backgroundImage';
+import type { ImageCredit } from '$lib/types/backgroundImage';
 
 export const backgroundImage = writable<string | undefined>(undefined);
 
-export function setBackgroundImage(imageUrl: string) {
+export function setBackgroundImage(imageUrl: string | undefined) {
   backgroundImage.set(imageUrl);
 }
 
@@ -34,115 +33,51 @@ function initImageCategory(defaultCategory: number) {
   }
 }
 
-export const imageCategories = writable<Array<BgImageCategory>>();
+export const apiImageKeyword = writable<string>('');
 
-export function setImageCategories(categories: Array<BgImageCategory>) {
-  imageCategories.set(categories);
+export function setApiImageKeyword(keyword: string) {
+  apiImageKeyword.set(keyword);
 }
 
-export function getImageCategories(): Array<BgImageCategory> {
-  return get(imageCategories);
+export function getApiImageKeyword(): string {
+  return get(apiImageKeyword);
 }
 
-export function addImageCategoryInCategories(
-  label: string,
-  icon?: string,
-  images?: Array<Image>,
-  path?: string
-) {
-  imageCategories.update((current) => {
-    current.push({
-      images: images,
-      path: path,
-      label: label,
-      icon: icon
-    });
-    return current;
-  });
+export function initApiImageKeyword(defaultKeyword: string) {
+  const stored = window.localStorage.getItem('apiImageKeyword');
+
+  setApiImageKeyword(stored ?? defaultKeyword);
 }
 
-export function deleteImageCategoryInCategories(categoryId: number) {
-  imageCategories.update((current) => {
-    const rest = current.filter((_, index) => index !== categoryId);
-    return rest;
-  });
+export const imageCredits = writable<ImageCredit | undefined>(undefined);
+
+export function setImageCredits(credits: ImageCredit | undefined) {
+  imageCredits.set(credits);
 }
 
-export function setImageCategoryInCategories(categoryId: number, images: Array<Image>) {
-  imageCategories.update((current) => {
-    current[categoryId].images = images;
-    return current;
-  });
-}
-
-export function addImageToCategoryInCategories(categoryId: number, image: string) {
-  imageCategories.update((current) => {
-    if (current[categoryId] && current[categoryId].images) {
-      console.log('Adding image to category', categoryId, image);
-      current[categoryId].images.push([image, true]);
-    }
-    return current;
-  });
-}
-
-export function removeImageFromCategoryInCategories(categoryId: number, imageId: number) {
-  imageCategories.update((current) => {
-    if (current[categoryId] && current[categoryId].images) {
-      current[categoryId].images.splice(imageId, 1);
-    }
-    return current;
-  });
-}
-
-export function toggleImageInCategory(categoryId: number, imageId: number) {
-  imageCategories.update((current) => {
-    if (current[categoryId] && current[categoryId].images) {
-      const item = current[categoryId].images[imageId];
-
-      if (Array.isArray(item)) {
-        const [url, enabled] = item;
-        current[categoryId].images[imageId] = [url, !enabled];
-      }
-    }
-    return current;
-  });
-}
-
-export function initImageCategories(defaultCategories: Array<BgImageCategory>) {
-  const stored = window.localStorage.getItem('imageCategories');
-
-  if (stored) {
-    try {
-      const categories = JSON.parse(stored);
-      imageCategories.set(categories);
-    } catch (error) {
-      console.error('Failed to parse stored image categories:', error);
-    }
-  } else {
-    imageCategories.set(defaultCategories);
-  }
-
-  imageCategories.subscribe((categories) => {
-    window.localStorage.setItem('imageCategories', JSON.stringify(categories));
-  });
+export function getImageCredits(): ImageCredit | undefined {
+  return get(imageCredits);
 }
 
 export function initBgImages(
   defaultCategory: number,
-  defaultCategories: Array<BgImageCategory>,
+  defaultKeyword: string,
   imageInterval: number,
   colors: number,
   colorThief: ColorThief
 ) {
   initImageCategory(defaultCategory);
-  initImageCategories(defaultCategories);
+  initApiImageKeyword(defaultKeyword);
 
-  imageCategory.subscribe(async (category) => {
+  const combinedStore = derived(
+    [imageCategory, apiImageKeyword],
+    ([$category, $keyword]) => [ $category, $keyword ]
+  );
+  
+  combinedStore.subscribe(([ category, keyword ]) => {
+    window.localStorage.setItem('apiImageKeyword', keyword.toString());
     window.localStorage.setItem('imageCategory', category.toString());
 
-    if (!getImageCategories()[category].images)
-      setImageCategoryInCategories(category, await fetchImages(category));
-
-    useImage({ images: getImageCategories()[category].images, changeInterval: imageInterval, colors, colorThief });
+    useImage(imageInterval, colors, colorThief);
   });
 }

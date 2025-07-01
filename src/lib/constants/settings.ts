@@ -1,5 +1,5 @@
 import type { ElementComponents } from '$lib/types/settings/settings';
-import { SettingsElement, SettingsSection } from '$lib/classes/settings';
+import { SettingsSection } from '$lib/classes/settings';
 
 import { derived, get } from 'svelte/store';
 
@@ -33,16 +33,11 @@ import {
 import { tileMetadata } from '$lib/constants/tileMetadata';
 
 import {
-  addImageToCategoryInCategories,
   backgroundImage,
-  getImageCategories,
-  getImageCategory,
-  imageCategories,
+  getApiImageKeyword,
   imageCategory,
-  removeImageFromCategoryInCategories,
-  toggleImageInCategory
+  setApiImageKeyword
 } from '$lib/stores/backgroundImage';
-import { newImageUrl } from '$lib/stores/settings/elements/newBgImage';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
@@ -56,6 +51,7 @@ import Group from '$lib/Components/Settings/Elements/group.svelte';
 import Grid from '$lib/Components/Settings/Elements/grid.svelte';
 import CustomHTML from '$lib/Components/Settings/Elements/customHTML.svelte';
 import { getRootCssVar } from '$lib/utils/getRootCssVar';
+import { imageApis } from './imageApis';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -419,71 +415,46 @@ export const globalSettings: SettingsSection = new SettingsSection()
     text: 'Background Image',
     classes: ['big', 'left', 'strong', 'margin_top']
   })
-  .appendElement(
-    'select',
-    {
-      selectOptions: () => getImageCategories(),
-      defaultValue: imageCategory,
-      store: imageCategory,
-      label: 'Image Category: '
-    },
-    undefined,
-    imageCategories
-  )
-  .appendElement('group', {
-    objects: new SettingsSection()
-      .appendElement('text', {
-        text: 'Add Image:'
-      })
-      .appendElement('textInput', {
-        store: newImageUrl,
-        placeholder: 'Image Url'
-      })
-      .appendElement('button', {
-        text: 'Add',
-        icon: 'mdi:add-circle-outline',
-        onClick: () => addImageToCategoryInCategories(getImageCategory(), get(newImageUrl))
-      })
+  .appendElement('select', {
+    selectOptions: () => imageApis,
+    defaultValue: imageCategory,
+    store: imageCategory,
+    label: 'Get image from: '
+  })
+  .appendElement('select', {
+    label: 'Keyword:',
+    selectOptions: [
+      'Nature',
+      'Abstract Art',
+      'Cityscape',
+      'Minimal',
+      'Animals',
+      'Landscapes',
+      'Textures',
+      'Technology',
+      'Plants',
+      'Sunsets',
+      'Travel',
+      'Food',
+      'Sports',
+      'People',
+      'Architecture',
+      'Moon',
+      'Outer Space',
+      'Oceans'
+    ].map((keyword) => ({
+      label: keyword,
+      value: keyword
+    })),
+    onChange: (value: string) => setApiImageKeyword(value),
+    defaultValue: () => getApiImageKeyword()
   })
   .appendElement(
-    'grid',
+    'text',
     {
-      columns: 4,
-      objects: () =>
-        new SettingsSection(
-          getImageCategories()[getImageCategory()].images?.map(
-            (img, i) =>
-              new SettingsElement('group', {
-                layout: 'vert',
-                objects: new SettingsSection()
-                  .appendElement('image', {
-                    image: () => img,
-                    alt: 'Background-Image'
-                  })
-                  .appendElement('group', {
-                    wrap: false,
-                    center: true,
-                    objects: new SettingsSection()
-                      .appendElement('checkbox', {
-                        onChange: () => toggleImageInCategory(getImageCategory(), i),
-                        defaultValue: () => img[1] as boolean,
-                        label: 'Enabled'
-                      })
-                      .appendElement('button', {
-                        icon: 'mdi:delete',
-                        onClick: () => {
-                          // Force ok here - for deleting an image, you need an image
-                          if (getImageCategories()[getImageCategory()].images!.length > 1)
-                            removeImageFromCategoryInCategories(getImageCategory(), i);
-                        }
-                      })
-                  })
-              })
-          )
-        )
+      text: 'No image found, try another keyword or category.'
     },
-    undefined,
-    [imageCategory, imageCategories]
+    derived(backgroundImage, ($backgroundImage) => $backgroundImage === undefined)
   )
   .appendElement('text', {
     text: 'Styling:',
@@ -497,49 +468,49 @@ export const globalSettings: SettingsSection = new SettingsSection()
     onInput: (value: number) => {
       changeGlobalCssVar('--tileContainerPadding', `${value.toString()}rem`);
     },
+    defaultValue: () => parseFloat(getGlobalCssVar('--tileContainerPadding') ?? '0'),
     label: 'Tile-Container Padding:'
   })
   .appendElement('text', {
     text: 'Coloring:'
   })
   .appendElement('group', {
+    layout: 'vert',
     objects: new SettingsSection(
       Array.from({ length: 5 }).map((_, i) => ({
         elementType: 'group',
         elementOptions: {
-          objects: new SettingsSection().appendElement('group', {
-            objects: new SettingsSection()
-              .appendElement(
-                'colorInput',
-                {
-                  label: `${i + 1}:`,
-                  onChange: (value: string) =>
-                    changeGlobalCssVar(
-                      `--c${i + 1}`,
-                      (value.replace(/^#/, '').match(/.{2}/g) ?? [])
-                        .map((x) => parseInt(x, 16))
-                        .join(', ')
-                    ),
-                  defaultValue: () =>
-                    `#${(
-                      getGlobalCssVar('--c' + (i + 1)) ??
-                      getRootCssVar('--c' + (i + 1)) ??
-                      '255, 255, 255'
-                    )
-                      .split(',')
-                      .map((c) => (+c).toString(16).padStart(2, '0'))
-                      .join('')}`
-                },
-                undefined,
-                derived(globalTiles, ($globalTiles) => $globalTiles.cssVars[`--c${i + 1}`])
-              )
-              .appendElement('button', {
-                icon: 'mdi:reload',
-                onClick: () => deleteGlobalCssVar(`--c${i + 1}`)
-              })
-          }),
-          updater: backgroundImage
-        }
+          objects: new SettingsSection()
+            .appendElement(
+              'colorInput',
+              {
+                label: `${i + 1}:`,
+                onChange: (value: string) =>
+                  changeGlobalCssVar(
+                    `--c${i + 1}`,
+                    (value.replace(/^#/, '').match(/.{2}/g) ?? [])
+                      .map((x) => parseInt(x, 16))
+                      .join(', ')
+                  ),
+                defaultValue: () =>
+                  `#${(
+                    getGlobalCssVar('--c' + (i + 1)) ??
+                    getRootCssVar('--c' + (i + 1)) ??
+                    '255, 255, 255'
+                  )
+                    .split(',')
+                    .map((c) => (+c).toString(16).padStart(2, '0'))
+                    .join('')}`
+              },
+              undefined,
+              derived(globalTiles, ($globalTiles) => $globalTiles.cssVars[`--c${i + 1}`])
+            )
+            .appendElement('button', {
+              icon: 'mdi:reload',
+              onClick: () => deleteGlobalCssVar(`--c${i + 1}`)
+            })
+        },
+        updater: backgroundImage
       }))
     )
   });
