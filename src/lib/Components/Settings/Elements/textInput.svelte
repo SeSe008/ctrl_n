@@ -9,7 +9,18 @@
   const { options }: Props = $props();
   const { placeholder, store, onInput, defaultValue, label } = options;
 
-  let textValue: string = $state($defaultValue !== undefined ? get($defaultValue) : '');
+  
+  function getDefault(): string {
+    if (defaultValue === undefined) return '';
+
+    if (typeof defaultValue === 'function') {
+      return defaultValue();
+    } else {
+      return get(defaultValue);
+    }
+  }
+  
+  let textValue: string = $state(getDefault());
 
   $effect(() => {
     if (store) store.update(() => textValue);

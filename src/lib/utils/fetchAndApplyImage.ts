@@ -1,5 +1,5 @@
 import { imageApis } from '$lib/constants/imageApis';
-import { setBackgroundImage, setImageCredits } from '$lib/stores/backgroundImage';
+import { setBackgroundImage, setImageCredits, setImageLoading } from '$lib/stores/backgroundImage';
 import type ColorThief from 'colorthief';
 import { applyPalette } from './applyPalette';
 import { getPalette } from './getPalette';
@@ -9,6 +9,8 @@ export async function fetchAndApplyImage(
   colors: number,
   colorThief: ColorThief
 ): Promise<HTMLImageElement | undefined> {
+  setImageLoading(true);
+  
   const api = imageApis[categoryId];
 
   if (!api) {
@@ -23,6 +25,7 @@ export async function fetchAndApplyImage(
   if (!res.ok) {
     console.error('Fetching Image failed:', res.status, await res.text());
     setBackgroundImage(undefined);
+    setImageLoading(false);
     return;
   }
 
@@ -30,6 +33,7 @@ export async function fetchAndApplyImage(
 
   if (api.isEmpty(data)) {
     setBackgroundImage(undefined);
+    setImageLoading(false);
   }
   
   try {
@@ -50,11 +54,14 @@ export async function fetchAndApplyImage(
       });
 
       applyPalette(getPalette(imgElement, colors, colorThief));
+
+      setImageLoading(false);
     };
 
     return imgElement;
   } catch {
     console.error('Error parsing image data:', data);
+    setImageLoading(false);
     return;
   }
 }

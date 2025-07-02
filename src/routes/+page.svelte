@@ -7,7 +7,7 @@
   import Settings from '$lib/Components/Settings/settings.svelte';
 
   import { fetchAndApplyImage } from '$lib/utils/fetchAndApplyImage';
-  import { imageCredits } from '$lib/stores/backgroundImage';
+  import { imageCredits, imageLoading } from '$lib/stores/backgroundImage';
   import { initializeTiles } from '$lib/stores/tiles';
   import { globalTiles } from '$lib/stores/tiles';
 
@@ -87,7 +87,11 @@
     </div>
     <div>
       <button onclick={nextImage}>
-        <Icon icon="mdi:image-outline" />
+	{#if !$imageLoading}
+          <Icon icon="mdi:image-outline" />
+	{:else}
+	  <Icon icon="line-md:loading-alt-loop" />
+	{/if}
       </button>
       <button onclick={() => toggleSettings(0, 0)}>
         <Icon icon="mdi:settings-outline" />

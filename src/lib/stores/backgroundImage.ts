@@ -59,6 +59,16 @@ export function getImageCredits(): ImageCredit | undefined {
   return get(imageCredits);
 }
 
+export const imageLoading = writable<boolean>(false);
+
+export function setImageLoading(loading: boolean) {
+  imageLoading.set(loading);
+}
+
+export function getImageLoading(): boolean {
+  return get(imageLoading);
+}
+
 export function initBgImages(
   defaultCategory: number,
   defaultKeyword: string,

@@ -2,8 +2,8 @@ import type { Readable, Writable } from 'svelte/store';
 
 export interface Options {
   placeholder?: string;
-  store?: Writable<any>;
+  store?: Writable<string>;
   onInput?: (_value: string) => void;
-  defaultValue?: Readable<any>;
-  label?: any;
+  defaultValue?: Readable<string> | (() => string);
+  label?: string;
 }

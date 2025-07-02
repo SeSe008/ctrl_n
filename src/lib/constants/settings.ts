@@ -33,6 +33,7 @@ import {
 import { tileMetadata } from '$lib/constants/tileMetadata';
 
 import {
+  apiImageKeyword,
   backgroundImage,
   getApiImageKeyword,
   imageCategory,
@@ -51,7 +52,8 @@ import Group from '$lib/Components/Settings/Elements/group.svelte';
 import Grid from '$lib/Components/Settings/Elements/grid.svelte';
 import CustomHTML from '$lib/Components/Settings/Elements/customHTML.svelte';
 import { getRootCssVar } from '$lib/utils/getRootCssVar';
-import { imageApis } from './imageApis';
+import { imageApis, imageKeywords } from './imageApis';
+import { newApiImageKeyword } from '$lib/stores/settings/elements/newApiImageKeyword';
 
 export const elementComponents: ElementComponents = {
   text: Text,
@@ -423,32 +425,41 @@ export const globalSettings: SettingsSection = new SettingsSection()
   })
   .appendElement('select', {
     label: 'Keyword:',
-    selectOptions: [
-      'Nature',
-      'Abstract Art',
-      'Cityscape',
-      'Minimal',
-      'Animals',
-      'Landscapes',
-      'Textures',
-      'Technology',
-      'Plants',
-      'Sunsets',
-      'Travel',
-      'Food',
-      'Sports',
-      'People',
-      'Architecture',
-      'Moon',
-      'Outer Space',
-      'Oceans'
-    ].map((keyword) => ({
+    selectOptions: imageKeywords.map((keyword) => ({
       label: keyword,
       value: keyword
     })),
     onChange: (value: string) => setApiImageKeyword(value),
-    defaultValue: () => getApiImageKeyword()
+    defaultValue: () => {
+      let keyword = getApiImageKeyword();
+      if (!imageKeywords.includes(keyword)) {
+        keyword = 'Custom';
+      }
+      return keyword;
+    }
   })
+  .appendElement(
+    'group',
+    {
+      objects: new SettingsSection()
+        .appendElement('textInput', {
+          label: 'Custom Keyword:',
+          placeholder: 'Enter a keyword',
+          defaultValue: () => getApiImageKeyword(),
+          store: newApiImageKeyword
+        })
+        .appendElement('button', {
+          text: 'Apply',
+          icon: 'mdi:check',
+          onClick: () => setApiImageKeyword(get(newApiImageKeyword))
+        })
+    },
+    derived(
+      apiImageKeyword,
+      ($apiImageKeyword) =>
+        !imageKeywords.includes($apiImageKeyword) || $apiImageKeyword === 'Custom'
+    )
+  )
   .appendElement(
     'text',
     {

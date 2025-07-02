@@ -61,3 +61,26 @@ export const imageApis: Array<ImageApi> = [
     licenseUrl: (data: Record<string, any>) => data.results[0].license_url
   }
 ];
+
+export const imageKeywords: Array<string> = [
+  'Computer Wallpapers',
+  'Nature',
+  'Abstract Art',
+  'Cityscape',
+  'Minimal',
+  'Animals',
+  'Landscapes',
+  'Textures',
+  'Technology',
+  'Plants',
+  'Sunsets',
+  'Travel',
+  'Food',
+  'Sports',
+  'People',
+  'Architecture',
+  'Moon',
+  'Outer Space',
+  'Oceans',
+  'Custom'
+];
