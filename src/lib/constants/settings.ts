@@ -518,7 +518,8 @@ export const globalSettings: SettingsSection = new SettingsSection()
             )
             .appendElement('button', {
               icon: 'mdi:reload',
-              onClick: () => deleteGlobalCssVar(`--c${i + 1}`)
+              onClick: () => deleteGlobalCssVar(`--c${i + 1}`),
+              simple: true
             })
         },
         updater: backgroundImage

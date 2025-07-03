@@ -7,11 +7,11 @@
   }
 
   const { options }: Props = $props();
-  const { text, icon, onClick } = options;
+  const { text, icon, onClick, simple } = options;
 </script>
 
 <div class="settings_button">
-  <button onclick={() => onClick()}>
+  <button onclick={() => onClick()} class={simple ? 'simple' : 'detailed'}>
     {#if icon}
       <Icon icon={icon} />
     {/if}

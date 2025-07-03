@@ -27,9 +27,6 @@
     margin: 0;
 
     outline: none;
-    border: 1px solid rgb(var(--c2));
-    border-radius: .125em;
-    background-color: rgb(var(--c1));
     color: inherit;
 
     font-size: calc(8px + 1vmin);
@@ -40,6 +37,18 @@
       margin 0.2s linear,
       background-color 0.2s linear,
       color 0.2s linear;
+  }
+
+  .element button.simple {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
+  .element button.detailed, #close_constrols button {
+    border: 1px solid rgb(var(--c2));
+    border-radius: .125em;
+    background-color: rgb(var(--c1));
   }
 
   .element button:hover,
