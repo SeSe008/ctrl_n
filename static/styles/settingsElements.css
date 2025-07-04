@@ -45,7 +45,7 @@
     background-color: transparent;
   }
 
-  .element button.detailed, #close_constrols button {
+  .element button.detailed, #close_controls button {
     border: 1px solid rgb(var(--c2));
     border-radius: .125em;
     background-color: rgb(var(--c1));
