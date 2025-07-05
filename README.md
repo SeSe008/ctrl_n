@@ -4,11 +4,12 @@
 
 ## Custom tilable page for a new tab in a browser
 
-## ** ⚠️ CTRL+N is currently in an early beta state – Breaking changes may occur at any time ⚠️ **
+## ** ⚠️ CTRL+N is currently in a beta state – Breaking changes may occur ⚠️ **
 
 <div style="display: flex; flex-direction: row; justify-content: center; gap: 5%;">
-	<img width="40%" title="Screenshot_Bird_Light" src="screenshots/Bird_Light.png" />
-	<img width="40%" title="Screenshot_Space_Full" src="screenshots/Space_Full.png" />
+	<img width="33%" title="Screenshot Light" src="screenshots/Light.png" />
+	<img width="33%" title="Screenshot Full" src="screenshots/Full.png" />
+	<img width="33%" title="Screenshot Settings" src="screenshots/Settings.png" />
 </div>
 <center><sub>Screenshots might not be fully up to date</sub></center>
 
@@ -41,7 +42,7 @@ There are 2 ways of using CTRL+N:
 	 - More frequent updates
    - Cons:
 	 - Technical knowlwdge needed
-	 - Bugs might happen more frequent
+	 - Bugs might happen more frequently
 	 - No Auto-Updates
 	 - Some features (currently only the Weather-Widget) need custom API keys
 
@@ -74,10 +75,8 @@ Elements will not follow chronological order
 - [ ] More Styling Control for Page/Widgets
   - [x] Opacity
   - [ ] Font
-  - [ ] Widget Resizing
-  - [ ] Widget Positioning
-  - [x] User Backgrounds
-  - [x] User Background-Categories
+  - [x] Widget Resizing
+  - [x] Widget Positioning
 - [ ] Custom Search Engines
 - [ ] Custom Widgets
 - [ ] CSS-Rework for compatibility purposes
