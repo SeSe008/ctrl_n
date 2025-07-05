@@ -79,12 +79,13 @@
   }
 
   #rss-feed h2 {
+    display: var(--tileTitle, flex);
+    
     justify-self: center;
     align-self: center;
     margin: 0;
     margin-bottom: 1vmin;
 
-    display: flex;
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;

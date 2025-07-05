@@ -29,7 +29,7 @@
   let colorThief: ColorThief;
 
   const defaultCategory = 0; // Default category when none is set
-  const defaultApiKeyWord = 'Sunset';
+  const defaultApiKeyWord = 'Sunsets'; // Default api keyword for bg-img
 
   const imageInterval = 5 * 60 * 1000; // When image changes - Make Customizable?
   const colors: number = 5; // Amount of colors for palette

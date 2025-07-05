@@ -18,7 +18,7 @@ export const tileMetadata: TileMetadata[] = [
     name: 'rss_feed',
     label: 'RSS-Feed',
     icon: 'mdi:newspaper-variant-multiple',
-    cssVars: ['--o1', '--o2', '--tileBorder', '--tileBorderRadius']
+    cssVars: ['--o1', '--o2', '--tileBorder', '--tileBorderRadius', '--tileTitle']
   },
   {
     name: 'weather',
@@ -36,6 +36,6 @@ export const tileMetadata: TileMetadata[] = [
     name: 'bookmarks',
     label: 'Bookmarks',
     icon: 'mdi:bookmark-multiple',
-    cssVars: ['--o1', '--o2', '--tileBorder', '--tileBorderRadius']
+    cssVars: ['--o1', '--o2', '--tileBorder', '--tileBorderRadius', '--tileTitle']
   }
 ];

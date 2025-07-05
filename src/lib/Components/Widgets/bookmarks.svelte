@@ -59,12 +59,13 @@
   }
 
   #bookmarks h2 {
+    display: var(--tileTitle, flex);
+
     justify-self: center;
     margin: 0;
     margin-bottom: 1vmin;
     grid-column: 1 / -1;
 
-    display: flex;
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;

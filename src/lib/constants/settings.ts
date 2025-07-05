@@ -328,6 +328,35 @@ export const tileSettings: SettingsSection = new SettingsSection()
         })
       )
       .appendElement(
+        'checkbox',
+        {
+          onChange: (value: boolean) =>
+            changeTileCssVar(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              '--tileTitle',
+              value ? 'flex' : 'none'
+            ),
+          defaultValue: () =>
+            (getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--tileTitle') ??
+              'unset') === 'unset',
+          label: 'Tile-Title'
+        },
+        derived(globalTiles, (_) => {
+          const managerId = getSelectedManagerId();
+          const tileId = getSelectedTileId();
+
+          if (managerId != null && tileId != null) {
+            const tile = getTile(managerId, tileId);
+            if (tile) {
+              return tileMetadata[tile.element].cssVars?.includes('--tileTitle') ?? false;
+            }
+          }
+
+          return false;
+        })
+      )
+      .appendElement(
         'range',
         {
           min: 0,
