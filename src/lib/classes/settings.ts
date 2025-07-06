@@ -19,6 +19,11 @@ export class SettingsSection {
     return this;
   }
 
+  public appendElements(elements: Element[]) {
+    this.#elements.push(...elements);
+    return this;
+  }
+
   public get elements(): Element[] {
     return this.#elements;
   }

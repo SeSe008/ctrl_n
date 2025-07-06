@@ -124,72 +124,42 @@ export const tileSettings: SettingsSection = new SettingsSection()
         text: 'Styling:',
         classes: ['big', 'left', 'margin-top']
       })
-      .appendElement(
-        'range',
-        {
-          min: 0,
-          max: 100,
-          step: 10,
-          unit: '%',
-          onInput: (value: number) =>
-            changeTileCssVar(
-              getSelectedManagerId(),
-              getSelectedTileId(),
-              '--o1',
-              (value / 100).toString()
-            ),
-          defaultValue: () =>
-            parseFloat(
-              getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o1') ?? '0.3'
-            ) * 100,
-          label: 'Primary opacity:'
-        },
-        derived(globalTiles, (_) => {
-          const managerId = getSelectedManagerId();
-          const tileId = getSelectedTileId();
+      .appendElements(
+        [1, 2].map((i) => ({
+          elementType: 'range',
+          elementOptions: {
+            min: 0,
+            max: 100,
+            step: 10,
+            unit: '%',
+            onInput: (value: number) =>
+              changeTileCssVar(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                `--o${i}`,
+                (value / 100).toString()
+              ),
+            defaultValue: () =>
+              parseFloat(
+                getTileCssVar(getSelectedManagerId(), getSelectedTileId(), `--o${i}`) ??
+                  `0.${i === 1 ? '3' : '7'}`
+              ) * 100,
+            label: `${i === 1 ? 'Primary' : 'Secondary'} opacity:`
+          },
+          condition: derived(globalTiles, (_) => {
+            const managerId = getSelectedManagerId();
+            const tileId = getSelectedTileId();
 
-          if (managerId != null && tileId != null) {
-            const tile = getTile(managerId, tileId);
-            if (tile) {
-              return tileMetadata[tile.element].cssVars?.includes('--o1') ?? false;
+            if (managerId != null && tileId != null) {
+              const tile = getTile(managerId, tileId);
+              if (tile) {
+                return tileMetadata[tile.element].cssVars?.includes(`--o${i}`) ?? false;
+              }
             }
-          }
 
-          return false;
-        })
-      )
-      .appendElement(
-        'range',
-        {
-          min: 0,
-          max: 100,
-          step: 10,
-          onInput: (value: number) =>
-            changeTileCssVar(
-              getSelectedManagerId(),
-              getSelectedTileId(),
-              '--o2',
-              (value / 100).toString()
-            ),
-          defaultValue: () =>
-            parseFloat(
-              getTileCssVar(getSelectedManagerId(), getSelectedTileId(), '--o2') ?? '0.7'
-            ) * 100,
-          label: 'Secondary opacity:'
-        },
-        derived(globalTiles, (_) => {
-          const managerId = getSelectedManagerId();
-          const tileId = getSelectedTileId();
-
-          if (managerId != null && tileId != null) {
-            const tile = getTile(managerId, tileId);
-            if (tile) {
-              return tileMetadata[tile.element].cssVars?.includes('--o2') ?? false;
-            }
-          }
-
-          return false;
-        })
+            return false;
+          })
+        }))
       )
       .appendElement('range', {
         min: 0,

@@ -18,11 +18,7 @@
     toggleSelectingTile
   } from '$lib/stores/settings/settings';
 
-  import {
-    backgroundImage,
-    getImageCategory,
-    initBgImages
-  } from '$lib/stores/backgroundImage';
+  import { backgroundImage, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
 
   import { applyCssVars } from '$lib/utils/applyCssVars';
 
@@ -35,11 +31,7 @@
   const colors: number = 5; // Amount of colors for palette
 
   function nextImage() {
-    fetchAndApplyImage(
-      getImageCategory(),
-      colors,
-      colorThief
-    );
+    fetchAndApplyImage(getImageCategory(), colors, colorThief);
   }
 
   let tileGrid: HTMLDivElement;
@@ -77,29 +69,29 @@
       <TileManager id={i} />
     {/each}
   </div>
-
-  <div id="page_info">
-    <div>
-      {#if $imageCredits}
-        <a target="_blank" href={$imageCredits.creatorUrl}>{$imageCredits.creator}</a>
-        <a target="_blank" href={$imageCredits.licenseUrl}>{$imageCredits.license}</a>
-      {/if}
-    </div>
-    <div>
-      <button onclick={nextImage}>
-	{#if !$imageLoading}
-          <Icon icon="mdi:image-outline" />
-	{:else}
-	  <Icon icon="line-md:loading-alt-loop" />
-	{/if}
-      </button>
-      <button onclick={() => toggleSettings(0, 0)}>
-        <Icon icon="mdi:settings-outline" />
-      </button>
-    </div>
-    <div><a target="_blank" href="privacy">Privacy and Credit</a></div>
-  </div>
 </main>
+
+<footer>
+  <div>
+    {#if $imageCredits}
+      <a target="_blank" href={$imageCredits.creatorUrl}>{$imageCredits.creator}</a>
+      <a target="_blank" href={$imageCredits.licenseUrl}>{$imageCredits.license}</a>
+    {/if}
+  </div>
+  <div>
+    <button onclick={nextImage}>
+      {#if !$imageLoading}
+        <Icon icon="mdi:image-outline" />
+      {:else}
+        <Icon icon="line-md:loading-alt-loop" />
+      {/if}
+    </button>
+    <button onclick={() => toggleSettings(0, 0)}>
+      <Icon icon="mdi:settings-outline" />
+    </button>
+  </div>
+  <div><a target="_blank" href="privacy">Privacy and Credit</a></div>
+</footer>
 
 {#if $settings.enabled}
   <Settings />
@@ -141,10 +133,20 @@
     }
 
     body {
-      display: flex;
-      flex-direction: row;
       position: absolute;
       inset: 0;
+
+      display: grid;
+      grid-template-areas:
+        'main aside'
+        'footer aside';
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto min-content;
+      grid-auto-flow: column;
+
+      box-sizing: border-box;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
 
       font-family: 'Quicksand', sans-serif;
 
@@ -153,10 +155,6 @@
       transition:
         background-image 1s ease-in-out,
         background-size 0s;
-    }
-
-    body > * {
-      flex-grow: 1;
     }
 
     body * {
@@ -202,7 +200,6 @@
     width: 100%;
     height: 100%;
 
-    padding: 0.5rem 1rem;
     box-sizing: border-box;
     overflow: hidden;
   }
@@ -234,7 +231,7 @@
     box-sizing: border-box;
   }
 
-  #page_info {
+  footer {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(max-content, 1fr);
@@ -247,15 +244,15 @@
     font-weight: bold;
   }
 
-  #page_info div:first-child {
+  footer div:first-child {
     justify-self: flex-start;
   }
 
-  #page_info div:last-child {
+  footer div:last-child {
     justify-self: flex-end;
   }
 
-  #page_info div {
+  footer div {
     display: flex;
     align-items: center;
     gap: 0.2em;
@@ -270,7 +267,7 @@
     border-radius: 0.25rem;
   }
 
-  #page_info a {
+  footer a {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -290,11 +287,11 @@
     transition: background-color 0.2s linear;
   }
 
-  #page_info a:hover {
+  footer a:hover {
     background-color: rgb(var(--c1));
   }
 
-  #page_info button {
+  footer button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -313,7 +310,7 @@
     transition: background-color 0.2s linear;
   }
 
-  #page_info button:hover {
+  footer button:hover {
     background-color: rgb(var(--c1));
   }
 </style>
