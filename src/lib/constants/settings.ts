@@ -92,9 +92,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           }
         },
         derived(globalTiles, (_) =>
-          getSelectedManagerId() !== undefined
-            ? (getManager(getSelectedManagerId()!)?.tiles.length ?? 0) > 1
-            : false
+            (getManager(getSelectedManagerId())?.tiles.length ?? 0) > 1
         )
       )
   })
@@ -459,13 +457,6 @@ export const globalSettings: SettingsSection = new SettingsSection()
         !imageKeywords.includes($apiImageKeyword) || $apiImageKeyword === 'Custom'
     )
   )
-  .appendElement(
-    'text',
-    {
-      text: 'No image found, try another keyword or category.'
-    },
-    derived(backgroundImage, ($backgroundImage) => $backgroundImage === undefined)
-  )
   .appendElement('text', {
     text: 'Styling:',
     classes: ['big', 'left', 'margin_top']
@@ -478,7 +469,7 @@ export const globalSettings: SettingsSection = new SettingsSection()
     onInput: (value: number) => {
       changeGlobalCssVar('--tileContainerPadding', `${value.toString()}rem`);
     },
-    defaultValue: () => parseFloat(getGlobalCssVar('--tileContainerPadding') ?? '0'),
+    defaultValue: () => parseFloat(getGlobalCssVar('--tileContainerPadding') ?? '0.5'),
     label: 'Tile-Container Padding:'
   })
   .appendElement('text', {

@@ -8,6 +8,7 @@
   import type { SearchEngine, SuggestionEndpoint } from '$lib/types/widgets/searchEngines';
 
   import { resize } from '$lib/utils/resize';
+  import { addError } from '$lib/stores/errors';
 
   interface RecentlySearched {
     query: string;
@@ -74,7 +75,10 @@
       })
     });
 
-    if (response.status === 500) return;
+    if (!response.ok) {
+      addError('suggestions', (await response.json()).error);
+      return;
+    }
 
     const result: Suggestion = await response.json();
 

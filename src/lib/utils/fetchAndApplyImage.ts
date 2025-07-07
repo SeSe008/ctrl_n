@@ -3,6 +3,7 @@ import { setBackgroundImage, setImageCredits, setImageLoading } from '$lib/store
 import type ColorThief from 'colorthief';
 import { applyPalette } from './applyPalette';
 import { getPalette } from './getPalette';
+import { addError } from '$lib/stores/errors';
 
 export async function fetchAndApplyImage(
   categoryId: number,
@@ -14,7 +15,7 @@ export async function fetchAndApplyImage(
   const api = imageApis[categoryId];
 
   if (!api) {
-    console.error(`Category ${categoryId} not found.`);
+    addError('image', `Image API for category ${categoryId} not found.`);
     return;
   }
 
@@ -23,7 +24,7 @@ export async function fetchAndApplyImage(
   const res = await fetch(url);
 
   if (!res.ok) {
-    console.error('Fetching Image failed:', res.status, await res.text());
+    addError('image', `Failed to fetch image: ${res.statusText}`);
     setBackgroundImage(undefined);
     setImageLoading(false);
     return;
@@ -32,8 +33,11 @@ export async function fetchAndApplyImage(
   const data = await res.json();
 
   if (api.isEmpty(data)) {
+    addError('image', 'No images found for the given category.');
+    
     setBackgroundImage(undefined);
     setImageLoading(false);
+    return;
   }
   
   try {
@@ -60,7 +64,7 @@ export async function fetchAndApplyImage(
 
     return imgElement;
   } catch {
-    console.error('Error parsing image data:', data);
+    addError('image', 'Failed to process the image data.');
     setImageLoading(false);
     return;
   }

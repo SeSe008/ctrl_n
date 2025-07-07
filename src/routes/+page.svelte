@@ -22,6 +22,8 @@
 
   import { applyCssVars } from '$lib/utils/applyCssVars';
 
+  import Errors from '$lib/Components/errors.svelte';
+
   let colorThief: ColorThief;
 
   const defaultCategory = 0; // Default category when none is set
@@ -97,6 +99,8 @@
   <Settings />
 {/if}
 
+<Errors />
+
 <style>
   :global {
     :root {
@@ -107,7 +111,7 @@
       --c4: 100, 100, 100;
       --c5: 50, 50, 50, 50;
 
-      --tileContainerPadding: 0rem;
+      --tileContainerPadding: 0.5rem;
 
       /* Tile-Specific Vars */
       --o1: 0.3;
@@ -141,12 +145,10 @@
         'main aside'
         'footer aside';
       grid-template-columns: 1fr auto;
-      grid-template-rows: auto min-content;
+      grid-template-rows: 1fr min-content;
       grid-auto-flow: column;
 
       box-sizing: border-box;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
 
       font-family: 'Quicksand', sans-serif;
 
@@ -193,6 +195,8 @@
   }
 
   main {
+    grid-area: main;
+
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -232,10 +236,15 @@
   }
 
   footer {
+    grid-area: footer;
+
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(max-content, 1fr);
     gap: 0.25rem;
+
+    padding: 0 0.5rem;
+    padding-bottom: 0.5rem;
 
     justify-items: center;
     align-items: stretch;

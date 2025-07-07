@@ -6,6 +6,7 @@
   import type { Article } from '$lib/types/widgets/rss';
   import { getRssUrl, initRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
   import { settingsEnabled } from '$lib/stores/settings/settings';
+  import { addError } from '$lib/stores/errors';
 
   let articles = $state<Article[]>([]);
   let error = $state<string>();
@@ -23,11 +24,12 @@
     } else {
       articles = [];
       error = (await resp.json()).error;
+      addError('rss-feed', error!);
     }
   }
 
   rssUrl.subscribe((url) => {
-    if (!settingsEnabled()) parseRss(url);
+    parseRss(url);
   });
 
   onMount(initRssUrl);

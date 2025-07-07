@@ -102,7 +102,7 @@
 
     top: 0;
     height: 100%;
-    width: 800px;
+    width: 500px;
 
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
@@ -111,9 +111,15 @@
     color: rgb(var(--c5));
     border-left: 1px solid rgb(var(--c2));
 
-    z-index: 100;
+    z-index: 10;
 
     animation: settingsIn forwards 0.5s;
+  }
+
+  @media only screen and (min-width: 1200px) {
+    #settings {
+      grid-area: aside;
+    }
   }
 
   @media only screen and (max-width: 1200px) {

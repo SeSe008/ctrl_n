@@ -7,6 +7,7 @@
   } from '$lib/stores/widgets/weatherLocation';
   import { onMount } from 'svelte';
   import { settingsEnabled } from '$lib/stores/settings/settings';
+  import { addError } from '$lib/stores/errors';
 
   interface Weather {
     name: string;
@@ -33,6 +34,7 @@
 
     if (resp.status !== 200) {
       error = (await resp.json()).error;
+      addError('weater', error!);
       return;
     }
 

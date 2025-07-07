@@ -46,7 +46,7 @@ export const POST: RequestHandler = async (event) => {
   try {
     const res = await fetch(url, { signal: controller.signal });
     if (!res.ok) {
-      throw new Error(`Weather API responded ${res.status}`);
+      throw new Error(`${(await res.json()).message}`);
     }
 
     const weather = await res.json();
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async (event) => {
     });
   } catch (err) {
     console.error('Weather fetch failed:', err);
-    return new Response(JSON.stringify({ error: 'Unable to retrieve weather data' }), {
+    return new Response(JSON.stringify({ error: `Api: ${err}` }), {
       status: 502,
       headers: { 'Content-Type': 'application/json' }
     });
