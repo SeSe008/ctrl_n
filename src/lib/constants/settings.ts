@@ -77,26 +77,6 @@ export const tileSettings: SettingsSection = new SettingsSection()
     text: 'Tile Settings',
     classes: ['large', 'center', 'strong', 'margin_top']
   })
-  .appendElement('group', {
-    objects: new SettingsSection()
-      .appendElement('button', {
-        text: 'Append Tile',
-        icon: 'mdi:add-circle-outline',
-        onClick: () => addTile(getSelectedManagerId())
-      })
-      .appendElement(
-        'button',
-        {
-          text: 'Remove Tile',
-          icon: 'mdi:remove-circle-outline',
-          onClick: () => {
-            removeTile(getSelectedManagerId(), getSelectedTileId());
-            setSelectedTile(0);
-          }
-        },
-        derived(globalTiles, (_) => (getManager(getSelectedManagerId())?.tiles.length ?? 0) > 1)
-      )
-  })
   .appendElement(
     'select',
     {
@@ -171,7 +151,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
             : 1
         ),
         specialValues: {
-          0: 'Fit-Content'
+          0: 'Auto'
         },
         label: 'Row Height:',
         unit: 'fr'
@@ -481,8 +461,8 @@ export const globalSettings: SettingsSection = new SettingsSection()
     globalTiles
   )
   .appendElement('text', {
-    text: 'Background Image',
-    classes: ['big', 'left', 'strong', 'margin_top']
+    text: 'Background Image:',
+    classes: ['big', 'left', 'margin_top']
   })
   .appendElement('select', {
     selectOptions: () => imageApis,

@@ -2,12 +2,12 @@
   import Icon from '@iconify/svelte';
   import {
     getWeatherLocation,
-    initWeatherLoaction,
     weatherLocation
   } from '$lib/stores/widgets/weatherLocation';
-  import { onMount } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { settingsEnabled } from '$lib/stores/settings/settings';
   import { addError } from '$lib/stores/errors';
+  import { subscribeIndirect } from '$lib/utils/subscribeIndirect';
 
   interface Weather {
     name: string;
@@ -47,12 +47,10 @@
       .map((word) => (word.length > 0 ? word[0].toUpperCase() + word.slice(1).toLowerCase() : ''))
       .join(' ');
   }
+  
+  const unsub: () => void = subscribeIndirect(weatherLocation, (loc) => fetchWeather(loc));
 
-  onMount(initWeatherLoaction);
-
-  weatherLocation.subscribe((loc) => {
-    if (loc) fetchWeather(loc);
-  });
+  onDestroy(unsub);
 </script>
 
 <div id="weather">

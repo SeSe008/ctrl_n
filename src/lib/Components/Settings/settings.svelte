@@ -14,37 +14,12 @@
   import type { Element } from '$lib/types/settings/settings';
   import SettingsElement from './settingsElement.svelte';
 
-  import { onDestroy } from 'svelte';
-  import { derived } from 'svelte/store';
-
-  let settingsElements: Element[] = $state([]);
-
-  function getElements() {
-    const mgr = getSelectedManagerId() ?? 0;
-    const tle = getSelectedTileId() ?? 0;
+  function getElements(): Array<Element> {
+    const mgr = getSelectedManagerId();
+    const tle = getSelectedTileId();
     const def = tileDefs[getTile(mgr, tle)?.element ?? 0];
-    settingsElements = def.tileProps.elements;
+    return def.tileProps.elements;
   }
-
-  let unsubscribes = $state<Array<() => void>>([]);
-
-  // On selected settings element change
-  unsubscribes.push(settings.subscribe(() => getElements()));
-
-  // On widget change
-  unsubscribes.push(globalTiles.subscribe(() => getElements()));
-
-  const keyStore = derived([globalTiles, settings], ([$globalTiles, $settings]) => {
-    const mgr = $settings.selectedManager;
-    const tle = $settings.selectedTile;
-    return $globalTiles.managers[mgr] && $globalTiles.managers[mgr].tiles[tle]
-      ? JSON.stringify(`${$globalTiles.managers[mgr].tiles[tle].element}:${$settings}`)
-      : $settings;
-  });
-
-  onDestroy(() => {
-    unsubscribes.forEach((unsub) => unsub());
-  });
 </script>
 
 <aside id="settings">
@@ -56,9 +31,9 @@
         {/each}
       </div>
     {:else if $globalTiles.managers[$settings.selectedManager] && $globalTiles.managers[$settings.selectedManager].tiles[$settings.selectedTile]}
-      {#key $keyStore}
+      {#key $globalTiles.managers[getSelectedManagerId()].tiles[getSelectedTileId()].element}
         <div class="settings_section">
-          {#each settingsElements as element, i (`${element.elementType}-${i}`)}
+          {#each getElements() as element, i (`${element.elementType}-${i}`)}
             <div class="element"><SettingsElement {element} /></div>
           {/each}
         </div>

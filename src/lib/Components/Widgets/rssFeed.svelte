@@ -1,12 +1,13 @@
 <script lang="ts">
   import DOMPurify from 'dompurify';
-  import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
 
   import type { Article } from '$lib/types/widgets/rss';
-  import { getRssUrl, initRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
+  import { getRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
   import { settingsEnabled } from '$lib/stores/settings/settings';
   import { addError } from '$lib/stores/errors';
+  import { subscribeIndirect } from '$lib/utils/subscribeIndirect';
+  import { onDestroy } from 'svelte';
 
   let articles = $state<Article[]>([]);
   let error = $state<string>();
@@ -28,11 +29,9 @@
     }
   }
 
-  rssUrl.subscribe((url) => {
-    parseRss(url);
-  });
+  const unsub: () => void = subscribeIndirect(rssUrl, (url) => parseRss(url));
 
-  onMount(initRssUrl);
+  onDestroy(unsub);
 </script>
 
 <div id="rss-feed">
