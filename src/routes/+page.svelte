@@ -13,9 +13,7 @@
 
   import {
     settings,
-    toggleSettings,
-    isSelectingTile,
-    toggleSelectingTile
+    toggleSettings
   } from '$lib/stores/settings/settings';
 
   import { backgroundImage, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
@@ -46,12 +44,6 @@
     }
   });
 
-  function stopSelectingTile(e: Event) {
-    if (e.target && (e.target as HTMLElement).tagName === 'MAIN' && isSelectingTile()) {
-      toggleSelectingTile();
-    }
-  }
-
   onMount(async () => {
     colorThief = new ColorThief();
 
@@ -60,8 +52,6 @@
     initializeTiles();
   });
 </script>
-
-<svelte:window on:click={stopSelectingTile} />
 
 <main use:applyCssVars={$globalTiles.cssVars}>
   <img id="bg_img" alt="bg img" src={$backgroundImage} />
@@ -88,7 +78,7 @@
         <Icon icon="line-md:loading-alt-loop" />
       {/if}
     </button>
-    <button onclick={() => toggleSettings(0, 0)}>
+    <button onclick={() => toggleSettings(0, -1)}>
       <Icon icon="mdi:settings-outline" />
     </button>
   </div>

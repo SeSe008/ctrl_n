@@ -9,7 +9,8 @@ import type {
   ImageProps,
   GroupProps,
   GridProps,
-  CustomHTMLProps
+  CustomHTMLProps,
+  IconProps
 } from '$lib/types/settings/elements';
 
 import type { Component } from 'svelte';
@@ -23,6 +24,7 @@ export interface Settings {
 
 export type ElementProps =
   | TextProps
+  | IconProps
   | SelectProps
   | ButtonProps
   | RangeProps

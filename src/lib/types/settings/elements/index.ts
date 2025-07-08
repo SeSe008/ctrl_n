@@ -1,4 +1,5 @@
 export type { Options as TextProps } from './text';
+export type { Options as IconProps } from './icon';
 export type { Options as SelectProps } from './select';
 export type { Options as ButtonProps } from './button';
 export type { Options as RangeProps } from './range';

@@ -398,6 +398,7 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                             text: bookmark.name
                           })
                           .appendElement('button', {
+                            simple: true,
                             icon: 'mdi:delete',
                             onClick: () => removeBookmark(i)
                           })

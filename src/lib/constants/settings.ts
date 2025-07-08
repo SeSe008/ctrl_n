@@ -41,6 +41,7 @@ import {
 } from '$lib/stores/backgroundImage';
 
 import Text from '$lib/Components/Settings/Elements/text.svelte';
+import Icon from '$lib/Components/Settings/Elements/icon.svelte';
 import Select from '$lib/Components/Settings/Elements/select.svelte';
 import Button from '$lib/Components/Settings/Elements/button.svelte';
 import Range from '$lib/Components/Settings/Elements/range.svelte';
@@ -54,9 +55,11 @@ import CustomHTML from '$lib/Components/Settings/Elements/customHTML.svelte';
 import { getRootCssVar } from '$lib/utils/getRootCssVar';
 import { imageApis, imageKeywords } from './imageApis';
 import { newApiImageKeyword } from '$lib/stores/settings/elements/newApiImageKeyword';
+import { tileDefs } from './tileDefs';
 
 export const elementComponents: ElementComponents = {
   text: Text,
+  icon: Icon,
   select: Select,
   button: Button,
   range: Range,
@@ -91,9 +94,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
             setSelectedTile(0);
           }
         },
-        derived(globalTiles, (_) =>
-            (getManager(getSelectedManagerId())?.tiles.length ?? 0) > 1
-        )
+        derived(globalTiles, (_) => (getManager(getSelectedManagerId())?.tiles.length ?? 0) > 1)
       )
   })
   .appendElement(
@@ -159,6 +160,22 @@ export const tileSettings: SettingsSection = new SettingsSection()
           })
         }))
       )
+      .appendElement('range', {
+        min: 0,
+        max: 5,
+        step: 0.1,
+        onInput: (value: number) => changeManagerHeight(get(settings).selectedManager, value),
+        defaultValue: derived(globalTiles, (_) =>
+          getSelectedManagerId() !== undefined && getManager(getSelectedManagerId()!)
+            ? getManager(getSelectedManagerId()!)!.height
+            : 1
+        ),
+        specialValues: {
+          0: 'Fit-Content'
+        },
+        label: 'Row Height:',
+        unit: 'fr'
+      })
       .appendElement('range', {
         min: 0,
         max: 100,
@@ -361,63 +378,108 @@ export const tileSettings: SettingsSection = new SettingsSection()
       )
   });
 
-export const tileManagerSettings: SettingsSection = new SettingsSection()
-  .appendElement('text', {
-    text: 'Row Settings',
-    classes: ['large', 'center', 'strong', 'margin_top']
-  })
-  .appendElement('group', {
-    objects: new SettingsSection()
-      .appendElement('button', {
-        text: 'Append Row',
-        icon: 'mdi:add-circle-outline',
-        onClick: () => addManager()
-      })
-      .appendElement('button', {
-        text: 'Remove Row',
-        icon: 'mdi:remove-circle-outline',
-        onClick: () => {
-          if (getManagers().length > 1) {
-            removeManager(getSelectedManagerId());
-            setSelectedManager(0);
-          }
-        }
-      })
-  })
-  .appendElement('text', {
-    text: 'Row-Height:',
-    classes: ['big', 'left', 'margin_top']
-  })
-  .appendElement('range', {
-    min: 0,
-    max: 5,
-    step: 0.1,
-    onInput: (value: number) => changeManagerHeight(get(settings).selectedManager, value),
-    defaultValue: derived(globalTiles, (_) =>
-      getSelectedManagerId() !== undefined && getManager(getSelectedManagerId()!)
-        ? getManager(getSelectedManagerId()!)!.height
-        : 1
-    ),
-    specialValues: {
-      0: 'Fit-Content'
-    },
-    valueLabel: 'Preferred height:',
-    unit: 'fr'
-  });
-
 export const globalSettings: SettingsSection = new SettingsSection()
   .appendElement('group', {
     center: true,
-    objects: new SettingsSection()
-      .appendElement('image', {
-	image: () => 'icons/icon.svg',
-	width: '10em'
-      })
+    objects: new SettingsSection().appendElement('image', {
+      image: () => 'icons/icon.svg',
+      width: '10em'
+    })
   })
   .appendElement('text', {
-    text: 'Global Settings',
+    text: 'Settings',
     classes: ['large', 'center', 'strong']
   })
+  .appendElement(
+    'group',
+    {
+      layout: 'vert',
+      center: true,
+      objects: () =>
+        new SettingsSection(
+          getManagers().map((mgr, mgrId) => ({
+            elementType: 'group',
+            elementOptions: {
+              layout: 'vert',
+              background: true,
+              border: true,
+              objects: new SettingsSection()
+                .appendElement('group', {
+                  center: true,
+                  objects: new SettingsSection()
+                    .appendElement('text', {
+                      text: `Row ${mgrId + 1}`,
+                      classes: ['strong']
+                    })
+                    .appendElement(
+                      'button',
+                      {
+                        icon: 'mdi:delete',
+                        simple: true,
+                        onClick: () => {
+                          removeManager(mgrId);
+                          setSelectedManager(0);
+                        }
+                      },
+                      () => getManagers().length > 1
+                    )
+                })
+                .appendElement('group', {
+                  center: true,
+                  objects: new SettingsSection(
+                    mgr.tiles.map((tle, tleId) => ({
+                      elementType: 'group',
+                      elementOptions: {
+                        border: true,
+                        center: true,
+                        objects: new SettingsSection()
+                          .appendElement('icon', {
+                            icon:
+                              tileDefs[tle.element].icon ??
+                              'material-symbols:widgets-outline-rounded',
+                            size: '1.3em'
+                          })
+                          .appendElement('text', {
+                            text: tileDefs[tle.element].label
+                          })
+                          .appendElement('button', {
+                            icon: 'mdi:settings-outline',
+                            simple: true,
+                            onClick: () => {
+                              setSelectedManager(mgrId);
+                              setSelectedTile(tleId);
+                            }
+                          })
+                          .appendElement(
+                            'button',
+                            {
+                              icon: 'mdi:delete',
+                              simple: true,
+                              onClick: () => {
+                                removeTile(mgrId, tleId);
+                                setSelectedTile(-1);
+                              }
+                            },
+                            () => getManager(mgrId)!.tiles.length > 1
+                          )
+                      }
+                    }))
+                  ).appendElement('button', {
+                    simple: true,
+                    icon: 'mdi:add',
+                    onClick: () => addTile(mgrId)
+                  })
+                })
+            }
+          }))
+        ).appendElement('button', {
+          text: 'Append Row',
+          onClick: () => addManager()
+        })
+    },
+    undefined,
+    globalTiles
+  )
   .appendElement('text', {
     text: 'Background Image',
     classes: ['big', 'left', 'strong', 'margin_top']

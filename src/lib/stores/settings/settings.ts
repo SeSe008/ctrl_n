@@ -41,17 +41,3 @@ export function setSelectedManager(selectedManager: number) {
 export function getSelectedManagerId(): number {
   return get(settings).selectedManager;
 }
-
-export const selectingTile = writable<boolean>(false);
-
-export function setSelectingTile(value: boolean) {
-  selectingTile.set(value);
-}
-
-export function toggleSelectingTile() {
-  selectingTile.update((current) => !current);
-}
-
-export function isSelectingTile(): boolean {
-  return get(selectingTile);
-}

@@ -23,7 +23,6 @@
     height: min-content;
 
     box-sizing: border-box;
-    padding: 0.3rem 0.4rem;
     margin: 0;
 
     outline: none;
@@ -40,23 +39,32 @@
   }
 
   .element button.simple {
+    padding: .25em;
+    
     border: none;
-    border-radius: 0;
+    border-radius: .25em;
     background-color: transparent;
   }
 
   .element button.detailed, #close_controls button {
+    padding: 0.3rem 0.4rem;
+
     border: 1px solid rgb(var(--c2));
     border-radius: .125em;
     background-color: rgb(var(--c1));
   }
 
-  .element button:hover,
-  #close_controls button:hover,
-  #close_controls button.active {
+  .element button.detailed:hover,
+  #close_controls button:hover {
     padding: 0.2rem 0.25rem;
     margin: 0.1rem 0.15rem;
     box-shadow: 0 0 0.1rem rgb(var(--c5));
+    background-color: rgb(var(--c5));
+    color: rgb(var(--c1));
+  }
+
+  
+  .element button.simple:hover {
     background-color: rgb(var(--c5));
     color: rgb(var(--c1));
   }

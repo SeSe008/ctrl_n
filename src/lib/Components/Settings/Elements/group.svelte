@@ -7,20 +7,19 @@
   }
 
   const { options }: Props = $props();
-  const { objects, layout, wrap, center } = options;
-  
-  let elements = $derived(
-    typeof objects === 'function' ? objects().elements : objects.elements
-  );
+  const { objects, layout, wrap, center, background, border } = options;
+
+  let elements = $derived(typeof objects === 'function' ? objects().elements : objects.elements);
 </script>
 
 <div
-  class="settings_group {layout === 'vert' || layout === 'vertical'
-    ? 'vert'
-    : 'hor'}"
-  style="--wrap: {wrap === false ? 'nowrap' : 'wrap'}; --center: {center
-    ? 'center'
-    : 'flex-start'};"
+  class="settings_group {layout === 'vert' || layout === 'vertical' ? 'vert' : 'hor'}"
+  style="
+	       --wrap: {wrap === false ? 'nowrap' : 'wrap'};
+         --center: {center ? 'center' : 'flex-start'};
+         --background: {background ? 'rgb(var(--c1))' : 'transparent'};
+         --border: {border ? '1px solid rgb(var(--c2))' : 'transparent'};
+         --padding: {border ? '0.5em' : 0};"
 >
   {#each elements as element, i (i)}
     <SettingsElement {element} />
@@ -36,6 +35,13 @@
     flex-wrap: var(--wrap);
     justify-content: var(--center);
     align-items: var(--center);
+
+    background-color: var(--background);
+
+    box-sizing: border-box;
+    border: var(--border);
+    border-radius: 0.5em;
+    padding: var(--padding);
 
     font-size: inherit;
   }

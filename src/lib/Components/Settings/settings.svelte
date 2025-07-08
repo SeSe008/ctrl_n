@@ -3,10 +3,8 @@
   import {
     getSelectedManagerId,
     getSelectedTileId,
-    selectingTile,
-    setSelectingTile,
+    setSelectedTile,
     settings,
-    toggleSelectingTile,
     toggleSettings
   } from '$lib/stores/settings/settings';
 
@@ -18,8 +16,6 @@
 
   import { onDestroy } from 'svelte';
   import { derived } from 'svelte/store';
-
-  let selectedTab = $state<number>(1);
 
   let settingsElements: Element[] = $state([]);
 
@@ -51,46 +47,38 @@
   });
 </script>
 
-<aside id="settings" class={$selectingTile ? 'selecting' : ''}>
-  <div id="tab_cont">
-    <div id="tab_nav">
-      <button class={selectedTab === 0 ? 'active' : ''} onclick={() => (selectedTab = 0)}>
-        Global Settings
-      </button>
-      <button class={selectedTab === 1 ? 'active' : ''} onclick={() => (selectedTab = 1)}>
-        Element Settings
-      </button>
-    </div>
-    <div id="tab_elements">
-      {#if selectedTab === 0}
-        <div class="settings_tab">
-          {#each globalSettings.elements as element, i (i)}
+<aside id="settings">
+  <div id="settings_elements">
+    {#if $settings.selectedTile === -1}
+      <div class="settings_section">
+        {#each globalSettings.elements as element, i (i)}
+          <div class="element"><SettingsElement {element} /></div>
+        {/each}
+      </div>
+    {:else if $globalTiles.managers[$settings.selectedManager] && $globalTiles.managers[$settings.selectedManager].tiles[$settings.selectedTile]}
+      {#key $keyStore}
+        <div class="settings_section">
+          {#each settingsElements as element, i (`${element.elementType}-${i}`)}
             <div class="element"><SettingsElement {element} /></div>
           {/each}
         </div>
-      {:else if selectedTab === 1 && $globalTiles.managers[$settings.selectedManager] && $globalTiles.managers[$settings.selectedManager].tiles[$settings.selectedTile]}
-        {#key $keyStore}
-          <div class="settings_tab">
-            {#each settingsElements as element, i (`${element.elementType}-${i}`)}
-              <div class="element"><SettingsElement {element} /></div>
-            {/each}
-          </div>
-        {/key}
-      {/if}
-    </div>
+      {/key}
+    {/if}
   </div>
   <div id="close_controls">
-    <button onclick={() => toggleSelectingTile()} class={$selectingTile ? 'active' : ''}>
-      <b>Select Tile</b>
-    </button>
     <button
       onclick={() => {
         toggleSettings();
-        setSelectingTile(false);
+        setSelectedTile(-1);
       }}
     >
       Close
     </button>
+    {#if $settings.selectedTile !== -1}
+      <button onclick={() => setSelectedTile(-1)}>
+        <b>Home</b>
+      </button>
+    {/if}
   </div>
 </aside>
 
@@ -128,10 +116,6 @@
       width: min(600px, 100%);
       right: 0;
     }
-
-    #settings.selecting {
-      display: none;
-    }
   }
 
   @keyframes settingsIn {
@@ -143,55 +127,11 @@
     }
   }
 
-  #tab_cont {
-    display: grid;
-    grid-template-rows: min-content 1fr;
-    grid-template-columns: 1fr;
-    overflow: hidden;
-  }
-
-  #tab_nav {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.25rem;
-
-    border-bottom: 1px solid rgb(var(--c2));
-
-    padding-top: 0.25rem;
-    padding-left: 0.5rem;
-  }
-
-  #tab_nav button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid rgb(var(--c2));
-    border-bottom: none;
-    outline: none;
-
-    font-size: calc(8px + 1.5vmin);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem 0.25rem 0 0;
-
-    color: inherit;
-    background-color: transparent;
-
-    cursor: pointer;
-
-    transition: background-color 0.2s linear;
-  }
-
-  #tab_nav button.active {
-    background-color: rgb(var(--c2));
-  }
-
-  #tab_elements {
+  #settings_elements {
     overflow-y: auto;
   }
 
-  .settings_tab {
+  .settings_section {
     flex-grow: 1;
     width: 100%;
 
