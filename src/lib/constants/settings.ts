@@ -406,6 +406,14 @@ export const tileManagerSettings: SettingsSection = new SettingsSection()
   });
 
 export const globalSettings: SettingsSection = new SettingsSection()
+  .appendElement('group', {
+    center: true,
+    objects: new SettingsSection()
+      .appendElement('image', {
+	image: () => 'icons/icon.svg',
+	width: '10em'
+      })
+  })
   .appendElement('text', {
     text: 'Global Settings',
     classes: ['large', 'center', 'strong']

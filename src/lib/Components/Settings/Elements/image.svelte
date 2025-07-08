@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { Options } from '$lib/types/settings/elements/image';
-  import type { Image } from '$lib/types/backgroundImage';
 
   interface Props {
     options: Options;
@@ -10,7 +9,7 @@
   const { options }: Props = $props();
   const { image, label, alt, width, height } = options;
 
-  let img = $state<Image>('');
+  let img = $state<string>('');
 
   // when the component mounts, await the images and assign them
   onMount(async () => {
