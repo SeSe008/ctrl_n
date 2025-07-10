@@ -1,9 +1,7 @@
 <script lang="ts">
   import { getTile, globalTiles } from '$lib/stores/tiles';
   import { tileDefs } from '$lib/constants/tileDefs';
-  import {
-    settings,
-  } from '$lib/stores/settings/settings';
+  import { settings } from '$lib/stores/settings/settings';
   import { applyCssVars } from '$lib/utils/applyCssVars';
 
   interface Props {
@@ -29,7 +27,7 @@
     >
       {#if tileDefs[tile.element]}
         {@const SelectedComponent = tileDefs[tile.element].component}
-        <div><SelectedComponent /></div>
+        <div><SelectedComponent {tileId} {managerId} /></div>
       {:else}
         <div id="spacer"></div>
       {/if}
@@ -56,7 +54,7 @@
 
     transition: background-color 0.2s linear;
   }
-  
+
   .settings_selected_tile {
     border: 2px dotted white;
   }

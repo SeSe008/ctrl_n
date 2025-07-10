@@ -25,9 +25,7 @@ export function changeGlobalCssVar(name: string, value: string) {
 export function deleteGlobalCssVar(name: string) {
   globalTiles.update(({ cssVars, ...rest }) => ({
     ...rest,
-    cssVars: Object.fromEntries(
-      Object.entries(cssVars).filter(([key]) => key !== name)
-    )
+    cssVars: Object.fromEntries(Object.entries(cssVars).filter(([key]) => key !== name))
   }));
 }
 
@@ -60,7 +58,7 @@ export function addManager() {
     current.managers = [
       ...current.managers,
       {
-        tiles: [{ pos: 0, element: 0, cssVars: {} }],
+        tiles: [{ pos: 0, element: 0, widgetOptions: {}, cssVars: {} }],
         height: 1
       }
     ];
@@ -99,6 +97,7 @@ export function addTile(managerId: number | undefined) {
           {
             pos: current.managers[managerId].tiles.length,
             element: 0,
+            widgetOptions: {},
             cssVars: {}
           }
         ];
@@ -138,6 +137,84 @@ export function setTileElement(managerId: number, tileId: number, element: numbe
   });
 }
 
+export function setTileWidgetOptions(
+  managerId: number,
+  tileId: number,
+  widgetOptions: Record<string, any>
+) {
+  globalTiles.update((current) => {
+    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+      current.managers[managerId].tiles[tileId].widgetOptions = widgetOptions;
+    }
+    return current;
+  });
+}
+
+export function getTileWidgetOptions(
+  managerId: number,
+  tileId: number
+): Record<string, any> | undefined {
+  const current = get(globalTiles);
+  if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+    return current.managers[managerId].tiles[tileId].widgetOptions;
+  } else {
+    return undefined;
+  }
+}
+
+export function changeTileWidgetOption(
+  managerId: number,
+  tileId: number,
+  optionName: string,
+  optionValue: any
+) {
+  globalTiles.update((current) => {
+    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+      if (!current.managers[managerId].tiles[tileId].widgetOptions) {
+        current.managers[managerId].tiles[tileId].widgetOptions = {};
+      }
+
+      current.managers[managerId].tiles[tileId].widgetOptions[optionName] = optionValue;
+    }
+    return current;
+  });
+}
+
+export function getTileWidgetOption(
+  managerId: number,
+  tileId: number,
+  optionName: string
+): any | undefined {
+  const current = get(globalTiles);
+  if (
+    current.managers[managerId] &&
+    current.managers[managerId].tiles[tileId] &&
+    current.managers[managerId].tiles[tileId].widgetOptions
+  ) {
+    return current.managers[managerId].tiles[tileId].widgetOptions[optionName];
+  } else {
+    return undefined;
+  }
+}
+
+export function deleteTileWidgetOption(managerId: number, tileId: number, optionName: string) {
+  globalTiles.update((current) => {
+    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+      delete current.managers[managerId].tiles[tileId].widgetOptions[optionName];
+    }
+    return current;
+  });
+}
+
+export function resetTileWidgetOptions(managerId: number, tileId: number) {
+  globalTiles.update((current) => {
+    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+      current.managers[managerId].tiles[tileId].widgetOptions = {};
+    }
+    return current;
+  });
+}
+
 export function changeTileCssVar(
   managerId: number,
   tileId: number,
@@ -145,24 +222,35 @@ export function changeTileCssVar(
   varValue: string
 ) {
   globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId])
+    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+      if (!current.managers[managerId].tiles[tileId].cssVars) {
+        current.managers[managerId].tiles[tileId].cssVars = {};
+      }
+
       current.managers[managerId].tiles[tileId].cssVars[varName] = varValue;
+    }
     return current;
   });
 }
 
 export function deleteTileCssVar(managerId: number, tileId: number, varName: string) {
   globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId])
+    if (
+      current.managers[managerId] &&
+      current.managers[managerId].tiles[tileId] &&
+      current.managers[managerId].tiles[tileId].cssVars
+    ) {
       delete current.managers[managerId].tiles[tileId].cssVars[varName];
+    }
     return current;
   });
 }
 
 export function resetTileCssVars(managerId: number, tileId: number) {
   globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId])
+    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
       current.managers[managerId].tiles[tileId].cssVars = {};
+    }
     return current;
   });
 }
@@ -173,7 +261,11 @@ export function getTileCssVar(
   cssVar: string
 ): string | undefined {
   const current = get(globalTiles);
-  if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
+  if (
+    current.managers[managerId] &&
+    current.managers[managerId].tiles[tileId] &&
+    current.managers[managerId].tiles[tileId].cssVars
+  ) {
     return current.managers[managerId].tiles[tileId].cssVars[cssVar];
   } else {
     return undefined;
@@ -197,6 +289,9 @@ export function initializeTiles() {
             {
               pos: 0,
               element: 2,
+              widgetOptions: {
+                clockType: 'analog'
+              },
               cssVars: {
                 '--tileWidth': 'max-content',
                 '--tileHeight': 'max-content',
@@ -209,7 +304,7 @@ export function initializeTiles() {
           height: 1
         },
         {
-          tiles: [{ pos: 1, element: 1, cssVars: {} }],
+          tiles: [{ pos: 1, element: 1, widgetOptions: {}, cssVars: {} }],
           height: 1
         }
       ],

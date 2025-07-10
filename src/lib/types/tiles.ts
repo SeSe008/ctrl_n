@@ -4,6 +4,7 @@ import type { SettingsSection } from '$lib/classes/settings';
 export interface Tile {
   pos: number;
   element: number;
+  widgetOptions: Record<string, any>;
   cssVars: Record<string, string>;
 }
 

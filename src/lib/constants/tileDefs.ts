@@ -15,8 +15,6 @@ import { searchEngineName } from '$lib/stores/widgets/searchEngine';
 import type { SearchEngines } from '$lib/types/widgets/searchEngines';
 import { searchEngines } from '$lib/constants/searchEngines';
 
-import { clockType } from '$lib/stores/widgets/clockType';
-
 import { newRssUrl } from '$lib/stores/settings/elements/newRssUrl';
 import { setRssUrl } from '$lib/stores/widgets/rssUrl';
 
@@ -33,7 +31,13 @@ import {
   toggleBookmarksLinkTarget
 } from '$lib/stores/widgets/bookmarks';
 
-import { changeTileCssVar, getTileCssVar, globalTiles } from '$lib/stores/tiles';
+import {
+  changeTileCssVar,
+  changeTileWidgetOption,
+  getTileCssVar,
+  getTileWidgetOption,
+  globalTiles
+} from '$lib/stores/tiles';
 import { getSelectedManagerId, getSelectedTileId } from '$lib/stores/settings/settings';
 
 export const tileDefs: TileDef[] = tileMetadata.map((m) => {
@@ -71,8 +75,15 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               { label: 'Digital', value: 'digital' },
               { label: 'Analog', value: 'analog' }
             ],
-            store: clockType,
-            defaultValue: clockType,
+            onChange: (value: string) =>
+              changeTileWidgetOption(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                'clockType',
+                value
+              ),
+            defaultValue: () =>
+              getTileWidgetOption(getSelectedManagerId(), getSelectedTileId(), 'clockType'),
             label: 'Clock-Type:'
           })
           .appendElement(
@@ -277,7 +288,12 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
                     'difference'
                 })
             },
-            derived(clockType, ($clockType) => $clockType === 'digital')
+            derived(
+              globalTiles,
+              (_) =>
+                getTileWidgetOption(getSelectedManagerId(), getSelectedTileId(), 'clockType') ===
+                'digital'
+            )
           )
       };
 

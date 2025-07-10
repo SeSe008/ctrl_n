@@ -1,7 +1,23 @@
 <script lang="ts">
+  import { getTileWidgetOptions } from '$lib/stores/tiles';
   import { onMount } from 'svelte';
 
-  import { clockType, initClockType } from '$lib/stores/widgets/clockType';
+  interface Props {
+    tileId: number;
+    managerId: number;
+  }
+
+  const { tileId, managerId }: Props = $props();
+
+  interface Options {
+    clockType: string;
+  }
+
+  const options: Options = getTileWidgetOptions(managerId, tileId) as Options;
+
+  let clockType: string = $state('digital');
+  if (options && options.clockType && typeof options.clockType === 'string')
+    clockType = options.clockType;
 
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -29,25 +45,19 @@
     }
   }
 
-  clockType.subscribe((newType) => {
-    if (newType === 'analog') initAnalog();
-  });
-
   onMount(() => {
-    initClockType();
-
-    if ($clockType === 'analog') {
+    if (clockType === 'analog') {
       initAnalog();
     }
   });
 </script>
 
 <div bind:this={clock} id="clock">
-  {#if $clockType === 'digital'}
+  {#if clockType === 'digital'}
     <h1>
       {time}
     </h1>
-  {:else if $clockType === 'analog'}
+  {:else if clockType === 'analog'}
     <div id="analog">
       <div id="hand_hour"></div>
       <div id="hand_minute"></div>
@@ -82,7 +92,7 @@
     --txtBrdSize: calc(var(--textBorderSize) * 1px);
     --txtBrdSizeInv: calc(var(--txtBrdSize) * -1);
     --txtBrdClr: var(--textBorderColor, rgb(var(--c1)));
-        
+
     box-sizing: border-box;
     padding: 1rem;
     margin: 0;
@@ -106,10 +116,10 @@
   @supports not (-webkit-text-stroke: 1px currentColor) {
     h1 {
       text-shadow:
-	var(--txtBrdSizeInv) var(--txtBrdSizeInv) 0 var(--txtBrdClr),
-	var(--txtBrdSize) var(--txtBrdSizeInv) 0 var(--txtBrdClr),
-	var(--txtBrdSizeInv) var(--txtBrdSize) 0 var(--txtBrdClr),
-	var(--txtBrdSize) var(--txtBrdSize) 0 var(--txtBrdClr);
+        var(--txtBrdSizeInv) var(--txtBrdSizeInv) 0 var(--txtBrdClr),
+        var(--txtBrdSize) var(--txtBrdSizeInv) 0 var(--txtBrdClr),
+        var(--txtBrdSizeInv) var(--txtBrdSize) 0 var(--txtBrdClr),
+        var(--txtBrdSize) var(--txtBrdSize) 0 var(--txtBrdClr);
     }
   }
 
