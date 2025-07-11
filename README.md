@@ -1,19 +1,20 @@
-# CTRL+N
+<div align="center">
+	<img width="120" src="static/icons/icon.svg" />
+	<h1>CTRL+N</h1>
+	<b>Customizable and Elegant New-Tab Page for any Browser</b><br/>
+	<h2>⚠️ CTRL+N is currently in a beta state – Breaking changes can occur. <a href="#website-broken-background-gone">Further info</a> ⚠️</h2>
+</div>
 
-[![Svelte](https://img.shields.io/badge/Svelte-%23f1413d.svg?logo=svelte&logoColor=white)](#)
-
-## Custom tilable page for a new tab in a browser
-
-## ** ⚠️ CTRL+N is currently in a beta state – Breaking changes may occur ⚠️ **
-
-<div style="display: flex; flex-direction: row; justify-content: center; gap: 5%;">
+<div align="center">
 	<img width="33%" title="Screenshot Light" src="screenshots/Light.png" />
 	<img width="33%" title="Screenshot Full" src="screenshots/Full.png" />
-	<img width="33%" title="Screenshot Settings" src="screenshots/Settings.png" />
+	<img width="33%" title="Screenshot Settings" src="screenshots/Settings.png" /><br/>
+	<sub>Screenshots might not be fully up to date</sub>
 </div>
-<center><sub>Screenshots might not be fully up to date</sub></center>
 
 ---
+
+[![Svelte](https://img.shields.io/badge/Svelte-%23f1413d.svg?logo=svelte&logoColor=white)](#)
 
 ## Features
 
@@ -33,33 +34,34 @@ There are 2 ways of using CTRL+N:
    - Cons:
 	 - The server is located in Canada, for some regions the page (and especially the images) might load slowly
 	 - Less frequent updates
-	 - Some information (e.g. Weather-Location, RSS-Feed URL) will be sent to the server
+	 - Some information (e.g. Weather-Location, RSS-Feed URL) will be sent to the non-local server
 2. Clone the repository and run the page locally with `node`
    - Pros:
 	 - Almost instant loading
-	 - Nothing is routed through another server
+	 - Nothing is routed through any non-local server
 	 - Full customization
 	 - More frequent updates
    - Cons:
-	 - Technical knowlwdge needed
+	 - Technical knowledge needed
 	 - Bugs might happen more frequently
 	 - No Auto-Updates
 	 - Some features (currently only the Weather-Widget) need custom API keys
 
-In the future, there might be an automatic installation script that guides you through running the webpage locally.
-To automatically load the page when opening a new tab:
+In the future, there might be an automatic installation script that guides you through running the webpage locally.<br/>
 
-### Firefox
+To automatically load the page when opening a new tab in...
+
+### Firefox:
 
 In Firefox-based browsers, you could use [New Tab Override](https://addons.mozilla.org/en-US/firefox/addon/new-tab-override/)
 
-### Chrome/Chromium
+### Chrome/Chromium:
 
 In Chromium-based browsers, you could use [New Tab Redirect](https://chromewebstore.google.com/detail/new-tab-redirect/)
 
-### Ungoogled-Chromium
+### Ungoogled-Chromium:
 
-In ungoogled-chromium, you can set the [custom-ntp](chrome://flags/#custom-ntp) flag
+In ungoogled-chromium, you can set the `custom-ntp` flag
 
 ## Privacy
 
@@ -81,7 +83,7 @@ Elements will not follow chronological order
 - [ ] Custom Widgets
 - [ ] CSS-Rework for compatibility purposes
 - [ ] Stable offline version
-- [ ] Native redirect extension
+- [ ] Native chrome extension
 
 Future widget ideas:
 
@@ -95,4 +97,4 @@ Future widget ideas:
 
 ## Website Broken? Background gone?
 
-Breaking changes may occur at any time, but clearing local storage is helping almost everytime.
+Breaking changes may still occur, but clearing local storage is helping almost everytime.
