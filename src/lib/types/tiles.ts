@@ -1,6 +1,11 @@
 import type { Component } from 'svelte';
 import type { SettingsSection } from '$lib/classes/settings';
 
+export interface TileProps {
+  tileId: number;
+  managerId: number;
+}
+
 export interface Tile {
   pos: number;
   element: number;

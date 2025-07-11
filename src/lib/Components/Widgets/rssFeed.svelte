@@ -3,16 +3,31 @@
   import Icon from '@iconify/svelte';
 
   import type { Article } from '$lib/types/widgets/rss';
-  import { getRssUrl, rssUrl } from '$lib/stores/widgets/rssUrl';
-  import { settingsEnabled } from '$lib/stores/settings/settings';
   import { addError } from '$lib/stores/errors';
-  import { subscribeIndirect } from '$lib/utils/subscribeIndirect';
-  import { onDestroy } from 'svelte';
+  import { getTileWidgetOptions } from '$lib/stores/tiles';
+  import type { TileProps } from '$lib/types/tiles';
+
+  const { tileId, managerId }: TileProps = $props();
+  const options = getTileWidgetOptions(tileId, managerId);
+
+  let rssUrl: string | undefined = undefined;
+  
+  if (options && typeof options.rssUrl === 'string') {
+    rssUrl = options.rssUrl;
+  }
 
   let articles = $state<Article[]>([]);
   let error = $state<string>();
 
-  async function parseRss(url: string) {
+  async function parseRss(url: string | undefined) {
+    if (!url) {
+      error = 'No RSS-URL set';
+      addError('rss-feed', error);
+      return;
+    } else if (!url.startsWith('http')) {
+      url = 'http://' + url;
+    }
+
     const resp = await fetch('/api/rss', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -29,9 +44,7 @@
     }
   }
 
-  const unsub: () => void = subscribeIndirect(rssUrl, (url) => parseRss(url));
-
-  onDestroy(unsub);
+  parseRss(rssUrl);
 </script>
 
 <div id="rss-feed">
@@ -53,12 +66,12 @@
     </div>
   {:else}
     <div class="info">
-      {#if settingsEnabled()}
-        Close Settings for Rss-Feed
-      {:else if error}
+      {#if error}
         Error parsing RSS: {error}
+      {:else}
+        Unknown error on parsing RSS, check console
       {/if}
-      <button onclick={() => parseRss(getRssUrl())}><Icon icon="mdi:reload" /></button>
+      <button onclick={() => parseRss(rssUrl)}><Icon icon="mdi:reload" /></button>
     </div>
   {/if}
 </div>
@@ -81,7 +94,7 @@
 
   #rss-feed h2 {
     display: var(--tileTitle, flex);
-    
+
     justify-self: center;
     align-self: center;
     margin: 0;

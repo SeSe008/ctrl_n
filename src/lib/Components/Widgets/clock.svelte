@@ -1,23 +1,16 @@
 <script lang="ts">
   import { getTileWidgetOptions } from '$lib/stores/tiles';
+  import type { TileProps } from '$lib/types/tiles';
   import { onMount } from 'svelte';
 
-  interface Props {
-    tileId: number;
-    managerId: number;
-  }
-
-  const { tileId, managerId }: Props = $props();
-
-  interface Options {
-    clockType: string;
-  }
-
-  const options: Options = getTileWidgetOptions(managerId, tileId) as Options;
+  const { tileId, managerId }: TileProps = $props();
+  const options = getTileWidgetOptions(managerId, tileId);
 
   let clockType: string = $state('digital');
-  if (options && options.clockType && typeof options.clockType === 'string')
+  
+  if (options && typeof options.clockType === 'string') {
     clockType = options.clockType;
+  }
 
   function getTime() {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

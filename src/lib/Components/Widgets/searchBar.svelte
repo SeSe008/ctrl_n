@@ -4,11 +4,24 @@
   import { parse } from 'mathjs';
 
   import { searchEngines } from '$lib/constants/searchEngines';
-  import { initSearchEngineName, searchEngineName } from '$lib/stores/widgets/searchEngine';
   import type { SearchEngine, SuggestionEndpoint } from '$lib/types/widgets/searchEngines';
 
   import { resize } from '$lib/utils/resize';
   import { addError } from '$lib/stores/errors';
+  import { getTileWidgetOptions } from '$lib/stores/tiles';
+
+  const { tileId, managerId } = $props();
+  const options = getTileWidgetOptions(managerId, tileId);
+
+  let searchEngine = $state<SearchEngine>(searchEngines['ecosia']);
+
+  if (
+    options &&
+    typeof options.searchEngineName === 'string' &&
+    searchEngines[options.searchEngineName]
+  ) {
+    searchEngine = searchEngines[options.searchEngineName];
+  }
 
   interface RecentlySearched {
     query: string;
@@ -16,8 +29,6 @@
   }
 
   type Suggestion = [string, string[]];
-
-  const defaultSearchEngine: string = 'ecosia';
 
   function isUrl(str: string) {
     const urlRe =
@@ -42,8 +53,6 @@
       return;
     }
 
-    const searchEngine: SearchEngine = searchEngines[$searchEngineName];
-
     const query: string = `${searchEngine.searchParam}${encodeURIComponent(text)}`;
 
     const extras: string = searchEngine.extras.join('&');
@@ -63,7 +72,6 @@
       return;
     }
 
-    const searchEngine: SearchEngine = searchEngines[defaultSearchEngine];
     const suggestionEndpoint: SuggestionEndpoint = searchEngine.suggestions;
 
     const response = await fetch('/api/suggestions', {
@@ -236,8 +244,6 @@
   }
 
   onMount(() => {
-    initSearchEngineName();
-
     const recentEntries: [string, RecentlySearched][] = JSON.parse(
       window.localStorage.getItem('recentSearches') || '[]'
     ).map((item: RecentlySearched) => [item.query, item]);
@@ -367,7 +373,8 @@
     text-align: inherit;
   }
 
-  .suggestion:hover, :global(.selected_suggestion) {
+  .suggestion:hover,
+  :global(.selected_suggestion) {
     background-color: rgba(var(--c1), 0.3) !important;
   }
 </style>

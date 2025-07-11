@@ -4,4 +4,4 @@ interface Bookmark {
   icon?: string;
 }
 
-export type Bookmarks = Bookmark[];
+export type Bookmarks = Array<Bookmark>;

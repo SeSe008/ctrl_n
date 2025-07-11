@@ -1,14 +1,18 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import {
-    getWeatherLocation,
-    weatherLocation
-  } from '$lib/stores/widgets/weatherLocation';
-  import { onDestroy } from 'svelte';
   import { settingsEnabled } from '$lib/stores/settings/settings';
   import { addError } from '$lib/stores/errors';
-  import { subscribeIndirect } from '$lib/utils/subscribeIndirect';
+  import type { TileProps } from '$lib/types/tiles';
+  import { getTileWidgetOptions } from '$lib/stores/tiles';
 
+  const { tileId, managerId }: TileProps = $props();
+  const options = getTileWidgetOptions(managerId, tileId);
+
+  let weatherLocation = $state<string>('');
+  if (options && typeof options.weatherLocation === 'string') {
+    weatherLocation = options.weatherLocation;
+  }
+  
   interface Weather {
     name: string;
     weather: Array<{
@@ -48,9 +52,7 @@
       .join(' ');
   }
   
-  const unsub: () => void = subscribeIndirect(weatherLocation, (loc) => fetchWeather(loc));
-
-  onDestroy(unsub);
+  if (!settingsEnabled()) fetchWeather((() => weatherLocation)());
 </script>
 
 <div id="weather">
@@ -67,7 +69,7 @@
           <Icon icon="mdi:temperature" />{weather.main.temp}°C ({weather.main.feels_like}°C)</span
         >
         <span class="value" id="humidity"><Icon icon="wi:humidity" />{weather.main.humidity}%</span>
-        <button id="reload" onclick={() => fetchWeather(getWeatherLocation())}>
+        <button id="reload" onclick={() => fetchWeather(weatherLocation)}>
           <Icon icon="mdi:reload" />
         </button>
       </div>
@@ -79,7 +81,7 @@
       {:else if error}
         Could not load weather.<br />{error}
       {/if}
-      <button id="reload" onclick={() => fetchWeather(getWeatherLocation())}>
+      <button id="reload" onclick={() => fetchWeather(weatherLocation)}>
         <Icon icon="mdi:reload" />
       </button>
     </div>

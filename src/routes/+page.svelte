@@ -21,8 +21,6 @@
   import { applyCssVars } from '$lib/utils/applyCssVars';
 
   import Errors from '$lib/Components/errors.svelte';
-  import { initWeatherLoaction } from '$lib/stores/widgets/weatherLocation';
-  import { initRssUrl } from '$lib/stores/widgets/rssUrl';
 
   let colorThief: ColorThief;
 
@@ -51,9 +49,6 @@
 
     initBgImages(defaultCategory, defaultApiKeyWord, imageInterval, colors, colorThief);
     initializeTiles();
-
-    initRssUrl();
-    initWeatherLoaction();
   });
 </script>
 

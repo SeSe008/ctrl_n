@@ -1,39 +1,38 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
+  import { getTileWidgetOptions } from '$lib/stores/tiles';
+  import type { Bookmarks } from '$lib/types/widgets/bookmarks';
+  import type { TileProps } from '$lib/types/tiles';
+  
+  const { tileId, managerId }: TileProps = $props();
+  const options = getTileWidgetOptions(managerId, tileId);
 
-  import {
-    bookmarks,
-    bookmarksLinkTarget,
-    parseBookmarks,
-    parseBookmarksLinkTarget
-  } from '$lib/stores/widgets/bookmarks';
-
-  let newTab = $state<boolean>(true);
-
-  bookmarksLinkTarget.subscribe((target) => (newTab = target));
-
-  onMount(() => {
-    parseBookmarks();
-    parseBookmarksLinkTarget();
-  });
+  let bookmarks = $state<Bookmarks>([]);
+  let bookmarksLinkTarget = $state<boolean>(true);
+  
+  if (options) {
+    if (typeof options.bookmarksLinkTarget === 'boolean') {
+      bookmarksLinkTarget = options.bookmarksLinkTarget;
+    }
+    if (Array.isArray(options.bookmarks) && typeof options.bookmarks[0] === 'object') {
+      bookmarks = options.bookmarks;
+    }
+  }
 </script>
 
 <div id="bookmarks">
   <h2><Icon icon="mdi:bookmark-multiple" /> Bookmarks</h2>
 
-  {#if $bookmarks}
-    <div id="bookmark_list">
-      {#each $bookmarks as { name, url }, i (i)}
-        <div class="bookmark">
-          <a href={url} target={newTab ? '_blank' : '_self'} rel="noopener noreferrer">
-            <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
-            <span>{name}</span>
-          </a>
-        </div>
-      {/each}
-    </div>
-  {/if}
+  <div id="bookmark_list">
+    {#each bookmarks as { name, url }, i (i)}
+      <div class="bookmark">
+        <a href={url} target={bookmarksLinkTarget ? '_blank' : '_self'} rel="noopener noreferrer">
+          <img alt="Favicon" src={`https://icons.duckduckgo.com/ip3/${url.split('/')[2]}.ico`} />
+          <span>{name}</span>
+        </a>
+      </div>
+    {/each}
+  </div>
 </div>
 
 <style>

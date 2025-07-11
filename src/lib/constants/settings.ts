@@ -19,7 +19,8 @@ import {
   resetTileCssVars,
   changeGlobalCssVar,
   getGlobalCssVar,
-  deleteGlobalCssVar
+  deleteGlobalCssVar,
+  resetTileWidgetOptions
 } from '$lib/stores/tiles';
 
 import {
@@ -85,7 +86,8 @@ export const tileSettings: SettingsSection = new SettingsSection()
       }),
       onChange: (value: number) => {
         resetTileCssVars(getSelectedManagerId(), getSelectedTileId());
-        setTileElement(getSelectedManagerId(), getSelectedTileId(), value);
+	resetTileWidgetOptions(getSelectedManagerId(), getSelectedTileId());
+	setTileElement(getSelectedManagerId(), getSelectedTileId(), value);
       },
       defaultValue: derived(
         globalTiles,

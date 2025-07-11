@@ -11,29 +11,19 @@ import Weather from '$lib/Components/Widgets/weather.svelte';
 import Calculator from '$lib/Components/Widgets/calculator.svelte';
 import Bookmarks from '$lib/Components/Widgets/bookmarks.svelte';
 
-import { searchEngineName } from '$lib/stores/widgets/searchEngine';
 import type { SearchEngines } from '$lib/types/widgets/searchEngines';
 import { searchEngines } from '$lib/constants/searchEngines';
 
 import { newRssUrl } from '$lib/stores/settings/elements/newRssUrl';
-import { setRssUrl } from '$lib/stores/widgets/rssUrl';
 
 import { newWeatherLocation } from '$lib/stores/settings/elements/newWeatherLocation';
-import { setWeatherLocation } from '$lib/stores/widgets/weatherLocation';
 
 import { newBookmarkName, newBookmarkUrl } from '$lib/stores/settings/elements/newBookmark';
-import {
-  addBookmark,
-  bookmarks,
-  bookmarksLinkTarget,
-  getBookmarks,
-  removeBookmark,
-  toggleBookmarksLinkTarget
-} from '$lib/stores/widgets/bookmarks';
 
 import {
   changeTileCssVar,
   changeTileWidgetOption,
+  getTile,
   getTileCssVar,
   getTileWidgetOption,
   globalTiles
@@ -55,8 +45,16 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
             selectOptions: Object.entries(searchEngines as SearchEngines).map(
               ([value, { name: label, icon }]) => ({ label, icon, value })
             ),
-            store: searchEngineName,
-            defaultValue: searchEngineName,
+            onChange: (value: string) =>
+              changeTileWidgetOption(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                'searchEngineName',
+                value
+              ),
+            defaultValue: () =>
+              getTileWidgetOption(getSelectedManagerId(), getSelectedTileId(), 'searchEngine') ??
+              'ecosia',
             label: 'Search Engine:'
           })
       };
@@ -316,7 +314,13 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               })
               .appendElement('button', {
                 text: 'Change',
-                onClick: () => setRssUrl(get(newRssUrl))
+                onClick: () =>
+                  changeTileWidgetOption(
+                    getSelectedManagerId(),
+                    getSelectedTileId(),
+                    'rssUrl',
+                    get(newRssUrl)
+                  )
               })
           })
       };
@@ -331,7 +335,6 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
             classes: ['big', 'center', 'strong', 'margin_vert']
           })
           .appendElement('group', {
-            layout: 'vert',
             objects: createNewSettingsSlice()
               .appendElement('textInput', {
                 placeholder: 'Location',
@@ -340,7 +343,13 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               })
               .appendElement('button', {
                 text: 'Change',
-                onClick: () => setWeatherLocation(get(newWeatherLocation))
+                onClick: () =>
+                  changeTileWidgetOption(
+                    getSelectedManagerId(),
+                    getSelectedTileId(),
+                    'weatherLocation',
+                    get(newWeatherLocation)
+                  )
               })
           })
       };
@@ -373,7 +382,17 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               .appendElement('button', {
                 text: 'Add Bookmark',
                 onClick: () => {
-                  addBookmark(get(newBookmarkName), get(newBookmarkUrl));
+                  changeTileWidgetOption(getSelectedManagerId(), getSelectedTileId(), 'bookmarks', [
+                    ...(getTileWidgetOption(
+                      getSelectedManagerId(),
+                      getSelectedTileId(),
+                      'bookmarks'
+                    ) ?? []),
+                    {
+                      name: get(newBookmarkName),
+                      url: get(newBookmarkUrl)
+                    }
+                  ]);
                   newBookmarkName.set('');
                   newBookmarkUrl.set('');
                 }
@@ -381,8 +400,18 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
           })
           .appendElement('checkbox', {
             label: 'Open bookmarks in a new tab',
-            onChange: () => toggleBookmarksLinkTarget(),
-            defaultValue: bookmarksLinkTarget
+            onChange: (value: boolean) =>
+              changeTileWidgetOption(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                'bookmarksLinkTarget',
+                value
+              ),
+            defaultValue: getTileWidgetOption(
+              getSelectedManagerId(),
+              getSelectedTileId(),
+              'bookmarksLinkTarget'
+            )
           })
           .appendElement(
             'text',
@@ -390,7 +419,21 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               text: 'Bookmarks:',
               classes: ['center', 'big', 'margin_top']
             },
-            derived(bookmarks, ($bookmarks) => $bookmarks.length > 0)
+            derived(globalTiles, (_) => {
+              const bookmarks = getTileWidgetOption(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                'bookmarks'
+              );
+
+              return Array.isArray(bookmarks) && bookmarks.length > 0;
+            }),
+            derived(
+              globalTiles,
+              (_) =>
+                getTile(getSelectedManagerId(), getSelectedTileId())?.widgetOptions['bookmarks'] ??
+                []
+            )
           )
           .appendElement(
             'group',
@@ -398,32 +441,57 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
               center: true,
               objects: () =>
                 createNewSettingsSlice(
-                  getBookmarks().map((bookmark, i) => ({
-                    elementType: 'group',
-                    elementOptions: {
-                      layout: 'vert',
-                      center: true,
-                      objects: () =>
-                        createNewSettingsSlice()
-                          .appendElement('image', {
-                            image: () =>
-                              `https://icons.duckduckgo.com/ip3/${getBookmarks()[i].url.split('/')[2]}.ico`,
-                            width: '2.5em'
-                          })
-                          .appendElement('text', {
-                            text: bookmark.name
-                          })
-                          .appendElement('button', {
-                            simple: true,
-                            icon: 'mdi:delete',
-                            onClick: () => removeBookmark(i)
-                          })
-                    }
-                  }))
+                  getTileWidgetOption(getSelectedManagerId(), getSelectedTileId(), 'bookmarks').map(
+                    (bookmark: Bookmarks, i: number) => ({
+                      elementType: 'group',
+                      elementOptions: {
+                        layout: 'vert',
+                        center: true,
+                        objects: () =>
+                          createNewSettingsSlice()
+                            .appendElement('image', {
+                              image: () =>
+                                `https://icons.duckduckgo.com/ip3/${getTileWidgetOption(getSelectedManagerId(), getSelectedTileId(), 'bookmarks')[i].url.split('/')[2]}.ico`,
+                              width: '2.5em'
+                            })
+                            .appendElement('text', {
+                              text: bookmark.name
+                            })
+                            .appendElement('button', {
+                              simple: true,
+                              icon: 'mdi:delete',
+                              onClick: () =>
+                                changeTileWidgetOption(
+                                  getSelectedManagerId(),
+                                  getSelectedTileId(),
+                                  'bookmarks',
+                                  getTileWidgetOption(
+                                    getSelectedManagerId(),
+                                    getSelectedTileId(),
+                                    'bookmarks'
+                                  ).filter((_: unknown, index: number) => index !== i)
+                                )
+                            })
+                      }
+                    })
+                  )
                 )
             },
-            undefined,
-            bookmarks
+            derived(globalTiles, (_) => {
+              const bookmarks = getTileWidgetOption(
+                getSelectedManagerId(),
+                getSelectedTileId(),
+                'bookmarks'
+              );
+
+              return Array.isArray(bookmarks) && bookmarks.length > 0;
+            }),
+            derived(
+              globalTiles,
+              (_) =>
+                getTile(getSelectedManagerId(), getSelectedTileId())?.widgetOptions['bookmarks'] ??
+                []
+            )
           )
       };
 
