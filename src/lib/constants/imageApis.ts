@@ -47,8 +47,7 @@ export const imageApis: Array<ImageApi> = [
         license: 'by',
         page_size: 1,
         page: Math.floor(Math.random() * 239 + 1),
-        aspect_ratio: 'wide',
-        source: 'flickr'
+        aspect_ratio: 'wide'
       };
     },
 
@@ -59,6 +58,56 @@ export const imageApis: Array<ImageApi> = [
     license: (data: Record<string, any>) =>
       `CC-${data.results[0].license}-${data.results[0].license_version}`,
     licenseUrl: (data: Record<string, any>) => data.results[0].license_url
+  },
+  {
+    label: 'NASA Image and Video Library',
+    endpoint: 'https://images-api.nasa.gov/search',
+    input: () => getApiImageKeyword(),
+    get params() {
+      const q = this.input().trim();
+      return { q, media_type: 'image' };
+    },
+    isEmpty: (data) =>
+      !data.collection || !data.collection.items || data.collection.items.length === 0,
+    url: (data) => {
+      data._randomIndex = Math.floor(Math.random() * data.collection.items.length);
+
+      const pick = data.collection.items[data._randomIndex];
+      return pick.links[0].href;
+    },
+    creator: (data) => {
+      const pick = data.collection.items[data._randomIndex!];
+      return pick.data[0].photographer ?? pick.data[0].center;
+    },
+    creatorUrl: () => 'https://images.nasa.gov/',
+    license: () => 'Public Domain',
+    licenseUrl: () => 'https://www.nasa.gov/multimedia/guidelines/index.html'
+  },
+  {
+    label: 'Art Institute of Chicago',
+    endpoint: 'https://api.artic.edu/api/v1/artworks/search',
+    input: () => getApiImageKeyword(),
+    get params() {
+      const q = this.input().trim();
+      return {
+        q,
+        limit: 100,
+        fields: 'title,image_id,artist_title,artist_id'
+      };
+    },
+    isEmpty: (data: any) => !data.data || data.data.length === 0,
+    url: (data: any) => {
+      data._randomIndex = Math.floor(Math.random() * data.data.length);
+
+      console.log(data.data[data._randomIndex]);
+
+      return `https://www.artic.edu/iiif/2/${data.data[data._randomIndex].image_id}/full/843,/0/default.jpg`;
+    },
+    creator: (data: any) => data.data[data._randomIndex].artist_title,
+    creatorUrl: (data: any) =>
+      `https://www.artic.edu/artists/${data.data[data._randomIndex].artist_id}`,
+    license: () => 'CC0',
+    licenseUrl: () => 'https://creativecommons.org/publicdomain/zero/1.0/'
   }
 ];
 

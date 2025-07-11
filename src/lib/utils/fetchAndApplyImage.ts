@@ -36,17 +36,18 @@ export async function fetchAndApplyImage(
     return;
   }
 
-  const imgUrl = api.url(data);
+  const imgUrl = await api.url(data);
   const img = new Image();
   img.crossOrigin = 'Anonymous';
+  console.log(api.url(data));
 
-  img.onload = () => {
+  img.onload = async () => {
     setBackgroundImage(imgUrl);
     setImageCredits({
-      creator: api.creator(data),
-      creatorUrl: api.creatorUrl(data),
-      license: api.license(data),
-      licenseUrl: api.licenseUrl(data)
+      creator: await api.creator(data),
+      creatorUrl: await api.creatorUrl(data),
+      license: await api.license(data),
+      licenseUrl: await api.licenseUrl(data)
     });
     applyPalette(getPalette(img, colors, colorThief));
     setImageLoading(false);

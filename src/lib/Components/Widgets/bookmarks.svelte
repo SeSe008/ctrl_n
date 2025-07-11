@@ -91,7 +91,7 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    width: calc(8px + 8vmin);
+    width: 5rem;
     overflow: hidden;
   }
 
