@@ -290,7 +290,7 @@ export function initializeTiles() {
               pos: 0,
               element: 2,
               widgetOptions: {
-                clockType: 'analog'
+                clockType: 'digital'
               },
               cssVars: {
                 '--tileWidth': 'max-content',

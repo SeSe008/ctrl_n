@@ -8,6 +8,7 @@ import type {
   CheckboxProps,
   ImageProps,
   GroupProps,
+  CollapsibleProps,
   GridProps,
   CustomHTMLProps,
   IconProps
@@ -33,6 +34,7 @@ export type ElementProps =
   | CheckboxProps
   | ImageProps
   | GroupProps
+  | CollapsibleProps
   | GridProps
   | CustomHTMLProps;
 

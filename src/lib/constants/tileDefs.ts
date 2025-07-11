@@ -85,14 +85,11 @@ export const tileDefs: TileDef[] = tileMetadata.map((m) => {
             label: 'Clock-Type:'
           })
           .appendElement(
-            'group',
+            'collapsible',
             {
+              title: 'Font-Options',
               layout: 'vert',
               objects: createNewSettingsSlice()
-                .appendElement('text', {
-                  text: 'Font-Options:',
-                  classes: ['medium', 'left', 'margin_top']
-                })
                 .appendElement('select', {
                   selectOptions: [
                     'Small',
