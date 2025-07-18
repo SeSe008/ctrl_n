@@ -6,23 +6,6 @@ export interface TileProps {
   managerId: number;
 }
 
-export interface Tile {
-  pos: number;
-  element: number;
-  widgetOptions: Record<string, any>;
-  cssVars: Record<string, string>;
-}
-
-export interface TileManager {
-  tiles: Tile[];
-  height: number;
-}
-
-export interface GlobalTiles {
-  managers: TileManager[];
-  cssVars: Record<string, string>;
-}
-
 export interface TileDef {
   name: string;
   label: string;

@@ -13,7 +13,7 @@ import {
   getTile,
   addTile,
   removeTile,
-  setTileElement,
+  setTileWidgetType,
   getTileCssVar,
   changeTileCssVar,
   resetTileCssVars,
@@ -89,12 +89,9 @@ export const tileSettings: SettingsSection = new SettingsSection()
       onChange: (value: number) => {
         resetTileCssVars(getSelectedManagerId(), getSelectedTileId());
         resetTileWidgetOptions(getSelectedManagerId(), getSelectedTileId());
-        setTileElement(getSelectedManagerId(), getSelectedTileId(), value);
+        setTileWidgetType(getSelectedManagerId(), getSelectedTileId(), value);
       },
-      defaultValue: derived(
-        globalTiles,
-        (_) => getTile(getSelectedManagerId(), getSelectedTileId())?.element ?? 0
-      ),
+      defaultValue: () => getTile(getSelectedManagerId(), getSelectedTileId())?.widgetType,
       label: 'Widget Type:'
     },
     undefined,
@@ -133,7 +130,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
             if (managerId != null && tileId != null) {
               const tile = getTile(managerId, tileId);
               if (tile) {
-                return tileMetadata[tile.element].cssVars?.includes(`--o${i}`) ?? false;
+                return tileMetadata[tile.widgetType].cssVars?.includes(`--o${i}`) ?? false;
               }
             }
 
@@ -146,10 +143,9 @@ export const tileSettings: SettingsSection = new SettingsSection()
         max: 5,
         step: 0.1,
         onInput: (value: number) => changeManagerHeight(get(settings).selectedManager, value),
-        defaultValue: derived(globalTiles, (_) =>
-          getSelectedManagerId() !== undefined && getManager(getSelectedManagerId()!)
-            ? getManager(getSelectedManagerId()!)!.height
-            : 1
+        defaultValue: derived(
+          globalTiles,
+          (_) => getManager(getSelectedManagerId())?.managerHeight ?? 1
         ),
         specialValues: {
           0: 'Auto'
@@ -286,7 +282,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           if (managerId != null && tileId != null) {
             const tile = getTile(managerId, tileId);
             if (tile) {
-              return tileMetadata[tile.element].cssVars?.includes('--tileBorder') ?? false;
+              return tileMetadata[tile.widgetType].cssVars?.includes('--tileBorder') ?? false;
             }
           }
 
@@ -315,7 +311,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           if (managerId != null && tileId != null) {
             const tile = getTile(managerId, tileId);
             if (tile) {
-              return tileMetadata[tile.element].cssVars?.includes('--tileTitle') ?? false;
+              return tileMetadata[tile.widgetType].cssVars?.includes('--tileTitle') ?? false;
             }
           }
 
@@ -350,7 +346,7 @@ export const tileSettings: SettingsSection = new SettingsSection()
           if (managerId != null && tileId != null) {
             const tile = getTile(managerId, tileId);
             if (tile) {
-              return tileMetadata[tile.element].cssVars?.includes('--tileBorderRadius') ?? false;
+              return tileMetadata[tile.widgetType].cssVars?.includes('--tileBorderRadius') ?? false;
             }
           }
 
@@ -416,12 +412,12 @@ export const globalSettings: SettingsSection = new SettingsSection()
                         objects: new SettingsSection()
                           .appendElement('icon', {
                             icon:
-                              tileDefs[tle.element].icon ??
+                              tileDefs[tle.widgetType].icon ??
                               'material-symbols:widgets-outline-rounded',
                             size: '1.3em'
                           })
                           .appendElement('text', {
-                            text: tileDefs[tle.element].label
+                            text: tileDefs[tle.widgetType].label
                           })
                           .appendElement('button', {
                             icon: 'mdi:settings-outline',
@@ -461,56 +457,56 @@ export const globalSettings: SettingsSection = new SettingsSection()
     undefined,
     globalTiles
   )
-  .appendElement('text', {
-    text: 'Background Image:',
-    classes: ['big', 'left', 'margin_top']
+  .appendElement('collapsible', {
+    title: 'Background Image',
+    objects: new SettingsSection()
+      .appendElement('select', {
+        selectOptions: () => imageApis,
+        defaultValue: imageCategory,
+        store: imageCategory,
+        label: 'Get image from: '
+      })
+      .appendElement('select', {
+        label: 'Keyword:',
+        selectOptions: imageKeywords.map((keyword) => ({
+          label: keyword,
+          value: keyword
+        })),
+        onChange: (value: string) => setApiImageKeyword(value),
+        defaultValue: () => {
+          let keyword = getApiImageKeyword();
+          if (!imageKeywords.includes(keyword)) {
+            keyword = 'Custom';
+          }
+          return keyword;
+        }
+      })
+      .appendElement(
+        'group',
+        {
+          objects: new SettingsSection()
+            .appendElement('textInput', {
+              label: 'Custom Keyword:',
+              placeholder: 'Enter a keyword',
+              defaultValue: () => getApiImageKeyword(),
+              store: newApiImageKeyword
+            })
+            .appendElement('button', {
+              text: 'Apply',
+              icon: 'mdi:check',
+              onClick: () => setApiImageKeyword(get(newApiImageKeyword))
+            })
+        },
+        derived(
+          apiImageKeyword,
+          ($apiImageKeyword) =>
+            !imageKeywords.includes($apiImageKeyword) || $apiImageKeyword === 'Custom'
+        )
+      )
   })
-  .appendElement('select', {
-    selectOptions: () => imageApis,
-    defaultValue: imageCategory,
-    store: imageCategory,
-    label: 'Get image from: '
-  })
-  .appendElement('select', {
-    label: 'Keyword:',
-    selectOptions: imageKeywords.map((keyword) => ({
-      label: keyword,
-      value: keyword
-    })),
-    onChange: (value: string) => setApiImageKeyword(value),
-    defaultValue: () => {
-      let keyword = getApiImageKeyword();
-      if (!imageKeywords.includes(keyword)) {
-        keyword = 'Custom';
-      }
-      return keyword;
-    }
-  })
-  .appendElement(
-    'group',
-    {
-      objects: new SettingsSection()
-        .appendElement('textInput', {
-          label: 'Custom Keyword:',
-          placeholder: 'Enter a keyword',
-          defaultValue: () => getApiImageKeyword(),
-          store: newApiImageKeyword
-        })
-        .appendElement('button', {
-          text: 'Apply',
-          icon: 'mdi:check',
-          onClick: () => setApiImageKeyword(get(newApiImageKeyword))
-        })
-    },
-    derived(
-      apiImageKeyword,
-      ($apiImageKeyword) =>
-        !imageKeywords.includes($apiImageKeyword) || $apiImageKeyword === 'Custom'
-    )
-  )
   .appendElement('collapsible', {
     layout: 'vert',
-    title: 'Styling:',
+    title: 'Styling',
     objects: new SettingsSection()
       .appendElement('range', {
         min: 0,

@@ -1,276 +1,130 @@
 import { writable, get } from 'svelte/store';
 
-import type { GlobalTiles, Tile, TileManager } from '$lib/types/tiles';
+import { StoreGlobalTiles, StoreManager, StoreTile } from '$lib/classes/tile';
 
-export const globalTiles = writable<GlobalTiles>({
-  managers: [],
-  cssVars: {}
-});
+export const globalTiles = writable<StoreGlobalTiles>(new StoreGlobalTiles());
 
-export function getTiles(): GlobalTiles {
+export function getTiles(): StoreGlobalTiles {
   return get(globalTiles);
 }
 
-export function setTiles(tiles: GlobalTiles) {
+export function setTiles(tiles: StoreGlobalTiles) {
   globalTiles.set(tiles);
 }
 
-export function changeGlobalCssVar(name: string, value: string) {
-  globalTiles.update((current) => {
-    current.cssVars[name] = value;
-    return current;
+export const changeGlobalCssVar = (name: string, value: string) =>
+  globalTiles.update((gTiles) => gTiles.changeCssVar(name, value));
+
+export const deleteGlobalCssVar = (name: string) =>
+  globalTiles.update((gTiles) => gTiles.deleteCssVar(name));
+
+export const getGlobalCssVar = (name: string): string | undefined => get(globalTiles).cssVars[name];
+
+export const resetGlobalCssVars = () => globalTiles.update((gTiles) => gTiles.setCssVars({}));
+
+export const getManagers = (): Array<StoreManager> => get(globalTiles).managers;
+
+export const getManager = (idx: number): StoreManager | undefined =>
+  get(globalTiles).getManager(idx);
+
+export const addManager = (manager?: StoreManager) =>
+  globalTiles.update((gTiles) => gTiles.addManager(manager));
+
+export const removeManager = (idx: number) =>
+  globalTiles.update((gTiles) => gTiles.removeManager(idx));
+
+export const changeManagerHeight = (idx: number, height: number) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(idx)?.changeHeight(height);
+    return gTiles;
   });
-}
 
-export function deleteGlobalCssVar(name: string) {
-  globalTiles.update(({ cssVars, ...rest }) => ({
-    ...rest,
-    cssVars: Object.fromEntries(Object.entries(cssVars).filter(([key]) => key !== name))
-  }));
-}
-
-export function getGlobalCssVar(name: string): string | undefined {
-  return get(globalTiles).cssVars[name];
-}
-
-export function resetGlobalCssVars() {
-  globalTiles.update((current) => {
-    current.cssVars = {};
-    return current;
+export const addTile = (mgrIdx: number, tile?: StoreTile) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.addTile(tile);
+    return gTiles;
   });
-}
 
-export function getManagers(): Array<TileManager> {
-  return get(globalTiles).managers;
-}
-
-export function setManager(id: number, manager: TileManager) {
-  globalTiles.update((current) => {
-    if (current.managers[id]) {
-      current.managers[id] = manager;
-    }
-    return current;
+export const removeTile = (mgrIdx: number, tleIdx: number) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.removeTile(tleIdx);
+    return gTiles;
   });
-}
 
-export function addManager() {
-  globalTiles.update((current) => {
-    current.managers = [
-      ...current.managers,
-      {
-        tiles: [{ pos: 0, element: 0, widgetOptions: {}, cssVars: {} }],
-        height: 1
-      }
-    ];
-    return current;
+export const getTile = (mgrIdx: number, tleIdx: number): StoreTile | undefined =>
+  get(globalTiles).getManager(mgrIdx)?.getTile(tleIdx);
+
+export const setTileWidgetType = (mgrIdx: number, tleIdx: number, widgetType: number) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.setType(widgetType);
+    return gTiles;
   });
-}
 
-export function removeManager(id?: number) {
-  globalTiles.update((current) => {
-    current.managers =
-      id !== undefined
-        ? current.managers.filter((_, index) => index !== id)
-        : current.managers.slice(0, -1);
-    return current;
-  });
-}
-
-export function changeManagerHeight(managerId: number, height: number) {
-  if (managerId !== undefined)
-    globalTiles.update((current) => {
-      if (current.managers[managerId]) current.managers[managerId].height = height;
-      return current;
-    });
-}
-
-export function getManager(id: number): TileManager | undefined {
-  return get(globalTiles).managers[id];
-}
-
-export function addTile(managerId: number | undefined) {
-  if (managerId !== undefined)
-    globalTiles.update((current) => {
-      if (current.managers[managerId])
-        current.managers[managerId].tiles = [
-          ...current.managers[managerId].tiles,
-          {
-            pos: current.managers[managerId].tiles.length,
-            element: 0,
-            widgetOptions: {},
-            cssVars: {}
-          }
-        ];
-      return current;
-    });
-}
-
-export function removeTile(managerId: number, tileId: number) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles.length > 1)
-      current.managers[managerId].tiles = [
-        ...current.managers[managerId].tiles.slice(0, tileId || 0),
-        ...current.managers[managerId].tiles.slice((tileId || 0) + 1)
-      ];
-    return current;
-  });
-}
-
-export function getTile(managerId: number, tileId: number): Tile | undefined {
-  const current = get(globalTiles);
-  if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-    return current.managers[managerId].tiles[tileId];
-  } else {
-    return undefined;
-  }
-}
-
-export function setTileElement(managerId: number, tileId: number, element: number) {
-  globalTiles.update((current) => {
-    if (
-      current.managers[managerId] !== undefined &&
-      current.managers[managerId].tiles[tileId] !== undefined
-    ) {
-      current.managers[managerId].tiles[tileId].element = element;
-    }
-    return current;
-  });
-}
-
-export function setTileWidgetOptions(
-  managerId: number,
-  tileId: number,
+export const setTileWidgetOptions = (
+  mgrIdx: number,
+  tleIdx: number,
   widgetOptions: Record<string, any>
-) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-      current.managers[managerId].tiles[tileId].widgetOptions = widgetOptions;
-    }
-    return current;
+) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.setWidgetOptions(widgetOptions);
+    return gTiles;
+  });
+
+export const getTileWidgetOptions = (
+  mgrIdx: number,
+  tleIdx: number
+): Record<string, any> | undefined =>
+  get(globalTiles).getManager(mgrIdx)?.getTile(tleIdx)?.widgetOptions;
+
+export const addTileWidgetOption = (mgrIdx: number, tleIdx: number, name: string, value: any) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.addWidgetOption(name, value);
+    return gTiles;
+  });
+
+export const changeTileWidgetOption = addTileWidgetOption;
+
+export const getTileWidgetOption = (
+  mgrIdx: number,
+  tleIdx: number,
+  name: string
+): any | undefined => getTiles().getManager(mgrIdx)?.getTile(tleIdx)?.getWidgetOption(name);
+
+export const deleteTileWidgetOption = (mgrIdx: number, tleIdx: number, name: string) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.deleteWidgetOption(name);
+    return gTiles;
+  });
+
+export function resetTileWidgetOptions(mgrIdx: number, tleIdx: number) {
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.setWidgetOptions({});
+    return gTiles;
   });
 }
 
-export function getTileWidgetOptions(
-  managerId: number,
-  tileId: number
-): Record<string, any> | undefined {
-  const current = get(globalTiles);
-  if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-    return current.managers[managerId].tiles[tileId].widgetOptions;
-  } else {
-    return undefined;
-  }
-}
-
-export function changeTileWidgetOption(
-  managerId: number,
-  tileId: number,
-  optionName: string,
-  optionValue: any
-) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-      if (!current.managers[managerId].tiles[tileId].widgetOptions) {
-        current.managers[managerId].tiles[tileId].widgetOptions = {};
-      }
-
-      current.managers[managerId].tiles[tileId].widgetOptions[optionName] = optionValue;
-    }
-    return current;
+export const addTileCssVar = (mgrIdx: number, tleIdx: number, name: string, value: string) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.addCssVar(name, value);
+    return gTiles;
   });
-}
 
-export function getTileWidgetOption(
-  managerId: number,
-  tileId: number,
-  optionName: string
-): any | undefined {
-  const current = get(globalTiles);
-  if (
-    current.managers[managerId] &&
-    current.managers[managerId].tiles[tileId] &&
-    current.managers[managerId].tiles[tileId].widgetOptions
-  ) {
-    return current.managers[managerId].tiles[tileId].widgetOptions[optionName];
-  } else {
-    return undefined;
-  }
-}
+export const changeTileCssVar = addTileCssVar;
 
-export function deleteTileWidgetOption(managerId: number, tileId: number, optionName: string) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-      delete current.managers[managerId].tiles[tileId].widgetOptions[optionName];
-    }
-    return current;
+export const deleteTileCssVar = (mgrIdx: number, tleIdx: number, name: string) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.deleteCssVar(name);
+    return gTiles;
   });
-}
 
-export function resetTileWidgetOptions(managerId: number, tileId: number) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-      current.managers[managerId].tiles[tileId].widgetOptions = {};
-    }
-    return current;
+export const resetTileCssVars = (mgrIdx: number, tleIdx: number) =>
+  globalTiles.update((gTiles) => {
+    gTiles.getManager(mgrIdx)?.getTile(tleIdx)?.setCssVars({});
+    return gTiles;
   });
-}
 
-export function changeTileCssVar(
-  managerId: number,
-  tileId: number,
-  varName: string,
-  varValue: string
-) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-      if (!current.managers[managerId].tiles[tileId].cssVars) {
-        current.managers[managerId].tiles[tileId].cssVars = {};
-      }
-
-      current.managers[managerId].tiles[tileId].cssVars[varName] = varValue;
-    }
-    return current;
-  });
-}
-
-export function deleteTileCssVar(managerId: number, tileId: number, varName: string) {
-  globalTiles.update((current) => {
-    if (
-      current.managers[managerId] &&
-      current.managers[managerId].tiles[tileId] &&
-      current.managers[managerId].tiles[tileId].cssVars
-    ) {
-      delete current.managers[managerId].tiles[tileId].cssVars[varName];
-    }
-    return current;
-  });
-}
-
-export function resetTileCssVars(managerId: number, tileId: number) {
-  globalTiles.update((current) => {
-    if (current.managers[managerId] && current.managers[managerId].tiles[tileId]) {
-      current.managers[managerId].tiles[tileId].cssVars = {};
-    }
-    return current;
-  });
-}
-
-export function getTileCssVar(
-  managerId: number,
-  tileId: number,
-  cssVar: string
-): string | undefined {
-  const current = get(globalTiles);
-  if (
-    current.managers[managerId] &&
-    current.managers[managerId].tiles[tileId] &&
-    current.managers[managerId].tiles[tileId].cssVars
-  ) {
-    return current.managers[managerId].tiles[tileId].cssVars[cssVar];
-  } else {
-    return undefined;
-  }
-}
+export const getTileCssVar = (mgrIdx: number, tleIdx: number, name: string): string | undefined =>
+  get(globalTiles).getManager(mgrIdx)?.getTile(tleIdx)?.getCssVar(name);
 
 export function initializeTiles() {
   const stored = window.localStorage.getItem('tiles') || '';
@@ -278,41 +132,29 @@ export function initializeTiles() {
   try {
     const parsed = JSON.parse(stored);
     if (Array.isArray(parsed.managers) && parsed.cssVars) {
-      globalTiles.set(JSON.parse(stored));
+      globalTiles.set(new StoreGlobalTiles().fromJSON(JSON.parse(stored)));
     }
   } catch {
     // Clock and search bar
-    globalTiles.set({
-      managers: [
-        {
-          tiles: [
-            {
-              pos: 0,
-              element: 2,
-              widgetOptions: {
-                clockType: 'digital'
-              },
-              cssVars: {
-                '--tileWidth': 'max-content',
-                '--tileHeight': 'max-content',
-                '--tileHorPos': 'center',
-                '--tileVerPos': 'center',
-                '--clockFontSize': '5rem'
-              }
-            }
-          ],
-          height: 1
-        },
-        {
-          tiles: [{ pos: 1, element: 1, widgetOptions: {}, cssVars: {} }],
-          height: 1
-        }
-      ],
-      cssVars: {}
-    });
+    globalTiles.set(
+      new StoreGlobalTiles()
+        .addManager(
+          new StoreManager().addTile(
+            new StoreTile()
+              .setType(2)
+              .addCssVar('--tileWidth', 'max-content')
+              .addCssVar('--tileHeight', 'max-content')
+              .addCssVar('--tileVerPos', 'center')
+              .addCssVar('--tileBorder', 'none')
+              .addCssVar('--o1', '0')
+              .addCssVar('--clockFontSize', '6rem')
+          )
+        )
+        .addManager(new StoreManager().addTile(new StoreTile().setType(1)))
+    );
   }
 
-  globalTiles.subscribe((value) => {
-    window.localStorage.setItem('tiles', JSON.stringify(value));
+  globalTiles.subscribe((gTiles) => {
+    window.localStorage.setItem('tiles', JSON.stringify(gTiles.toJSON()));
   });
 }

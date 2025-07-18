@@ -25,8 +25,8 @@
         "
       id="tile_element_{managerId}{tileId}"
     >
-      {#if tileDefs[tile.element]}
-        {@const SelectedComponent = tileDefs[tile.element].component}
+      {#if tileDefs[tile.widgetType]}
+        {@const SelectedComponent = tileDefs[tile.widgetType].component}
         <div><SelectedComponent {tileId} {managerId} /></div>
       {:else}
         <div id="spacer"></div>

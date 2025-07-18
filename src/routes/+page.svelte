@@ -11,10 +11,7 @@
   import { initializeTiles } from '$lib/stores/tiles';
   import { globalTiles } from '$lib/stores/tiles';
 
-  import {
-    settings,
-    toggleSettings
-  } from '$lib/stores/settings/settings';
+  import { settings, toggleSettings } from '$lib/stores/settings/settings';
 
   import { backgroundImage, getImageCategory, initBgImages } from '$lib/stores/backgroundImage';
 
@@ -35,10 +32,10 @@
   }
 
   let tileGrid: HTMLDivElement;
-  globalTiles.subscribe((gTls) => {
+  globalTiles.subscribe((gTiles) => {
     if (tileGrid) {
-      const rows = gTls.managers
-        .map((m) => (m.height === 0 ? 'max-content' : `${m.height}fr`))
+      const rows = gTiles.managers
+        .map((mgr) => (mgr.managerHeight === 0 ? 'max-content' : `${mgr.managerHeight}fr`))
         .join(' ');
       tileGrid.style.gridTemplateRows = rows;
     }
