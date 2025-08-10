@@ -9,27 +9,22 @@ export class SettingsSection {
     return this;
   }
 
-  public appendElement(
-    type: string,
-    options: ElementProps,
-    condition?: Readable<boolean> | (() => boolean),
-    updater?: Readable<any> | Array<Readable<any>>
-  ) {
-    this.#elements.push(new SettingsElement(type, options, condition, updater));
+  appendElement(element: Element) {
+    this.#elements.push(element);
     return this;
   }
 
-  public appendElements(elements: Element[]) {
+  appendElements(elements: Element[]) {
     this.#elements.push(...elements);
     return this;
   }
 
-  public get elements(): Element[] {
+  get elements(): Element[] {
     return this.#elements;
   }
 
-  public getElement(id: number): Element {
-    return this.#elements[id];
+  getElement(idx: number): Element {
+    return this.#elements[idx];
   }
 }
 
@@ -40,30 +35,52 @@ export class SettingsElement implements Element {
   #updater?: Readable<any> | Array<Readable<any>>;
 
   constructor(
-    type: string,
-    options: ElementProps,
+    elementType: string,
+    elementOptions: ElementProps,
     condition?: Readable<boolean> | (() => boolean),
     updater?: Readable<any> | Array<Readable<any>>
   ) {
-    this.#elementType = type;
-    this.#elementOptions = options;
+    this.#elementType = elementType;
+    this.#elementOptions = elementOptions;
     this.#condition = condition;
     this.#updater = updater;
+
+    return this;
   }
 
-  public get elementType(): string {
+  get elementType(): string {
     return this.#elementType;
   }
 
-  public get elementOptions(): ElementProps {
+  get elementOptions(): ElementProps {
     return this.#elementOptions;
   }
 
-  public get condition(): Readable<boolean> | (() => boolean) {
+  get condition(): Readable<boolean> | (() => boolean) {
     return this.#condition ?? (() => true);
   }
 
-  public get updater(): (Readable<any> | Array<Readable<any>>) | undefined {
+  get updater(): (Readable<any> | Array<Readable<any>>) | undefined {
     return this.#updater;
+  }
+
+  setType(type: string): SettingsElement {
+    this.#elementType = type;
+    return this;
+  }
+
+  withOptions(options: ElementProps): SettingsElement {
+    this.#elementOptions = options;
+    return this;
+  }
+
+  addCondition(condition: Readable<boolean> | (() => boolean)): SettingsElement {
+    this.#condition = condition;
+    return this;
+  }
+
+  addUpdater(updater: Readable<any> | Array<Readable<any>>): SettingsElement {
+    this.#updater = updater;
+    return this;
   }
 }

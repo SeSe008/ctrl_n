@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { globalSettings } from '$lib/constants/settings';
+  import { globalSettings } from '$lib/constants/globalSettings';
   import {
     getSelectedManagerId,
     getSelectedTileId,
@@ -17,7 +17,7 @@
   function getElements(): Array<Element> {
     const mgr = getSelectedManagerId();
     const tle = getSelectedTileId();
-    const def = tileDefs[getTile(mgr, tle)?.element ?? 0];
+    const def = tileDefs[getTile(mgr, tle)?.widgetType ?? 0];
     return def.tileProps.elements;
   }
 </script>
