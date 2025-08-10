@@ -289,9 +289,9 @@
   .element input[type='checkbox']::before {
     content: '';
     position: absolute;
-    inset: 0.125em;
-    width: calc(100%-0.125em);
-    height: calc(100%-0.125em);
+    inset: 0.25em;
+    width: calc(100% - 0.5em);
+    height: calc(100% - 0.5em);
 
     background-color: transparent;
     border-radius: 0.125em;
