@@ -11,7 +11,21 @@
       href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    <script async defer src="https://nocookieanalytics.com/latest.js"></script>
+    <script defer>
+      (function () {
+        // Respect Do Not Track
+        var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+
+        if (dnt !== '1') {
+          var s = document.createElement('script');
+          s.src = 'https://nocookieanalytics.com/latest.js';
+          s.async = true;
+          document.head.appendChild(s);
+        } else {
+          console.log('We respect Do-Not-Track!');
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     %sveltekit.head%
   </head>
