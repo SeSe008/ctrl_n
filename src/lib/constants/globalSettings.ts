@@ -151,16 +151,15 @@ export const globalSettings: SettingsSection = new SettingsSection()
                                       )
                                   })
                               )
+                            ).appendElement(
+                              createNewElement()
+                                .setType('button')
+                                .withOptions({
+                                  simple: true,
+                                  icon: 'mdi:add',
+                                  onClick: () => addTile(mgrId)
+                                })
                             )
-                          })
-                      )
-                      .appendElement(
-                        createNewElement()
-                          .setType('button')
-                          .withOptions({
-                            simple: true,
-                            icon: 'mdi:add',
-                            onClick: () => addTile(mgrId)
                           })
                       )
                   })

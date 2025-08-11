@@ -78,7 +78,6 @@
     const saved = readSaved();
     hasSaved = !!saved;
     isDirty = saved !== null ? saved !== serializeTiles() : true;
-    console.log(isDirty);
   }
 
   onMount(() => {

@@ -3,7 +3,7 @@
   import { globalTiles } from '$lib/stores/tiles';
   import type { TileManager } from '$lib/types/tiles';
   import { settings } from '$lib/stores/settings/settings';
-  
+
   interface Props {
     id: number;
   }
@@ -24,14 +24,7 @@
   });
 </script>
 
-<div
-  bind:this={tileManager}
-  class="tile_manager {$settings.enabled &&
-	 $settings.selectedManager === id
-         ? 'settings_selected_manager'
-         : ''}
-         "
-  >
+<div bind:this={tileManager} class="tile_manager">
   {#if manager}
     {#each manager.tiles as _, i (i)}
       <TileElement managerId={id} tileId={i} />
@@ -48,12 +41,7 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    
-    box-sizing: border-box;
-  }
 
-  .settings_selected_manager {
-    padding: .125rem;
-    border: 1px dashed red;
+    box-sizing: border-box;
   }
 </style>

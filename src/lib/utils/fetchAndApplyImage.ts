@@ -39,7 +39,6 @@ export async function fetchAndApplyImage(
   const imgUrl = await api.url(data);
   const img = new Image();
   img.crossOrigin = 'Anonymous';
-  console.log(api.url(data));
 
   img.onload = async () => {
     setBackgroundImage(imgUrl);
