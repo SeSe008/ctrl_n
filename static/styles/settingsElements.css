@@ -62,11 +62,15 @@
     background-color: rgb(var(--c5));
     color: rgb(var(--c1));
   }
-
   
   .element button.simple:hover {
     background-color: rgb(var(--c5));
     color: rgb(var(--c1));
+  }
+
+  .element button:disabled, #close_controls button:disabled {
+    filter: brightness(.7);
+    pointer-events: none;
   }
 
   .element select {
@@ -289,10 +293,10 @@
   .element input[type='checkbox']::before {
     content: '';
     position: absolute;
-    inset: 0.25em;
-    width: calc(100% - 0.5em);
-    height: calc(100% - 0.5em);
-
+    inset: 10%;
+    width: 80%;
+    height: 80%;
+    
     background-color: transparent;
     border-radius: 0.125em;
 

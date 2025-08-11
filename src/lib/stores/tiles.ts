@@ -132,7 +132,7 @@ export function initializeTiles() {
   try {
     const parsed = JSON.parse(stored);
     if (Array.isArray(parsed.managers) && parsed.cssVars) {
-      globalTiles.set(new StoreGlobalTiles().fromJSON(JSON.parse(stored)));
+      globalTiles.set(new StoreGlobalTiles().fromJSON(parsed));
     }
   } catch {
     // Clock and search bar
@@ -153,8 +153,4 @@ export function initializeTiles() {
         .addManager(new StoreManager().addTile(new StoreTile().setType(1)))
     );
   }
-
-  globalTiles.subscribe((gTiles) => {
-    window.localStorage.setItem('tiles', JSON.stringify(gTiles.toJSON()));
-  });
 }

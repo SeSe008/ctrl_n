@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { addError } from '$lib/stores/errors';
   import { globalSettings } from '$lib/constants/globalSettings';
   import {
     getSelectedManagerId,
@@ -8,11 +10,15 @@
     toggleSettings
   } from '$lib/stores/settings/settings';
 
-  import { getTile, globalTiles } from '$lib/stores/tiles';
+  import { getTile, globalTiles, getTiles, setTiles } from '$lib/stores/tiles';
+  import { StoreGlobalTiles } from '$lib/classes/tile';
   import { tileDefs } from '$lib/constants/tileDefs';
 
   import type { Element } from '$lib/types/settings/settings';
   import SettingsElement from './settingsElement.svelte';
+
+  // Key for tiles in local storage
+  const STORAGE_KEY = 'tiles';
 
   function getElements(): Array<Element> {
     const mgr = getSelectedManagerId();
@@ -20,6 +26,84 @@
     const def = tileDefs[getTile(mgr, tle)?.widgetType ?? 0];
     return def.tileProps.elements;
   }
+
+  function serializeTiles(): string {
+    return JSON.stringify(getTiles().toJSON());
+  }
+
+  function readSaved(): string | null {
+    try {
+      return window.localStorage.getItem(STORAGE_KEY);
+    } catch (e) {
+      addError('localstorage-read', 'Could not read tiles from localStorage.');
+      return null;
+    }
+  }
+
+  function saveTiles(): boolean {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, serializeTiles());
+      return true;
+    } catch (e) {
+      addError('localstorage-write', 'Could not save tiles to localStorage.');
+      return false;
+    }
+  }
+
+  function revertTiles(): void {
+    const raw = readSaved();
+    if (!raw) {
+      addError('no-saved-state', 'No saved tiles found to revert to.');
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      setTiles(new StoreGlobalTiles().fromJSON(parsed));
+    } catch (e) {
+      addError('parse-error', 'Saved layout is corrupted and cannot be loaded.');
+    }
+  }
+
+  function saveAndClose(): void {
+    if (saveTiles()) {
+      toggleSettings();
+      setSelectedTile(-1);
+    }
+  }
+
+  let hasSaved = $state<boolean>(false);
+  let isDirty = $state<boolean>(false);
+
+  function recomputeFlags() {
+    const saved = readSaved();
+    hasSaved = !!saved;
+    isDirty = saved !== null ? saved !== serializeTiles() : true;
+    console.log(isDirty);
+  }
+
+  onMount(() => {
+    recomputeFlags();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === 's' || e.key === 'S') && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        saveTiles();
+        recomputeFlags();
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        saveAndClose();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    const gSub = globalTiles.subscribe(() => recomputeFlags());
+
+    return () => {
+      gSub();
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  });
 </script>
 
 <aside id="settings">
@@ -30,8 +114,10 @@
           <div class="element"><SettingsElement {element} /></div>
         {/each}
       </div>
-    {:else if $globalTiles.managers[$settings.selectedManager] && $globalTiles.managers[$settings.selectedManager].tiles[$settings.selectedTile]}
-      {#key $globalTiles.managers[getSelectedManagerId()].tiles[getSelectedTileId()].element}
+    {:else if $globalTiles.getManager($settings.selectedManager)?.getTile($settings.selectedTile)}
+      {#key $globalTiles
+        .getManager(getSelectedManagerId())
+        ?.getTile(getSelectedTileId())?.widgetType}
         <div class="settings_section">
           {#each getElements() as element, i (`${element.elementType}-${i}`)}
             <div class="element"><SettingsElement {element} /></div>
@@ -40,17 +126,44 @@
       {/key}
     {/if}
   </div>
-  <div id="close_controls">
+
+  <!-- Controls -->
+  <div id="close_controls" role="toolbar" aria-label="Settings actions">
     <button
-      onclick={() => {
-        toggleSettings();
-        setSelectedTile(-1);
-      }}
+      type="button"
+      title="Save changes and close settings (Esc)"
+      onclick={() => saveAndClose()}
     >
-      Close
+      Save & Close
     </button>
+
+    <button
+      type="button"
+      title="Save changes (Ctrl/⌘+S)"
+      onclick={() => {
+        if (saveTiles()) recomputeFlags();
+      }}
+      disabled={!isDirty}
+      aria-disabled={!isDirty}
+    >
+      Save
+    </button>
+
+    <button
+      type="button"
+      title={hasSaved ? 'Revert to last saved layout' : 'No saved layout'}
+      onclick={() => {
+        revertTiles();
+        recomputeFlags();
+      }}
+      disabled={!hasSaved || !isDirty}
+      aria-disabled={!hasSaved || !isDirty}
+    >
+      Revert
+    </button>
+
     {#if $settings.selectedTile !== -1}
-      <button onclick={() => setSelectedTile(-1)}>
+      <button type="button" title="Go to Home" onclick={() => setSelectedTile(-1)}>
         <b>Home</b>
       </button>
     {/if}
